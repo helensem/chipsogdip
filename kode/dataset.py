@@ -49,7 +49,7 @@ def create_annotation_format(contour):
     }
 
 
-def load_damage_dicts(dataset_dir, subset):
+def load_damage_dicts(dataset_dir, subset): #? Possibly write this to a JSON-file? 
     """
     Loads the images from a dataset with a dictionary of the annotations, to be loaded in detectron 
     """ 
@@ -74,12 +74,15 @@ def load_damage_dicts(dataset_dir, subset):
             if f.endswith('.png') and ('corrosion' or 'grov_merking' in f):
                 mask_path = os.path.join(mask_dir, f)
                 mask = cv2.imread(mask_path)
+                if len(mask.shape) > 2: #! Some issues with certain train images 
+                    mask = mask[:,:,0]
                 contour = find_contours(mask)
                 obj = create_annotation_format(contour)
                 objs.append(obj)
         record["annotations"] = objs
         dataset_dicts.append(record)
     return dataset_dicts
+
 
 
 ####### MAIN ##################

@@ -58,21 +58,21 @@ def train(cfg_file):
     trainer.resume_or_load(resume=False)
     trainer.train()
 
-def predict_and(cfg_file, output_dir):
-    cfg = get_cfg() 
-    cfg.merge_from_file(model_zoo.get_config_file("COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml"))
-    cfg.merge_from_file(cfg_file)
-    cfg.MODEL.WEIGHTS = os.path.join(output_dir, "model_final.pth")
-    cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.7
+#def predict_and(cfg_file, output_dir):
+ #   cfg = get_cfg() 
+ #   cfg.merge_from_file(model_zoo.get_config_file("COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml"))
+  #  cfg.merge_from_file(cfg_file)
+  #  cfg.MODEL.WEIGHTS = os.path.join(output_dir, "model_final.pth")
+  #  cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.7
 
-    predictor = DefaultPredictor(cfg) 
+  #  predictor = DefaultPredictor(cfg) 
 
-def evaluate():
-    evaluator = COCOEvaluator("balloon_val", output_dir = "/Users/HeleneSemb/Documents/Master/Kode/output")
-    val_loader = build_detection_test_loader(cfg, "balloon_val")
-    print(inference_on_dataset(predictor.model, val_loader, evaluator))
+#def evaluate():
+ #   evaluator = COCOEvaluator("balloon_val", output_dir = "/Users/HeleneSemb/Documents/Master/Kode/output")
+  #  val_loader = build_detection_test_loader(cfg, "balloon_val")
+   # print(inference_on_dataset(predictor.model, val_loader, evaluator))
 
-    return
+   # return
 
 
 if __name__ == "__main__":
