@@ -78,7 +78,7 @@ def train(cfg_file):
 if __name__ == "__main__":
     mode = "train"
 
-    cfg = config(r"/Users/HeleneSemb/Documents/chipsogdip/config/base_config.yaml") 
+    cfg = config(r"/cluster/home/helensem/Master/chipsogdip/config/base_config.yaml") 
     
     if mode == "train":
         #Set pretrained weights 
@@ -97,7 +97,7 @@ if __name__ == "__main__":
 
         predictor = DefaultPredictor(cfg) 
 
-        dataset_dicts = load_damage_dicts(r"/Users/HeleneSemb/Documents/Master/Kode/balloon", "val")
+        dataset_dicts = load_damage_dicts(r"/cluster/home/helensem/Master/chipsogdip/Labeled_pictures", "val")
         for d in random.sample(dataset_dicts, 1): 
             im = cv2.imread(d["file_name"])
             outputs = predictor(im)
@@ -117,7 +117,7 @@ if __name__ == "__main__":
 
         predictor = DefaultPredictor(cfg) 
 
-        evaluator = COCOEvaluator("damage_val", output_dir = "/Users/HeleneSemb/Documents/Master/Kode/output")
+        evaluator = COCOEvaluator("damage_val", output_dir = "/cluster/home/helensem/Master/chipsogdip/kode/output")
         val_loader = build_detection_test_loader(cfg, "damage_val")
         print(inference_on_dataset(predictor.model, val_loader, evaluator))
     

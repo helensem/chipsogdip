@@ -1,7 +1,7 @@
 import detectron2 
 
 from detectron2.utils.logger import setup_logger
-setup_logger()
+setup_logger("output/logger.log")
 
 import numpy as np 
 import os,json,cv2,random 
@@ -91,11 +91,11 @@ if __name__ == "__main__":
 
     #Load data to detectron 
     for d in ["train", "val"]:
-        DatasetCatalog.register("damage_" + d, lambda d=d: load_damage_dicts(r"/Users/HeleneSemb/Documents/Master/chipsogdip", "train"))
+        DatasetCatalog.register("damage_" + d, lambda d=d: load_damage_dicts(r"/cluster/home/helensem/Master/chipsogdip/Labeled_pictures", d))
         MetadataCatalog.get("damage_" + d).set(thing_classes=["damage"])
 
     damage_metadata = MetadataCatalog.get("damage_train")
-    dataset_dicts = load_damage_dicts(r"/Users/HeleneSemb/Documents/Master/chipsogdip", "train")
+    dataset_dicts = load_damage_dicts(r"/cluster/home/helensem/Master/chipsogdip/Labeled_pictures", "train")
 
     #Visualization 
     for d in random.sample(dataset_dicts, 1): 
