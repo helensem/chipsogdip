@@ -92,12 +92,12 @@ def config(cfg_file):
 if __name__ == "__main__": 
     print(torch.cuda.is_available())
     for d in ["train", "val"]:
-        DatasetCatalog.register("balloon_" + d, lambda d=d: get_balloon_dicts(r"/Users/HeleneSemb/Documents/Master/Kode/balloon/" + d))
+        DatasetCatalog.register("balloon_" + d, lambda d=d: get_balloon_dicts(r"/cluster/home/helensem/Master/chipsogdip/demo/balloon/" + d))
         MetadataCatalog.get("balloon_" + d).set(thing_classes=["balloon"])
 
     balloon_metadata = MetadataCatalog.get("ballon_train")
 
-    dataset_dicts = get_balloon_dicts(r"/Volumes/helensem/Master/chipsogdip/demo/balloon/train")
+    dataset_dicts = get_balloon_dicts(r"/cluster/home/helensem/Master/chipsogdip/demo/balloon/train")
 
     mode = "train"
 
@@ -119,6 +119,6 @@ if __name__ == "__main__":
 
         predictor = DefaultPredictor(cfg) 
 
-        evaluator = COCOEvaluator("damage_val", output_dir = "/cluster/home/helensem/Master/chipsogdip/kode/output")
+        evaluator = COCOEvaluator("damage_val", output_dir = cfg.OUTPUT_DIR)
         val_loader = build_detection_test_loader(cfg, "damage_val")
         print(inference_on_dataset(predictor.model, val_loader, evaluator))
