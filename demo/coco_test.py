@@ -102,6 +102,8 @@ if __name__ == "__main__":
     mode = "train"
 
     cfg = config(r"/cluster/home/helensem/Master/chipsogdip/config/base_config.yaml")
+    cfg.DATASETS.TRAIN = ("balloon_train",)
+    #cfg.DATASETS.TEST = ("baloon_val",)
 
     if mode == "train":
         #Set pretrained weights 
@@ -119,6 +121,6 @@ if __name__ == "__main__":
 
         predictor = DefaultPredictor(cfg) 
 
-        evaluator = COCOEvaluator("damage_val", output_dir = cfg.OUTPUT_DIR)
-        val_loader = build_detection_test_loader(cfg, "damage_val")
+        evaluator = COCOEvaluator("balloon_val", output_dir = cfg.OUTPUT_DIR)
+        val_loader = build_detection_test_loader(cfg, "balloon_val")
         print(inference_on_dataset(predictor.model, val_loader, evaluator))
