@@ -9,7 +9,7 @@ setup_logger()
 #Some common libraries 
 import numpy as np 
 import os,json,cv2,random 
-import torch 
+import torch, torchvision 
 
 
 
@@ -91,6 +91,8 @@ def config(cfg_file):
 
 if __name__ == "__main__": 
     print(torch.cuda.is_available())
+    print("torch: ", torch.__version__, " torchvision: ", torchvision.__version__)
+    
     for d in ["train", "val"]:
         DatasetCatalog.register("balloon_" + d, lambda d=d: get_balloon_dicts(r"/cluster/home/helensem/Master/chipsogdip/demo/balloon/" + d))
         MetadataCatalog.get("balloon_" + d).set(thing_classes=["balloon"])
