@@ -4,11 +4,15 @@ import detectron2
 
 #Setup logger
 from detectron2.utils.logger import setup_logger
-setup_logger("/Volumes/helensem/Master/chipsogdip/demo/out.log")
+setup_logger()
 
 #Some common libraries 
 import numpy as np 
 import os,json,cv2,random 
+import torch 
+
+
+
 
 
 #Detectron2 utilities 
@@ -86,6 +90,7 @@ def config(cfg_file):
 
 
 if __name__ == "__main__": 
+    print(torch.cuda.is_available())
     for d in ["train", "val"]:
         DatasetCatalog.register("balloon_" + d, lambda d=d: get_balloon_dicts(r"/Users/HeleneSemb/Documents/Master/Kode/balloon/" + d))
         MetadataCatalog.get("balloon_" + d).set(thing_classes=["balloon"])
