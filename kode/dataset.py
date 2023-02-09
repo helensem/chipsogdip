@@ -76,8 +76,8 @@ def load_damage_dicts(dataset_dir, subset): #? Possibly write this to a JSON-fil
             if f.endswith('.png') and ('corrosion' or 'grov_merking' in f):
                 mask_path = os.path.join(mask_dir, f)
                 mask = cv2.imread(mask_path)
-                if len(mask.shape) > 2: #! Some issues with certain train images 
-                    mask = mask[:,:,0]
+                #if len(mask.shape) > 2: #! Some issues with certain train images 
+                #    mask = mask[:,:,0]
                 contour = find_contours(mask)
                 obj = create_annotation_format(contour)
                 objs.append(obj)
