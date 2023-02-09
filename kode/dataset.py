@@ -61,6 +61,7 @@ def load_damage_dicts(dataset_dir, subset): #? Possibly write this to a JSON-fil
     for image_id in image_ids:
 
         image_dir = os.path.join(dataset_dir, image_id)
+        print(image_dir)
         (_, _, file_names) = next(os.walk(image_dir))
         file_name = file_names[0]
         image_path = os.path.join(image_dir, file_name)
@@ -93,7 +94,7 @@ if __name__ == "__main__":
 
     #Load data to detectron 
     for d in ["train", "val"]:
-        load_damage_dicts(r"/cluster/home/helensem/Master/chipsogdip/Labeled_pictures", d)
+        load_damage_dicts(r"/cluster/home/helensem/Master/chipsogdip/training_all_pictures", d)
         #DatasetCatalog.register("damage_" + d, lambda d=d: load_damage_dicts(r"/cluster/home/helensem/Master/chipsogdip/Labeled_pictures", d))
         #MetadataCatalog.get("damage_" + d).set(thing_classes=["damage"])
 
