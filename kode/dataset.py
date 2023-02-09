@@ -25,11 +25,7 @@ def find_contours(sub_mask):
         sub_mask (numpy array): binary mask 
     """
     assert sub_mask is not None, "file could not be read, check with os.path.exists()"
-    if not print(255 in sub_mask): 
-        print(sub_mask.shape)
-        print(np.all(sub_mask) == 0)
     imgray = cv2.cvtColor(sub_mask, cv2.COLOR_BGR2GRAY)
-    print(255 in imgray)
     ret, thresh = cv2.threshold(imgray, 127, 255, 0)
     contours, hierarchy = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     assert len(contours)!= 0, print(contours)
@@ -83,7 +79,8 @@ def load_damage_dicts(dataset_dir, subset): #? Possibly write this to a JSON-fil
                 mask_path = os.path.join(mask_dir, f)
                 print(mask_path)
                 mask = cv2.imread(mask_path)
-                
+                if not(255 in mask):
+                    continue
                 #if len(mask.shape) > 2: #! Some issues with certain train images 
                 #    mask = mask[:,:,0]
                 contour = find_contours(mask)
