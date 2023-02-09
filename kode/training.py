@@ -51,6 +51,8 @@ def train(cfg_file):
 
     #Set pretrained weights 
     cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml")
+    cfg.DATASETS.TRAIN = ("damage_train")
+    cfg.DATASETS.TEST = ("damage_val")
     os.makedirs(cfg.OUTPUT_DIR, exist_ok=True)
     
     #TRAIN
@@ -77,13 +79,17 @@ def train(cfg_file):
 
 if __name__ == "__main__":
     mode = "train"
+    for d in ["train", "val"]:
+        DatasetCatalog.register("damage_" + d, lambda d=d: load_damage_dicts(r"/cluster/home/helensem/Master/training_all_pictures", d))
+        MetadataCatalog.get("damage_" + d).set(thing_classes=["damage"])
 
+    damage_metadata = MetadataCatalog.get("damage_train")
     cfg = config(r"/cluster/home/helensem/Master/chipsogdip/config/base_config.yaml") 
     
     if mode == "train":
         #Set pretrained weights 
         cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml")
-        os.makedirs(cfg.OUTPUT_DIR, exist_ok=True)
+        #os.makedirs(cfg.OUTPUT_DIR, exist_ok=True)
         
         #TRAIN
         trainer = DefaultTrainer(cfg)
