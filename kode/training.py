@@ -4,9 +4,10 @@ from detectron2.utils.logger import setup_logger
 setup_logger()
 
 import numpy as np 
-import os,json,cv2,random 
+import os,json,cv2,random, sys 
 import skimage
-from kode.dataset import * 
+sys.path.append(r"/cluster/home/helensem/Master/chipsogdip/kode")
+from dataset import * 
 
 from detectron2 import model_zoo
 from detectron2.engine import DefaultPredictor
