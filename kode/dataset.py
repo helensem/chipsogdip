@@ -25,9 +25,10 @@ def find_contours(sub_mask):
     """
     assert sub_mask is not None, "file could not be read, check with os.path.exists()"
     imgray = cv2.cvtColor(sub_mask, cv2.COLOR_BGR2GRAY)
+    print(imgray)
     ret, thresh = cv2.threshold(imgray, 127, 255, 0)
     contours, hierarchy = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-    assert len(contours)!= 0, print(sub_mask)
+    assert len(contours)!= 0, print(contours)
     return contours[0]
 
 
@@ -76,8 +77,9 @@ def load_damage_dicts(dataset_dir, subset): #? Possibly write this to a JSON-fil
         for f in next(os.walk(mask_dir))[2]:
             if f.endswith('.png') and ('corrosion' or 'grov_merking' in f):
                 mask_path = os.path.join(mask_dir, f)
+                print(mask_path)
                 mask = cv2.imread(mask_path)
-                print(mask.shape)
+                
                 #if len(mask.shape) > 2: #! Some issues with certain train images 
                 #    mask = mask[:,:,0]
                 contour = find_contours(mask)
