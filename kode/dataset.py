@@ -95,7 +95,7 @@ if __name__ == "__main__":
 
     #Load data to detectron 
     for d in ["train", "val"]:
-        load_damage_dicts(r"/cluster/home/helensem/Master/chipsogdip/training_all_pictures", d)
+        load_damage_dicts(r"/cluster/home/helensem/Master/training_all_pictures", d)
         #DatasetCatalog.register("damage_" + d, lambda d=d: load_damage_dicts(r"/cluster/home/helensem/Master/chipsogdip/Labeled_pictures", d))
         #MetadataCatalog.get("damage_" + d).set(thing_classes=["damage"])
 
