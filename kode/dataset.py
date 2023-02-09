@@ -5,7 +5,7 @@ setup_logger("output/logger.log")
 
 import numpy as np 
 import os,json,cv2,random 
-import skimage
+#import skimage
 
 from detectron2 import model_zoo
 from detectron2.engine import DefaultPredictor
@@ -81,6 +81,8 @@ def load_damage_dicts(dataset_dir, subset): #? Possibly write this to a JSON-fil
                 objs.append(obj)
         record["annotations"] = objs
         dataset_dicts.append(record)
+    with open(f"damage_{subset}.json") as f:
+        json.dump(f, dataset_dicts)
     return dataset_dicts
 
 
@@ -91,18 +93,19 @@ if __name__ == "__main__":
 
     #Load data to detectron 
     for d in ["train", "val"]:
-        DatasetCatalog.register("damage_" + d, lambda d=d: load_damage_dicts(r"/cluster/home/helensem/Master/chipsogdip/Labeled_pictures", d))
-        MetadataCatalog.get("damage_" + d).set(thing_classes=["damage"])
+        load_damage_dicts(r"/cluster/home/helensem/Master/chipsogdip/Labeled_pictures", d)
+        #DatasetCatalog.register("damage_" + d, lambda d=d: load_damage_dicts(r"/cluster/home/helensem/Master/chipsogdip/Labeled_pictures", d))
+        #MetadataCatalog.get("damage_" + d).set(thing_classes=["damage"])
 
-    damage_metadata = MetadataCatalog.get("damage_train")
-    dataset_dicts = load_damage_dicts(r"/cluster/home/helensem/Master/chipsogdip/Labeled_pictures", "train")
+    #damage_metadata = MetadataCatalog.get("damage_train")
+    #dataset_dicts = load_damage_dicts(r"/cluster/home/helensem/Master/chipsogdip/Labeled_pictures", "train")
 
     #Visualization 
-    for d in random.sample(dataset_dicts, 1): 
-        img = cv2.imread(d["file_name"])
-        visualizer = Visualizer(img[:,:,::-1], metadata = damage_metadata, scale =0.5)
-        out = visualizer.draw_dataset_dict(d)
-        cv2.imshow("imageout", out.get_image()[:,:,::-1])
-        cv2.waitKey(0)
+    #for d in random.sample(dataset_dicts, 1): 
+     #   img = cv2.imread(d["file_name"])
+     #   visualizer = Visualizer(img[:,:,::-1], metadata = damage_metadata, scale =0.5)
+     #   out = visualizer.draw_dataset_dict(d)
+     #   cv2.imshow("imageout", out.get_image()[:,:,::-1])
+     #   cv2.waitKey(0)
         # closing all open windows
-        cv2.destroyAllWindows()
+     #   cv2.destroyAllWindows()
