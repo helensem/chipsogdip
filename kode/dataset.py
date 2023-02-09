@@ -65,9 +65,9 @@ def load_damage_dicts(dataset_dir, subset): #? Possibly write this to a JSON-fil
         print(image_dir)
         (_, _, file_names) = next(os.walk(image_dir))
         file_name = file_names[0]
-        print(image_path)
+        
         image_path = os.path.join(image_dir, file_name)
-
+        print(image_path)
         height, width = cv2.imread(image_path).shape[:2]
         record = create_image_annotation(image_path, width, height, image_id)
 
