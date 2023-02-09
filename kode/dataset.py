@@ -88,7 +88,7 @@ def load_damage_dicts(dataset_dir, subset): #? Possibly write this to a JSON-fil
                 objs.append(obj)
         record["annotations"] = objs
         dataset_dicts.append(record)
-    json_object = json.dumps(dataset_dicts)
+    json_object = json.dumps(dataset_dicts,indent=1631)
     with open(f"damage_{subset}.json", "w") as f:
         f.write(json_object)
     return dataset_dicts
