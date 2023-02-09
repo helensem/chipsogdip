@@ -53,7 +53,7 @@ def train(cfg_file):
     #Set pretrained weights 
     cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml")
     cfg.DATASETS.TRAIN = ("damage_train")
-    cfg.DATASETS.TEST = ("damage_val")
+    cfg.DATASETS.TEST = ()
     os.makedirs(cfg.OUTPUT_DIR, exist_ok=True)
     
     #TRAIN
