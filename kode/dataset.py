@@ -25,7 +25,9 @@ def find_contours(sub_mask):
         sub_mask (numpy array): binary mask 
     """
     assert sub_mask is not None, "file could not be read, check with os.path.exists()"
-    print(255 in sub_mask)
+    if not print(255 in sub_mask): 
+        print(sub_mask.shape)
+        print(np.all(sub_mask) is 0)
     imgray = cv2.cvtColor(sub_mask, cv2.COLOR_BGR2GRAY)
     print(255 in imgray)
     ret, thresh = cv2.threshold(imgray, 127, 255, 0)
