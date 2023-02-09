@@ -58,7 +58,6 @@ def load_damage_dicts(dataset_dir, subset): #? Possibly write this to a JSON-fil
 
     assert subset in ["train", "val"]
     dataset_dir = os.path.join(dataset_dir, subset)
-    print(dataset_dir)
     image_ids = next(os.walk(dataset_dir))[1]
     for image_id in image_ids:
 
@@ -66,6 +65,7 @@ def load_damage_dicts(dataset_dir, subset): #? Possibly write this to a JSON-fil
         print(image_dir)
         (_, _, file_names) = next(os.walk(image_dir))
         file_name = file_names[0]
+        print(image_path)
         image_path = os.path.join(image_dir, file_name)
 
         height, width = cv2.imread(image_path).shape[:2]
