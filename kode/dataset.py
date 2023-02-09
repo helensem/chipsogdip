@@ -13,6 +13,7 @@ from detectron2.config import get_cfg
 from detectron2.utils.visualizer import Visualizer
 from detectron2.data import MetadataCatalog, DatasetCatalog
 from detectron2.structures import BoxMode 
+np.set_printoptions(threshold=1000)
 
 
 ####### Creating COCO-format from png masks ###########
@@ -25,7 +26,7 @@ def find_contours(sub_mask):
     """
     assert sub_mask is not None, "file could not be read, check with os.path.exists()"
     imgray = cv2.cvtColor(sub_mask, cv2.COLOR_BGR2GRAY)
-    print (255 in imgray)
+    print(255 in imgray)
     ret, thresh = cv2.threshold(imgray, 127, 255, 0)
     contours, hierarchy = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     assert len(contours)!= 0, print(contours)
