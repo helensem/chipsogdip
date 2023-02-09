@@ -57,6 +57,7 @@ def load_damage_dicts(dataset_dir, subset): #? Possibly write this to a JSON-fil
 
     assert subset in ["train", "val"]
     dataset_dir = os.path.join(dataset_dir, subset)
+    print(dataset_dir)
     image_ids = next(os.walk(dataset_dir))[1]
     for image_id in image_ids:
 
