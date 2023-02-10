@@ -77,11 +77,12 @@ def train(cfg_file):
 
    # return
 
+#load_damage_dicts(r"/cluster/home/helensem/Master/training_all_pictures", d)
 
 if __name__ == "__main__":
     mode = "train"
     for d in ["train", "val"]:
-        DatasetCatalog.register("damage_" + d, lambda d=d: load_damage_dicts(r"/cluster/home/helensem/Master/training_all_pictures", d))
+        DatasetCatalog.register("damage_" + d, lambda d=d: get_jason_dict(d))
         MetadataCatalog.get("damage_" + d).set(thing_classes=["damage"])
 
     damage_metadata = MetadataCatalog.get("damage_train")

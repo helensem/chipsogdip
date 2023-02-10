@@ -63,8 +63,8 @@ def initialize(num_indvs):
         loss_weights_indv["mrcnn_mask_loss"] = loss_weights["mrcnn_mask_loss"][i]
         indv["LOSS_WEIGHTS"] = loss_weights_indv
         print(indv)
-        #with open("indivdual_{i}.yaml", "w") as f:
-         #   yaml.dump(indv, f) 
+        with open(f"indivdual_{i}.yaml", "w") as f:
+            yaml.dump(indv, f) 
 
 
 if __name__ == "__main__":
