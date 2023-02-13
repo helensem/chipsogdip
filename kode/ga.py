@@ -1,7 +1,10 @@
 import yaml 
 import random 
 import numpy as np
-
+import sys 
+sys.path.append(r"/cluster/home/helensem/Master/chipsogdip/kode")
+from training import *
+from dataset import * 
 
 def create_init_values(num_indvs): 
     init_values = {} 
@@ -65,6 +68,22 @@ def initialize(num_indvs):
         print(indv)
         with open(f"indivdual_{i}.yaml", "w") as f:
             yaml.dump(indv, f) 
+
+
+def ga_drive(cfg_files_path, image_path):
+    cfg_files = next(os.walk(cfg_files_path))[2]
+    for cfg in cfg_files:
+        cfg_path = os.path.join(cfg_files_path, cfg)
+
+        indv_cfg = config(cfg_path)
+        train(indv_cfg)
+        
+        
+
+
+
+
+
 
 
 if __name__ == "__main__":

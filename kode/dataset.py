@@ -93,12 +93,16 @@ def load_damage_dicts(dataset_dir, subset): #? Possibly write this to a JSON-fil
         f.write(json_object)
     return dataset_dicts
 
-def get_jason_dict(subset):
-    with open(r"/cluster/home/helensem/Master/damage_"+subset+".json", "r") as f:
-        data = json.load(f)
-    # returns JSON object as 
-    # a dictionary
-    return data
+def get_jason_dict(subset="train"):
+
+    if subset == "train":
+        with open(r"/cluster/home/helensem/Master/damage_train.json", "r") as f:
+            data = json.load(f)
+        return data
+    if subset == "val":
+        with open(r"/cluster/home/helensem/Master/damage_val.json", "r") as f:
+            data = json.load(f)            
+        return data
 
 
 ####### MAIN ##################
