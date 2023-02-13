@@ -31,6 +31,8 @@ def config(cfg_file):
     #cfg.MODEL.DEVICE = "cpu"
     #cfg.DATALOADER.NUM_WORKERS = 2 
     cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml")
+    cfg.DATASETS.TRAIN = ("damage_train")
+    cfg.DATASETS.TEST = ()
     #cfg.SOLVER.IMS_PER_BATCH = 1 
     #cfg.SOLVER.BASE_LR = 0.00025 
     #cfg.SOLVER.MAX_ITER = 300 
@@ -44,22 +46,22 @@ def config(cfg_file):
 
 
 
-def train(cfg_file): 
-    cfg = get_cfg() 
-    cfg.merge_from_file(model_zoo.get_config_file("COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml"))
-    cfg.merge_from_file(cfg_file)
+# def train(cfg_file): 
+#     cfg = get_cfg() 
+#     cfg.merge_from_file(model_zoo.get_config_file("COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml"))
+#     cfg.merge_from_file(cfg_file)
 
 
-    #Set pretrained weights 
-    cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml")
-    cfg.DATASETS.TRAIN = ("damage_train")
-    cfg.DATASETS.TEST = ()
-    os.makedirs(cfg.OUTPUT_DIR, exist_ok=True)
+#     #Set pretrained weights 
+#     cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml")
+#     cfg.DATASETS.TRAIN = ("damage_train")
+#     cfg.DATASETS.TEST = ()
+#     os.makedirs(cfg.OUTPUT_DIR, exist_ok=True)
     
-    #TRAIN
-    trainer = DefaultTrainer(cfg)
-    trainer.resume_or_load(resume=False)
-    trainer.train()
+#     #TRAIN
+#     trainer = DefaultTrainer(cfg)
+#     trainer.resume_or_load(resume=False)
+#     trainer.train()
 
 #def predict_and(cfg_file, output_dir):
  #   cfg = get_cfg() 
@@ -91,6 +93,7 @@ if __name__ == "__main__":
     if mode == "train":
         #Set pretrained weights 
         cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml")
+
         #os.makedirs(cfg.OUTPUT_DIR, exist_ok=True)
         
         #TRAIN
