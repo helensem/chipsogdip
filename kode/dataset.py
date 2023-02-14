@@ -84,6 +84,8 @@ def load_damage_dicts(dataset_dir, subset): #? Possibly write this to a JSON-fil
                 #if len(mask.shape) > 2: #! Some issues with certain train images 
                 #    mask = mask[:,:,0]
                 contour = find_contours(mask)
+                if len(contour)<3: # Cant create polygons from too few coordinates
+                    continue
                 obj = create_annotation_format(contour)
                 objs.append(obj)
         record["annotations"] = objs
