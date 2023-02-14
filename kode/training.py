@@ -25,7 +25,7 @@ from detectron2.engine import DefaultTrainer
 def config():
     cfg = get_cfg() 
     cfg.merge_from_file(model_zoo.get_config_file("COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml"))
-    cfg.merge_from_file()
+    #cfg.merge_from_file()
     cfg.DATALOADER.NUM_WORKERS = 2 
     cfg.MODEL.MASK_ON = True
     cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml")
@@ -37,7 +37,7 @@ def config():
     cfg.SOLVER.STEPS = [] 
     cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 128 
     cfg.MODEL.ROI_HEADS.NUM_CLASSES = 1 
-    cfg.OUTPUT_DIR = "/cluster/home/helensem/Master/chipsogdip/kode/output/resnet50"
+    cfg.OUTPUT_DIR = "/cluster/home/helensem/Master/output/resnet50"
 
     #os.makedirs(cfg.OUTPUT_DIR, exist_ok=True)
 
