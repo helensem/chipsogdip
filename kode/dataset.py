@@ -95,6 +95,44 @@ def load_damage_dicts(dataset_dir, subset): #? Possibly write this to a JSON-fil
         f.write(json_object)
     return dataset_dicts
 
+
+def load_sky_dicts(path, subset): 
+    dataset_dicts = []
+
+    assert subset in ["train", "val"]
+    dataset_dir = os.path.join(dataset_dir, subset)
+    image_ids = next(os.walk(dataset_dir))[1] #names of all directories in dir
+    for image_id in image_ids:
+
+        image_dir = os.path.join(dataset_dir, image_id)
+        print(image_dir)
+        (_, _, file_names) = next(os.walk(image_dir))
+        file_name = file_names[0]
+        
+        image_path = os.path.join(image_dir, file_name)
+        print(image_path)
+        height, width = cv2.imread(image_path).shape[:2]
+        record = create_image_annotation(image_path, width, height, image_id)
+        
+
+        mask_dir = os.path.join(dataset_dir, 'masks')
+        objs = []
+        mask_path = os.path.join(mask_dir, image_id)
+        print(mask_path)
+        mask = cv2.imread(mask_path)
+        contour = find_contours(mask)
+        obj = create_annotation_format(contour)
+        objs.append(obj)        
+        record["annotations"] = objs
+        dataset_dicts.append(record)
+
+
+    json_object = json.dumps(dataset_dicts,indent=1631)
+    with open(f"damage_{subset}.json", "w") as f:
+        f.write(json_object)
+    return dataset_dicts
+
+
 def get_jason_dict(subset="train"):
 
     if subset == "train":
