@@ -124,7 +124,8 @@ def load_sky_dicts(path, subset):
 
         mask_dir = os.path.join(path, 'masks')
         objs = []
-        mask_path = os.path.join(mask_dir, image_id)
+        image = image_id + ".png"
+        mask_path = os.path.join(mask_dir, image)
         print(mask_path)
         mask = cv2.imread(mask_path)
         contour = find_contours(mask)
