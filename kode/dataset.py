@@ -122,7 +122,7 @@ def load_sky_dicts(path, subset):
         record = create_image_annotation(image_path, width, height, image_id)
         
 
-        mask_dir = os.path.join(dataset_dir, 'masks')
+        mask_dir = os.path.join(path, 'masks')
         objs = []
         mask_path = os.path.join(mask_dir, image_id)
         print(mask_path)
@@ -158,9 +158,8 @@ if __name__ == "__main__":
 
     #Load data to detectron 
     for d in ["train", "val"]:
-        load_damage_dicts(r"/cluster/home/helensem/Master/training_all_pictures", d)
-        #DatasetCatalog.register("damage_" + d, lambda d=d: load_damage_dicts(r"/cluster/home/helensem/Master/chipsogdip/Labeled_pictures", d))
-        #MetadataCatalog.get("damage_" + d).set(thing_classes=["damage"])
+        DatasetCatalog.register("sky_" + d, lambda d=d: load_sky_dicts(r"/cluster/home/helensem/Master/Sky", d))
+        MetadataCatalog.get("sky_" + d).set(thing_classes=["sky"])
 
     #damage_metadata = MetadataCatalog.get("damage_train")
     #dataset_dicts = load_damage_dicts(r"/cluster/home/helensem/Master/chipsogdip/Labeled_pictures", "train")
