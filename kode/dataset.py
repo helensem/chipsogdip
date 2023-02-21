@@ -79,20 +79,27 @@ def load_damage_dicts(dataset_dir, subset): #? Possibly write this to a JSON-fil
                 mask_path = os.path.join(mask_dir, f)
                 print(mask_path)
                 mask = cv2.imread(mask_path)
-                if not(255 in mask):
+                if mask is None: 
+                    print("Couldn't retrieve mask: ", mask_path)
                     continue
-                #if len(mask.shape) > 2: #! Some issues with certain train images 
+                if not(255 in mask):
+                    print("mask is empty: ", mask_path)
+                    continue
+                #if len(mask.shape) > 2: #* Some issues with certain train images 
                 #    mask = mask[:,:,0]
                 contour = find_contours(mask)
                 if len(contour)<3: # Cant create polygons from too few coordinates
+                    print("Contour too small: ", mask_path)
                     continue
                 obj = create_annotation_format(contour)
                 objs.append(obj)
         record["annotations"] = objs
         dataset_dicts.append(record)
-    json_object = json.dumps(dataset_dicts,indent=1631)
-    with open(f"damage_{subset}.json", "w") as f:
-        f.write(json_object)
+    
+    #* For writing to JSON-file
+    #json_object = json.dumps(dataset_dicts,indent=1631)
+    #with open(f"damage_{subset}.json", "w") as f:
+     #   f.write(json_object)
     return dataset_dicts
 
 
