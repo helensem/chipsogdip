@@ -66,7 +66,7 @@ def sky_config():
 if __name__ == "__main__":
     mode = "train"
     for d in ["train", "val"]:
-        DatasetCatalog.register("sky_" + d, lambda d=d: load_damage_dicts(r"/cluster/home/helensem/Master/Sky",d))
+        DatasetCatalog.register("sky_" + d, lambda d=d: load_sky_dicts(r"/cluster/home/helensem/Master/Sky",d))
         MetadataCatalog.get("sky_" + d).set(thing_classes=["sky"])
 
     damage_metadata = MetadataCatalog.get("sky_train")
