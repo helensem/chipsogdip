@@ -15,6 +15,9 @@ from detectron2.data import MetadataCatalog, DatasetCatalog
 from detectron2.structures import BoxMode 
 np.set_printoptions(threshold=1000)
 
+from PIL import ImageFile
+ImageFile.LOAD_TRUNCATED_IMAGES = True
+
 
 ####### Creating COCO-format from png masks ###########
 
@@ -79,21 +82,65 @@ def load_damage_dicts(dataset_dir, subset): #? Possibly write this to a JSON-fil
                 mask_path = os.path.join(mask_dir, f)
                 print(mask_path)
                 mask = cv2.imread(mask_path)
-                if not(255 in mask):
+                if mask is None: 
+                    print("Couldn't retrieve mask: ", mask_path)
                     continue
-                #if len(mask.shape) > 2: #! Some issues with certain train images 
+                if not(255 in mask):
+                    print("mask is empty: ", mask_path)
+                    continue
+                #if len(mask.shape) > 2: #* Some issues with certain train images 
                 #    mask = mask[:,:,0]
                 contour = find_contours(mask)
                 if len(contour)<3: # Cant create polygons from too few coordinates
+                    print("Contour too small: ", mask_path)
                     continue
                 obj = create_annotation_format(contour)
                 objs.append(obj)
         record["annotations"] = objs
         dataset_dicts.append(record)
-    json_object = json.dumps(dataset_dicts,indent=1631)
-    with open(f"damage_{subset}.json", "w") as f:
-        f.write(json_object)
+    
+    #* For writing to JSON-file
+    #json_object = json.dumps(dataset_dicts,indent=1631)
+    #with open(f"damage_{subset}.json", "w") as f:
+     #   f.write(json_object)
     return dataset_dicts
+
+
+def load_sky_dicts(path, subset): 
+    dataset_dicts = []
+
+    assert subset in ["train", "val"]
+    dataset_dir = os.path.join(path, subset)
+    image_ids = next(os.walk(dataset_dir))[1] #names of all directories in dir
+    for image_id in image_ids:
+        image_dir = os.path.join(dataset_dir, image_id)
+        print(image_dir)
+        (_, _, file_names) = next(os.walk(image_dir))
+
+        for f in file_names: 
+            image_path = os.path.join(image_dir, f)
+            height, width = cv2.imread(image_path).shape[:2]
+            record = create_image_annotation(image_path, width, height, image_id)
+        
+
+            mask_dir = os.path.join(path, 'masks')
+            objs = []
+            image = image_id + ".png"
+            mask_path = os.path.join(mask_dir, image)
+        
+            mask = cv2.imread(mask_path)
+            contour = find_contours(mask)
+            obj = create_annotation_format(contour)
+            objs.append(obj)        
+            record["annotations"] = objs
+            dataset_dicts.append(record)
+
+    #* For loading JSON objects 
+    #json_object = json.dumps(dataset_dicts,indent=1631)
+    #with open(f"damage_{subset}.json", "w") as f:
+    #    f.write(json_object)
+    return dataset_dicts
+
 
 def get_jason_dict(subset="train"):
 
@@ -113,9 +160,8 @@ if __name__ == "__main__":
 
     #Load data to detectron 
     for d in ["train", "val"]:
-        load_damage_dicts(r"/cluster/home/helensem/Master/training_all_pictures", d)
-        #DatasetCatalog.register("damage_" + d, lambda d=d: load_damage_dicts(r"/cluster/home/helensem/Master/chipsogdip/Labeled_pictures", d))
-        #MetadataCatalog.get("damage_" + d).set(thing_classes=["damage"])
+        DatasetCatalog.register("sky_" + d, lambda d=d: load_sky_dicts(r"/cluster/home/helensem/Master/Sky", d))
+        MetadataCatalog.get("sky_" + d).set(thing_classes=["sky"])
 
     #damage_metadata = MetadataCatalog.get("damage_train")
     #dataset_dicts = load_damage_dicts(r"/cluster/home/helensem/Master/chipsogdip/Labeled_pictures", "train")

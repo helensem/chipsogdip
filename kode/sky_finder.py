@@ -22,14 +22,14 @@ from detectron2.data import build_detection_test_loader
 from detectron2.engine import DefaultTrainer
 
 
-def config():
+def sky_config():
     cfg = get_cfg() 
     cfg.merge_from_file(model_zoo.get_config_file("COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml"))
     #cfg.merge_from_file()
     cfg.DATALOADER.NUM_WORKERS = 2 
     cfg.MODEL.MASK_ON = True
     cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml")
-    cfg.DATASETS.TRAIN = ("damage_train")
+    cfg.DATASETS.TRAIN = ("sky_train")
     cfg.DATASETS.TEST = ()
     cfg.SOLVER.IMS_PER_BATCH = 2
     cfg.SOLVER.BASE_LR = 0.00025 
@@ -37,7 +37,7 @@ def config():
     cfg.SOLVER.STEPS = [] 
     cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 128 
     cfg.MODEL.ROI_HEADS.NUM_CLASSES = 1 
-    cfg.OUTPUT_DIR = "/cluster/home/helensem/Master/output/resnet50"
+    cfg.OUTPUT_DIR = "/cluster/home/helensem/Master/output/sky/resnet50"
 
     #os.makedirs(cfg.OUTPUT_DIR, exist_ok=True)
 
@@ -66,15 +66,15 @@ def config():
 if __name__ == "__main__":
     mode = "train"
     for d in ["train", "val"]:
-        DatasetCatalog.register("damage_" + d, lambda d=d: load_damage_dicts(r"/cluster/home/helensem/Master/Labeled_pictures",d))
-        MetadataCatalog.get("damage_" + d).set(thing_classes=["damage"])
+        DatasetCatalog.register("sky_" + d, lambda d=d: load_sky_dicts(r"/cluster/home/helensem/Master/Sky",d))
+        MetadataCatalog.get("sky_" + d).set(thing_classes=["sky"])
 
-    damage_metadata = MetadataCatalog.get("damage_train")
+    damage_metadata = MetadataCatalog.get("sky_train")
 
     
 
 
-    cfg = config() 
+    cfg = sky_config() 
     os.makedirs(cfg.OUTPUT_DIR, exist_ok=True)
     
 
@@ -96,7 +96,7 @@ if __name__ == "__main__":
 
         predictor = DefaultPredictor(cfg) 
 
-        dataset_dicts = load_damage_dicts(r"/cluster/home/helensem/Master/chipsogdip/Labeled_pictures", "val")
+        dataset_dicts = load_damage_dicts(r"/cluster/home/helensem/Master/chipsogdip/Sky", "val")
         for d in random.sample(dataset_dicts, 1): 
             im = cv2.imread(d["file_name"])
             outputs = predictor(im)
@@ -116,17 +116,9 @@ if __name__ == "__main__":
 
         predictor = DefaultPredictor(cfg) 
 
-        evaluator = COCOEvaluator("damage_val", output_dir = cfg.OUTPUT_DIR)
-        val_loader = build_detection_test_loader(cfg, "damage_val")
+        evaluator = COCOEvaluator("sky_val", output_dir = cfg.OUTPUT_DIR)
+        val_loader = build_detection_test_loader(cfg, "sky_val")
         print(inference_on_dataset(predictor.model, val_loader, evaluator))
     
     else: 
         print("No mode chosen")
-
-
-
-
-
-
-
-
