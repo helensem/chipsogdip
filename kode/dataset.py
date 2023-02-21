@@ -107,7 +107,7 @@ def load_sky_dicts(path, subset):
     dataset_dicts = []
 
     assert subset in ["train", "val"]
-    dataset_dir = os.path.join(dataset_dir, subset)
+    dataset_dir = os.path.join(path, subset)
     image_ids = next(os.walk(dataset_dir))[1] #names of all directories in dir
     for image_id in image_ids:
 
@@ -133,10 +133,10 @@ def load_sky_dicts(path, subset):
         record["annotations"] = objs
         dataset_dicts.append(record)
 
-
-    json_object = json.dumps(dataset_dicts,indent=1631)
-    with open(f"damage_{subset}.json", "w") as f:
-        f.write(json_object)
+    #* For loading JSON objects 
+    #json_object = json.dumps(dataset_dicts,indent=1631)
+    #with open(f"damage_{subset}.json", "w") as f:
+    #    f.write(json_object)
     return dataset_dicts
 
 
