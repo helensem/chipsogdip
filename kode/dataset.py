@@ -101,9 +101,9 @@ def load_damage_dicts(dataset_dir, subset): #? Possibly write this to a JSON-fil
         dataset_dicts.append(record)
     
     #* For writing to JSON-file
-    json_object = json.dumps(dataset_dicts,indent=700)
-    with open(f"damage_{subset}.json", "w") as f:
-        f.write(json_object)
+    #json_object = json.dumps(dataset_dicts,indent=700)
+    #with open(f"damage_{subset}.json", "w") as f:
+    #    f.write(json_object)
     return dataset_dicts
 
 
@@ -167,7 +167,7 @@ if __name__ == "__main__":
         MetadataCatalog.get("damage_" + d).set(thing_classes=["sky"])
 
     damage_metadata = MetadataCatalog.get("damage_train")
-    #dataset_dicts = load_damage_dicts(r"/cluster/home/helensem/Master/chipsogdip/Labeled_pictures", "train")
+    dataset_dicts = load_damage_dicts(r"/cluster/home/helensem/Master/chipsogdip/Labeled_pictures", "train")
 
     #Visualization 
     for d in random.sample(dataset_dicts, 1): 
