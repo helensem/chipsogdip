@@ -37,7 +37,7 @@ def find_contours(sub_mask):
 
 def create_image_annotation(file_name, width, height, image_id):
     return {
-        "id": image_id,
+        "image_id": image_id,
         "width": width,
         "height": height,
         "file_name": file_name,
