@@ -159,7 +159,7 @@ def get_jason_dict(subset="train"):
 
 if __name__ == "__main__": 
 
-    print(load_damage_dicts(r"/cluster/home/helensem/Master/Labeled_pictures", "train"))
+    print(load_damage_dicts(r"/cluster/home/helensem/Master/data", "train"))
 
     #Load data to detectron 
     #for d in ["train", "val"]:
