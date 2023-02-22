@@ -159,22 +159,22 @@ def get_jason_dict(subset="train"):
 
 if __name__ == "__main__": 
 
-    print(load_damage_dicts(r"/cluster/home/helensem/Master/data", "train"))
+    #print(load_damage_dicts(r"/cluster/home/helensem/Master/data", "train"))
 
     #Load data to detectron 
-    #for d in ["train", "val"]:
-     #   DatasetCatalog.register("sky_" + d, lambda d=d: load_sky_dicts(r"/cluster/home/helensem/Master/Sky", d))
-      #  MetadataCatalog.get("sky_" + d).set(thing_classes=["sky"])
+    for d in ["train", "val"]:
+        DatasetCatalog.register("damage_" + d, lambda d=d: load_damage_dicts(r"/cluster/home/helensem/Master/data", d))
+        MetadataCatalog.get("damage_" + d).set(thing_classes=["sky"])
 
-    #damage_metadata = MetadataCatalog.get("damage_train")
+    damage_metadata = MetadataCatalog.get("damage_train")
     #dataset_dicts = load_damage_dicts(r"/cluster/home/helensem/Master/chipsogdip/Labeled_pictures", "train")
 
     #Visualization 
-    #for d in random.sample(dataset_dicts, 1): 
-     #   img = cv2.imread(d["file_name"])
-     #   visualizer = Visualizer(img[:,:,::-1], metadata = damage_metadata, scale =0.5)
-     #   out = visualizer.draw_dataset_dict(d)
-     #   cv2.imshow("imageout", out.get_image()[:,:,::-1])
-     #   cv2.waitKey(0)
-        # closing all open windows
-     #   cv2.destroyAllWindows()
+    for d in random.sample(dataset_dicts, 1): 
+       img = cv2.imread(d["file_name"])
+       visualizer = Visualizer(img[:,:,::-1], metadata = damage_metadata, scale =0.5)
+       out = visualizer.draw_dataset_dict(d)
+       cv2.imshow("imageout", out.get_image()[:,:,::-1])
+       cv2.waitKey(0)
+       # closing all open windows
+       cv2.destroyAllWindows()
