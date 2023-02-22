@@ -101,9 +101,9 @@ def load_damage_dicts(dataset_dir, subset): #? Possibly write this to a JSON-fil
         dataset_dicts.append(record)
     
     #* For writing to JSON-file
-    #json_object = json.dumps(dataset_dicts,indent=1631)
-    #with open(f"damage_{subset}.json", "w") as f:
-     #   f.write(json_object)
+    json_object = json.dumps(dataset_dicts,indent=700)
+    with open(f"damage_{subset}.json", "w") as f:
+        f.write(json_object)
     return dataset_dicts
 
 
@@ -159,10 +159,12 @@ def get_jason_dict(subset="train"):
 
 if __name__ == "__main__": 
 
+    print(load_damage_dicts(r"/cluster/home/helensem/Master/Labeled_pictures", "train"))
+
     #Load data to detectron 
-    for d in ["train", "val"]:
-        DatasetCatalog.register("sky_" + d, lambda d=d: load_sky_dicts(r"/cluster/home/helensem/Master/Sky", d))
-        MetadataCatalog.get("sky_" + d).set(thing_classes=["sky"])
+    #for d in ["train", "val"]:
+     #   DatasetCatalog.register("sky_" + d, lambda d=d: load_sky_dicts(r"/cluster/home/helensem/Master/Sky", d))
+      #  MetadataCatalog.get("sky_" + d).set(thing_classes=["sky"])
 
     #damage_metadata = MetadataCatalog.get("damage_train")
     #dataset_dicts = load_damage_dicts(r"/cluster/home/helensem/Master/chipsogdip/Labeled_pictures", "train")
