@@ -167,7 +167,7 @@ if __name__ == "__main__":
         MetadataCatalog.get("damage_" + d).set(thing_classes=["sky"])
 
     damage_metadata = MetadataCatalog.get("damage_train")
-    dataset_dicts = load_damage_dicts(r"/cluster/home/helensem/Master/chipsogdip/Labeled_pictures", "train")
+    dataset_dicts = load_damage_dicts(r"/cluster/home/helensem/Master/data", "train")
 
     #Visualization 
     for d in random.sample(dataset_dicts, 1): 
