@@ -15,6 +15,7 @@ import random
 from tensorflow.keras.optimizers import Adam
 
 
+
 def windowed_dataset(series, window_size=G.WINDOW_SIZE, batch_size=G.BATCH_SIZE, shuffle_buffer=G.SHUFFLE_BUFFER_SIZE):
    """
    We create time windows to create X and y features.
@@ -34,9 +35,6 @@ def evaluate_model(hyperparameters, X_train, y_train):
     ######
     #####
 
-
-
-
     hidden_layer_size, learning_rate, dropout_rate = hyperparameters
     model = build_model(hidden_layer_size, learning_rate, dropout_rate)
     model.fit(X_train, y_train epochs=200)
@@ -47,6 +45,30 @@ def generate_random_hyperparameters():
     hidden_layer_size = random.randint(1, 500)
     learning_rate = random.uniform(0.001, 0.1)
     dropout_rate = random.uniform(0, 0.2)
+    rpn_anchor_stride = random.randint(1,4)
+    rpn_nms_threshold = random.uniform(0.5,1)
+    rpn_train_anchors_per_image = np.random.choice([64, 128, 256, 512, 1024])
+    pre_nms_limit = random.uniform(1000,3000, dtype=int)
+    post_nms_rois_training = random.uniform(1000,3000, dtype=int)
+    post_nms_rois_inference = random.uniform(600,2000, dtype=int)
+    mean_pixel = np.array([random.uniform(115.0,130.0), 
+                                            random.uniform(110.0,125.0),
+                                            random.uniform(95.0,115.0)])
+    train_rois_per_image = random.uniform(150,500, dtype=int)
+    rois_positive_ratio = random.uniform(0.2,0.5)
+    max_gt_instances = random.uniform(70,400, dtype=int)
+    detection_max_instances = random.uniform(70,400, dtype=int)
+    detection_min_confidence = random.uniform(0.3,0.9)
+    detection_nms_threshold = random.uniform(0.2,0.7)
+    learning_momentum = random.uniform(0.75,0.95)
+    weight_decay = random.uniform(0.00007, 0.000125)
+    
+
+
+
+
+
+
     return hidden_layer_size, learning_rate, dropout_rate
 
 def mutate_hyperparameters(hyperparameters):

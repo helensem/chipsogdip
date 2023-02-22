@@ -25,21 +25,17 @@ from detectron2.engine import DefaultTrainer
 def config():
     cfg = get_cfg() 
     cfg.merge_from_file(model_zoo.get_config_file("COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml"))
-    #cfg.merge_from_file()
     cfg.DATALOADER.NUM_WORKERS = 2 
-    cfg.MODEL.MASK_ON = True
     cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml")
     cfg.DATASETS.TRAIN = ("damage_train")
     cfg.DATASETS.TEST = ()
-    cfg.SOLVER.IMS_PER_BATCH = 2
+    cfg.SOLVER.IMS_PER_BATCH = 1
     cfg.SOLVER.BASE_LR = 0.00025 
-    cfg.SOLVER.MAX_ITER = 40000
+    cfg.SOLVER.MAX_ITER = 48930 #1631 img* 30 epochs
     cfg.SOLVER.STEPS = [] 
     cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 128 
     cfg.MODEL.ROI_HEADS.NUM_CLASSES = 1 
-    cfg.OUTPUT_DIR = "/cluster/home/helensem/Master/output/resnet50"
-
-    #os.makedirs(cfg.OUTPUT_DIR, exist_ok=True)
+    cfg.OUTPUT_DIR = "/cluster/home/helensem/Master/output/run1/resnet50"
 
     return cfg 
 
@@ -64,12 +60,12 @@ def config():
 
 
 if __name__ == "__main__":
-    mode = "evaluate"
+    mode = "train"
     for d in ["train", "val"]:
         DatasetCatalog.register("damage_" + d, lambda d=d: load_damage_dicts(r"/cluster/home/helensem/Master/Labeled_pictures",d))
         MetadataCatalog.get("damage_" + d).set(thing_classes=["damage"])
 
-    damage_metadata = MetadataCatalog.get("damage_train")
+    #damage_metadata = MetadataCatalog.get("damage_train")
 
     
 
@@ -82,7 +78,6 @@ if __name__ == "__main__":
         #Set pretrained weights 
         cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml")
 
-        
         
         #TRAIN
         trainer = DefaultTrainer(cfg)
