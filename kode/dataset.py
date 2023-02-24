@@ -107,6 +107,18 @@ def load_damage_dicts(dataset_dir, subset): #? Possibly write this to a JSON-fil
     return dataset_dicts
 
 
+def load_mask(mask_dir):
+    mask = []
+    for f in next(os.walk(mask_dir))[2]:
+        if f.endswith('.png') and ('corrosion' or 'grov_merking' in f):
+            mask_path = os.path.join(mask_dir, f)
+            print(mask_path)
+            m = cv2.imread(mask_path)
+            m = m.astype(bool)
+            mask.append(m)
+    return mask.astype(bool)
+
+
 def load_sky_dicts(path, subset): 
     dataset_dicts = []
 

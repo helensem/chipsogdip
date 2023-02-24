@@ -15,6 +15,9 @@ yolo_model.train()
 image = cv2.imread("input_image.jpg")
 boxes = yolo_model.detect_bridges(image)
 
+
+
+
 rois = [] 
 for box in boxes: 
     x1, y1, x2, y2 = box 

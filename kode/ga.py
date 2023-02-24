@@ -41,10 +41,7 @@ def evaluate_model(hyperparameters, X_train, y_train):
     score = model.evaluate(X_train, y_train)
     return (score,)
 
-def generate_random_hyperparameters():
-    hidden_layer_size = random.randint(1, 500)
-    learning_rate = random.uniform(0.001, 0.1)
-    dropout_rate = random.uniform(0, 0.2)
+def generate_random_hyperparameters_full():
     rpn_anchor_stride = random.randint(1,4)
     rpn_nms_threshold = random.uniform(0.5,1)
     rpn_train_anchors_per_image = np.random.choice([64, 128, 256, 512, 1024])
@@ -62,23 +59,68 @@ def generate_random_hyperparameters():
     detection_nms_threshold = random.uniform(0.2,0.7)
     learning_momentum = random.uniform(0.75,0.95)
     weight_decay = random.uniform(0.00007, 0.000125)
+    rpn_class_loss = random.uniform(1,10)
+    rpn_bbox_loss = random.uniform(1,10)
+    mrcnn_class_loss = random.uniform(1,10)
+    mrcnn_bbox_loss = random.uniform(1,10)
+    mrcnn_mask_loss = random.uniform(1,10)
+    return  rpn_anchor_stride, rpn_nms_threshold, rpn_anchor_stride, rpn_train_anchors_per_image, pre_nms_limit, post_nms_rois_training, post_nms_rois_inference, mean_pixel, train_rois_per_image, rois_positive_ratio, max_gt_instances, detection_max_instances, detection_min_confidence, detection_nms_threshold, learning_momentum, rpn_class_loss, rpn_bbox_loss, mrcnn_class_loss, mrcnn_bbox_loss, mrcnn_mask_loss 
 
 
+def generate_random_hyperparameters(): #* For testing
+    learning_rate = random.uniform(0.001, 0.1)
+    return learning_rate
 
-
-
-
-
-    return hidden_layer_size, learning_rate, dropout_rate
 
 def mutate_hyperparameters(hyperparameters):
   mutation_probability = 0.05
   if random.uniform(0, 1) < mutation_probability:
-    hyperparameters['hidden_layer_size'] = int(random.randint(1, 500))
-  if random.uniform(0, 1) < mutation_probability:
     hyperparameters['learning_rate'] = random.uniform(0.001, 0.1)
-  if random.uniform(0, 1) < mutation_probability:
-    hyperparameters['dropout_rate'] = random.uniform(0, 0.2)
+
+def mutate_random_hyperparameters_full(hyperparameters):
+    mutation_probability = 0.05
+    if random.uniform(0, 1) < mutation_probability:
+        hyperparameters["rpn_anchor_stride"] = random.randint(1,4)
+    if random.uniform(0, 1) < mutation_probability:
+        hyperparameters["rpn_nms_threshold"] = random.uniform(0.5,1)
+    if random.uniform(0, 1) < mutation_probability:
+         hyperparameters["rpn_train_anchors_per_image"] = np.random.choice([64, 128, 256, 512, 1024])
+    if random.uniform(0, 1) < mutation_probability:
+         hyperparameters["pre_nms_limit"] = random.uniform(1000,3000, dtype=int)
+    if random.uniform(0, 1) < mutation_probability:
+         hyperparameters["post_nms_rois_training"] = random.uniform(1000,3000, dtype=int)
+    if random.uniform(0, 1) < mutation_probability:
+        hyperparameters["post_nms_rois_inference"] = random.uniform(600,2000, dtype=int)
+    if random.uniform(0, 1) < mutation_probability:
+         hyperparameters["mean_pixel"] = np.array([random.uniform(115.0,130.0), 
+                                            random.uniform(110.0,125.0),
+                                            random.uniform(95.0,115.0)])             
+    if random.uniform(0, 1) < mutation_probability:
+        hyperparameters["train_rois_per_image = random.uniform(150,500, dtype=int)"]
+    if random.uniform(0, 1) < mutation_probability:
+        hyperparameters["rois_positive_ratio"] = random.uniform(0.2,0.5)
+    if random.uniform(0, 1) < mutation_probability:
+        hyperparameters["max_gt_instances"] = random.uniform(70,400, dtype=int)
+    if random.uniform(0, 1) < mutation_probability:
+        hyperparameters["detection_max_instances"] = random.uniform(70,400, dtype=int)
+    if random.uniform(0, 1) < mutation_probability:
+        hyperparameters["detection_min_confidence"] = random.uniform(0.3,0.9)
+    if random.uniform(0, 1) < mutation_probability:
+        hyperparameters["detection_nms_threshold"] = random.uniform(0.2,0.7)
+    if random.uniform(0, 1) < mutation_probability:
+        hyperparameters["learning_momentum"] = random.uniform(0.75,0.95)
+    if random.uniform(0, 1) < mutation_probability:
+        hyperparameters["weight_decay"] = random.uniform(0.00007, 0.000125)
+    if random.uniform(0, 1) < mutation_probability:
+        hyperparameters["rpn_class_loss"] = random.uniform(1,10)
+    if random.uniform(0, 1) < mutation_probability:
+        hyperparameters["rpn_bbox_loss"] = random.uniform(1,10)
+    if random.uniform(0, 1) < mutation_probability:
+        hyperparameters["mrcnn_class_loss"] = random.uniform(1,10)
+    if random.uniform(0, 1) < mutation_probability:
+        hyperparameters["mrcnn_bbox_loss"] = random.uniform(1,10)
+    if random.uniform(0, 1) < mutation_probability:
+        hyperparameters["mrcnn_mask_loss"] = random.uniform(1,10)
 
 def build_model(hidden_layer_size, learning_rate, dropout_rate):
     ##### CHANGE HERE ##########
