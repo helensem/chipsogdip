@@ -34,7 +34,7 @@ def config():
     cfg.SOLVER.STEPS = [] 
     cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 128 
     cfg.MODEL.ROI_HEADS.NUM_CLASSES = 1 
-    cfg.OUTPUT_DIR = "/cluster/home/helensem/Master/output/run1/resnet50"
+    cfg.OUTPUT_DIR = "/cluster/home/helensem/Master/output/run1/resnet101"
 
     return cfg 
 
@@ -87,7 +87,8 @@ if __name__ == "__main__":
 
         predictor = DefaultPredictor(cfg) 
 
-        dataset_dicts = load_damage_dicts(r"/cluster/home/helensem/Master/chipsogdip/Labeled_pictures", "val")
+        dataset_dicts = load_damage_dicts(r"/cluster/home/helensem/Master/Labeled_pictures", "val")
+        os.makedirs(os.path.join(cfg.OUTPUT_DIR, "predictions"), exist_ok = True)
         for d in random.sample(dataset_dicts, 1): 
             im = cv2.imread(d["file_name"])
             outputs = predictor(im)
@@ -96,6 +97,9 @@ if __name__ == "__main__":
                             scale = 0.5,
                             instance_mode = ColorMode.IMAGE_BW)
             out = v.draw_instance_predictions(outputs["instances"].to("cpu"))
+
+            cv2.imwrite(f"cluster/h")
+
             cv2.imshow("image",out.get_image()[:,:,::-1])
             cv2.waitKey(0)
             cv2.destroyAllWindows()
