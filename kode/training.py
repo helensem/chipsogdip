@@ -22,40 +22,35 @@ from detectron2.data import build_detection_test_loader
 from detectron2.engine import DefaultTrainer
 
 
-def config():
+def config(learning_rate = 0.00025):
     cfg = get_cfg() 
-    cfg.merge_from_file(model_zoo.get_config_file("COCO-InstanceSegmentation/mask_rcnn_R_101_FPN_3x.yaml"))
+    cfg.merge_from_file(model_zoo.get_config_file("COCO-InstanceSegmentation/mask_rcnn_R_101_FPN_3x.yaml"))  #! MUST MATCH WITH TRAINING WEIGHTS
     cfg.DATALOADER.NUM_WORKERS = 2 
     cfg.DATASETS.TRAIN = ("damage_train")
     cfg.DATASETS.TEST = ()
     cfg.SOLVER.IMS_PER_BATCH = 1
-    cfg.SOLVER.BASE_LR = 0.00025 
+    cfg.SOLVER.BASE_LR = learning_rate #0.00025 
     cfg.SOLVER.MAX_ITER = 48930 #1631 img* 30 epochs
     cfg.SOLVER.STEPS = [] 
     cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 128 
     cfg.MODEL.ROI_HEADS.NUM_CLASSES = 1 
-    cfg.OUTPUT_DIR = "/cluster/home/helensem/Master/output/run1/resnet101"
+    cfg.OUTPUT_DIR = "/cluster/home/helensem/Master/output/run1/resnet101" #! MUST MATCH WITH CURRENT MODEL 
 
     return cfg 
 
 
 
-# def train(cfg_file): 
-#     cfg = get_cfg() 
-#     cfg.merge_from_file(model_zoo.get_config_file("COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml"))
-#     cfg.merge_from_file(cfg_file)
 
+def train(cfg): 
 
-#     #Set pretrained weights 
-#     cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml")
-#     cfg.DATASETS.TRAIN = ("damage_train")
-#     cfg.DATASETS.TEST = ()
-#     os.makedirs(cfg.OUTPUT_DIR, exist_ok=True)
+    #Set pretrained weights 
+    cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml") #! MUST MATCH WITH TRAINING WEIGHTS
+    os.makedirs(cfg.OUTPUT_DIR, exist_ok=True)
     
-#     #TRAIN
-#     trainer = DefaultTrainer(cfg)
-#     trainer.resume_or_load(resume=False)
-#     trainer.train()
+    #TRAIN
+    trainer = DefaultTrainer(cfg)
+    trainer.resume_or_load(resume=False)
+    trainer.train()
 
 
 if __name__ == "__main__":

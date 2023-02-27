@@ -23,12 +23,9 @@ def apply_inference(predictor, metadata, output_path, image_path=None): #*Saves 
                     instance_mode = ColorMode.IMAGE)
     out = v.draw_instance_predictions(results["instances"].to("cpu"))
     print(image_path)
-    image_id = os.path.dirname(image_path)
-    print(image_id)
-    full_output = os.path.join(output_path, image_id)
-    full_output = full_output +".jpg"
-    print(full_output)
-    cv2.imwrite(full_output, out.get_image()[:,:,::-1])
+    image_id = next(os.walk(os.path.dirname(image_path)))[2][0]
+    output = os.path.join(output_path, image_id)
+    cv2.imwrite(output, out.get_image()[:,:,::-1])
 
    
 def evaluate_model(predictor, val_dict):
@@ -58,7 +55,7 @@ def evaluate_model(predictor, val_dict):
     print("Mean IoU =", (mean_corr_iou + mean_bg_iou) / 2)
     with open("output.txt", "w") as f: 
         f.write(d["image_id"], "IoU =", (iou_corr, iou_bg), "\n", "Total mean values: \n", " Corrosion IoU: ", mean_corr_iou, "\n", "BG IoU=", mean_bg_iou, "\n", "Mean IoU =", (mean_corr_iou + mean_bg_iou) / 2)
-
+    return mean_corr_iou, mean_bg_iou, (mean_corr_iou + mean_bg_iou) / 2
 
 
 def combine_masks_to_one(masks):
