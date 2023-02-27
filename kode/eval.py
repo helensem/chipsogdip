@@ -10,7 +10,7 @@ from dataset import load_mask
 
 local_class_colors = [(0, 0, 0), (0, 0, 255)]
 mask_rcnn_colors = local_class_colors
-def apply_interference(predictor, metadata, output_path, image_path=None): #*Saves all val images 
+def apply_inference(predictor, metadata, output_path, image_path=None): #*Saves all val images 
     # Load image
     print(image_path)
     image = cv2.imread(image_path)
@@ -52,6 +52,10 @@ def evaluate_model(predictor, val_dict):
     print(" Corrosion IoU =", mean_corr_iou)
     print("BG IoU=", mean_bg_iou)
     print("Mean IoU =", (mean_corr_iou + mean_bg_iou) / 2)
+    with open("output.txt", "w") as f: 
+        f.write(d["image_id"], "IoU =", (iou_corr, iou_bg), "\n", "Total mean values: \n", " Corrosion IoU: ", mean_corr_iou, "\n", "BG IoU=", mean_bg_iou, "\n", "Mean IoU =", (mean_corr_iou + mean_bg_iou) / 2)
+
+
 
 def combine_masks_to_one(masks):
     combined_mask = masks[:, :, 0]

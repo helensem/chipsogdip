@@ -8,13 +8,13 @@ import os,json,cv2,random, sys
 #import skimage
 sys.path.append(r"/cluster/home/helensem/Master/chipsogdip/kode")
 from dataset import * 
+from eval import * 
 
 from detectron2 import model_zoo
 from detectron2.engine import DefaultPredictor
 from detectron2.config import get_cfg 
 from detectron2.utils.visualizer import Visualizer
 from detectron2.data import MetadataCatalog, DatasetCatalog
-from detectron2.structures import BoxMode 
 from detectron2.utils.visualizer import ColorMode 
 from detectron2.evaluation import COCOEvaluator, inference_on_dataset 
 from detectron2.data import build_detection_test_loader 
@@ -59,7 +59,7 @@ def config():
 
 
 if __name__ == "__main__":
-    mode = "train"
+    mode = "inference"
     for d in ["train", "val"]:
         DatasetCatalog.register("damage_" + d, lambda d=d: load_damage_dicts(r"/cluster/home/helensem/Master/Labeled_pictures",d))
         MetadataCatalog.get("damage_" + d).set(thing_classes=["damage"])
@@ -80,6 +80,18 @@ if __name__ == "__main__":
         trainer.resume_or_load(resume=False)
         trainer.train() 
     
+    elif mode == "inference": 
+        cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
+        cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.7
+
+        predictor = DefaultPredictor(cfg)
+        output_dir = os.path.join(cfg.OUTPUT_DIR, "images")
+        os.makedirs(output_dir, exist_ok=True)
+
+        val_dict = load_damage_dicts(r"/cluster/home/helensem/Master/Labeled_pictures", "val")
+        for d in val_dict:
+            apply_inference(predictor, damage_metadata, output_dir,d["file_name"])
+
     elif mode == "predict":
 
         cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
@@ -98,13 +110,11 @@ if __name__ == "__main__":
                             instance_mode = ColorMode.IMAGE_BW)
             out = v.draw_instance_predictions(outputs["instances"].to("cpu"))
 
-            cv2.imwrite(f"cluster/h")
-
             cv2.imshow("image",out.get_image()[:,:,::-1])
             cv2.waitKey(0)
             cv2.destroyAllWindows()
     
-    elif mode == "evaluate":
+    elif mode == "coco_evaluate":
 
         cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
         cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.7
@@ -115,6 +125,15 @@ if __name__ == "__main__":
         val_loader = build_detection_test_loader(cfg, "damage_val")
         print(inference_on_dataset(predictor.model, val_loader, evaluator))
     
+    elif mode == "evaluate":
+        val_dict = load_damage_dicts(r"/cluster/home/helensem/Master/Labeled_pictures", "val")
+        cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
+        cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.7
+
+        predictor = DefaultPredictor(cfg)
+
+        evaluate_model(predictor, val_dict) 
+
     else: 
         print("No mode chosen")
 
