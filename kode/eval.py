@@ -38,7 +38,7 @@ def evaluate_model(predictor, val_dict):
         mask_gt = load_mask(os.path.join(image_dir, "masks"))
         mask_gt = combine_masks_to_one(mask_gt)
         outputs = predictor(image)
-        predicted_masks = outputs['instances'].pred_masks.numpy()
+        predicted_masks = outputs['instances'].to("cpu").pred_masks.numpy()
         if predicted_masks.shape[-1] == 0:
             continue
         mask_pred = combine_masks_to_one(predicted_masks)
