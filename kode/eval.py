@@ -34,6 +34,7 @@ def evaluate_model(predictor, val_dict):
     iou_bg_list = []
     for d in val_dict: 
         image = cv2.imread(d["file_name"])
+        print(image.shape)
         image_dir = os.path.dirname(d["file_name"])
         mask_gt = load_mask(os.path.join(image_dir, "masks"))
         mask_gt = combine_masks_to_one(mask_gt)
