@@ -27,6 +27,7 @@ def apply_inference(predictor, metadata, output_path, image_path=None): #*Saves 
     print(image_id)
     full_output = os.path.join(output_path, image_id)
     full_output = full_output +".jpg"
+    print(full_output)
     cv2.imwrite(full_output, out.get_image()[:,:,::-1])
 
    
