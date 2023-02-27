@@ -114,6 +114,7 @@ def load_mask(mask_dir):
             m = cv2.imread(mask_path)
             m = m.astype(bool)
             mask.append(m)
+    mask = np.stack(mask, axis=-1)
     return mask.astype(bool)
 
 
