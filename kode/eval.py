@@ -23,6 +23,7 @@ def apply_inference(predictor, metadata, output_path, image_path=None): #*Saves 
                     instance_mode = ColorMode.IMAGE)
     out = v.draw_instance_predictions(results["instances"].to("cpu"))
     image_id = next(os.walk(image_path))[2]
+    print(image_id)
     full_output = os.path.join(output_path, image_id)
     cv2.imwrite(full_output, out.get_image()[:,:,::-1])
 
