@@ -61,7 +61,7 @@ def load_damage_dicts(dataset_dir, subset): #? Possibly write this to a JSON-fil
     assert subset in ["train", "val"]
     dataset_dir = os.path.join(dataset_dir, subset)
     image_ids = next(os.walk(dataset_dir))[1]
-    idx = 0
+    #idx = 0
     for image_id in image_ids:
 
         image_dir = os.path.join(dataset_dir, image_id)
@@ -70,16 +70,16 @@ def load_damage_dicts(dataset_dir, subset): #? Possibly write this to a JSON-fil
         file_name = file_names[0]
         
         image_path = os.path.join(image_dir, file_name)
-        print(image_path)
+        #print(image_path)
         height, width = cv2.imread(image_path).shape[:2]
-        record = create_image_annotation(image_path, width, height, idx)
-        idx +=1
+        record = create_image_annotation(image_path, width, height, image_id)
+        #idx +=1
         mask_dir = os.path.join(image_dir, 'masks')
         objs = []
         for f in next(os.walk(mask_dir))[2]:
             if f.endswith('.png') and ('corrosion' or 'grov_merking' in f):
                 mask_path = os.path.join(mask_dir, f)
-                print(mask_path)
+                #print(mask_path)
                 mask = cv2.imread(mask_path)
                 if mask is None: 
                     print("Couldn't retrieve mask: ", mask_path)
@@ -111,7 +111,7 @@ def load_mask(mask_dir):
         if f.endswith('.png') and ('corrosion' or 'grov_merking' in f):
             mask_path = os.path.join(mask_dir, f)
             print(mask_path)
-            m = cv2.imread(mask_path)
+            m = cv2.imread(mask_path, cv2.IMREAD_GRAYSCALE)
             m = m.astype(bool)
             mask.append(m)
     mask = np.stack(mask, axis=-1)
