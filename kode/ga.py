@@ -13,6 +13,13 @@ from tensorflow.keras.layers import Dense, LSTM, Dropout
 import numpy as np
 import random
 from tensorflow.keras.optimizers import Adam
+import sys 
+sys.path.append("cluster/home/helensem/Master/chipsogdip/kode")
+from eval import evaluate_model
+from training import config, train
+from dataset import load_damage_dicts
+import os
+from detectron2.engine import DefaultPredictor 
 
 
 
@@ -29,16 +36,28 @@ def windowed_dataset(series, window_size=G.WINDOW_SIZE, batch_size=G.BATCH_SIZE,
    dataset = dataset.batch(batch_size).prefetch(1)
    return dataset
 
-def evaluate_model(hyperparameters, X_train, y_train):
+def evaluate_model(hyperparameters, val_dict):
     #####
     ##### CHANGE HERE #####
     ######
     #####
 
-    hidden_layer_size, learning_rate, dropout_rate = hyperparameters
-    model = build_model(hidden_layer_size, learning_rate, dropout_rate)
-    model.fit(X_train, y_train, epochs=200)
-    score = model.evaluate(X_train, y_train)
+    learning_rate = hyperparameters
+    cfg = config(learning_rate)
+
+    #TRAIN
+    train(cfg)
+
+    #EVALUATE 
+    val_dict = load_damage_dicts(r"/cluster/home/helensem/Master/Labeled_pictures", "val")
+    cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
+    cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.7
+
+    predictor = DefaultPredictor(cfg)
+
+    corr_iou, bg_iou, mean_iou = evaluate_model(predictor, val_dict) 
+    score = mean_iou 
+
     return (score,)
 
 def generate_random_hyperparameters_full():
@@ -122,28 +141,28 @@ def mutate_random_hyperparameters_full(hyperparameters):
     if random.uniform(0, 1) < mutation_probability:
         hyperparameters["mrcnn_mask_loss"] = random.uniform(1,10)
 
-def build_model(hidden_layer_size, learning_rate, dropout_rate):
-    ##### CHANGE HERE ##########
-    print (hidden_layer_size, learning_rate, dropout_rate)
-    if dropout_rate > 1 :
-        dropout_rate = 0
-    if hidden_layer_size < 1 :
-        hidden_layer_size = 1
-    if learning_rate > 0.5:
-        learning_rate = 0.01
-    #it seems that sometimes, the values are sent in the wrong order so I used int an float to respect the type
-    model = tf.keras.Sequential()
-    #input_shape = (batch_size, time_steps, features)
-    model.add(LSTM(units=int(hidden_layer_size), input_shape=(5, 1)))
-    model.add(Dropout(float(dropout_rate)))
-    model.add(Dense(1))
-    optimizer = Adam(learning_rate=float(learning_rate))
-    model.compile(loss='mean_squared_error', optimizer=optimizer)
-    return model
+# def build_model(hidden_layer_size, learning_rate, dropout_rate):
+#     ##### CHANGE HERE ##########
+#     print (hidden_layer_size, learning_rate, dropout_rate)
+#     if dropout_rate > 1 :
+#         dropout_rate = 0
+#     if hidden_layer_size < 1 :
+#         hidden_layer_size = 1
+#     if learning_rate > 0.5:
+#         learning_rate = 0.01
+#     #it seems that sometimes, the values are sent in the wrong order so I used int an float to respect the type
+#     model = tf.keras.Sequential()
+#     #input_shape = (batch_size, time_steps, features)
+#     model.add(LSTM(units=int(hidden_layer_size), input_shape=(5, 1)))
+#     model.add(Dropout(float(dropout_rate)))
+#     model.add(Dense(1))
+#     optimizer = Adam(learning_rate=float(learning_rate))
+#     model.compile(loss='mean_squared_error', optimizer=optimizer)
+#     return model
 
 
 ###### CHANGE ########
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=50)
+#X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=50)
 
 creator.create("FitnessMin", base.Fitness, weights=(-1.0,))
 creator.create("Individual", list, fitness=creator.FitnessMin)

@@ -13,8 +13,6 @@ from detectron2.config import get_cfg
 from detectron2.utils.visualizer import Visualizer
 from detectron2.data import MetadataCatalog, DatasetCatalog
 from detectron2.structures import BoxMode 
-np.set_printoptions(threshold=1000)
-
 from PIL import ImageFile
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
@@ -116,6 +114,7 @@ def load_mask(mask_dir):
             m = cv2.imread(mask_path)
             m = m.astype(bool)
             mask.append(m)
+    mask = np.stack(mask, axis=-1)
     return mask.astype(bool)
 
 
