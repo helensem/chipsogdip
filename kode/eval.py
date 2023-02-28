@@ -32,6 +32,7 @@ def evaluate_model(predictor, val_dict):
     #image_ids = dataset_val.image_ids
     iou_corr_list = []
     iou_bg_list = []
+    iou_string = ""
     for d in val_dict: 
         image = cv2.imread(d["file_name"])
         image_dir = os.path.dirname(d["file_name"])
@@ -46,6 +47,8 @@ def evaluate_model(predictor, val_dict):
         iou_corr = compute_overlaps_masks(mask_gt, mask_pred)[0][0]
         iou_bg = compute_overlaps_masks(mask_gt, mask_pred, BG=True)[0][0]
         print(d["image_id"], "IoU =", (iou_corr, iou_bg))
+        string = d["image_id"] + " IoU = " + str((iou_corr, iou_bg) +"\n")
+        iou_string+= string
         iou_corr_list.append(iou_corr)
         iou_bg_list.append(iou_bg)
     mean_corr_iou = sum(iou_corr_list) / len(iou_corr_list)
@@ -54,8 +57,9 @@ def evaluate_model(predictor, val_dict):
     print(" Corrosion IoU =", mean_corr_iou)
     print("BG IoU=", mean_bg_iou)
     print("Mean IoU =", (mean_corr_iou + mean_bg_iou) / 2)
+    iou_string += "Total mean values: \n" + " Corrosion IoU: " + str(mean_corr_iou) + "\n" + "BG IoU=" + str(mean_bg_iou) + "\n" + "Mean IoU =" + str((mean_corr_iou + mean_bg_iou) / 2)
     with open("output.txt", "w") as f: 
-        f.write(d["image_id"], "IoU =", (iou_corr, iou_bg), "\n", "Total mean values: \n", " Corrosion IoU: ", mean_corr_iou, "\n", "BG IoU=", mean_bg_iou, "\n", "Mean IoU =", (mean_corr_iou + mean_bg_iou) / 2)
+        f.write()
     return mean_corr_iou, mean_bg_iou, (mean_corr_iou + mean_bg_iou) / 2
 
 
