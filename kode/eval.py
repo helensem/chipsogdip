@@ -10,9 +10,8 @@ from dataset import load_mask
 
 local_class_colors = [(0, 0, 0), (0, 0, 255)]
 mask_rcnn_colors = local_class_colors
-def apply_inference(predictor, metadata, output_path, image_path=None): #*Saves all val images 
+def apply_inference(predictor, metadata, output_path, data, image_path=None): #*Saves all val images and compares to original image 
     # Load image
-    print(image_path)
     image = cv2.imread(image_path)
     # Run detection
     results = predictor(image)
@@ -22,10 +21,16 @@ def apply_inference(predictor, metadata, output_path, image_path=None): #*Saves 
                     scale = 0.5,
                     instance_mode = ColorMode.IMAGE)
     out = v.draw_instance_predictions(results["instances"].to("cpu"))
-    print(image_path)
+
     image_id = next(os.walk(os.path.dirname(image_path)))[2][0]
     output = os.path.join(output_path, image_id)
-    cv2.imwrite(output, out.get_image()[:,:,::-1])
+
+
+    out_truth = v.draw_dataset_dict(data)
+    cv2.imshow("imageout", out_truth.get_image()[:,:,::-1])
+
+    vis = np.concatenate(out.get_image()[:,:,::-1], out_truth.get_image()[:,:,::-1])
+    cv2.imwrite(output, vis)
 
    
 def evaluate_model(predictor, val_dict):
@@ -35,15 +40,18 @@ def evaluate_model(predictor, val_dict):
     iou_string = ""
     for d in val_dict: 
         image = cv2.imread(d["file_name"])
-        print(image.shape)
         image_dir = os.path.dirname(d["file_name"])
+
         mask_gt = load_mask(os.path.join(image_dir, "masks"))
         mask_gt = combine_masks_to_one(mask_gt)
+
         outputs = predictor(image)
+
         predicted_masks = outputs['instances'].to("cpu").pred_masks.numpy()
         predicted_masks = predicted_masks.T
         if predicted_masks.shape[-1] == 0:
             continue
+
         mask_pred = combine_masks_to_one(predicted_masks)
         iou_corr = compute_overlaps_masks(mask_gt, mask_pred)[0][0]
         iou_bg = compute_overlaps_masks(mask_gt, mask_pred, BG=True)[0][0]

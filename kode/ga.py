@@ -36,7 +36,7 @@ def windowed_dataset(series, window_size=G.WINDOW_SIZE, batch_size=G.BATCH_SIZE,
    dataset = dataset.batch(batch_size).prefetch(1)
    return dataset
 
-def evaluate_model(hyperparameters, val_dict):
+def evaluate(hyperparameters):
     #####
     ##### CHANGE HERE #####
     ######
@@ -56,7 +56,7 @@ def evaluate_model(hyperparameters, val_dict):
     predictor = DefaultPredictor(cfg)
 
     corr_iou, bg_iou, mean_iou = evaluate_model(predictor, val_dict) 
-    score = mean_iou 
+    score = 1 - mean_iou 
 
     return (score,)
 
@@ -171,7 +171,7 @@ toolbox = base.Toolbox()
 toolbox.register("hyperparameters", generate_random_hyperparameters)
 toolbox.register("individual", tools.initIterate, creator.Individual, toolbox.hyperparameters)
 toolbox.register("population", tools.initRepeat, list, toolbox.individual)
-toolbox.register("evaluate", evaluate_model, X_train=X_train, y_train=y_train)
+toolbox.register("evaluate", evaluate)
 
 toolbox.register("mate", tools.cxTwoPoint)
 toolbox.register("mutate", tools.mutShuffleIndexes, indpb=0.05)
