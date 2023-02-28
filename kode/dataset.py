@@ -70,7 +70,7 @@ def load_damage_dicts(dataset_dir, subset): #? Possibly write this to a JSON-fil
         file_name = file_names[0]
         
         image_path = os.path.join(image_dir, file_name)
-        print(image_path)
+        #print(image_path)
         height, width = cv2.imread(image_path).shape[:2]
         record = create_image_annotation(image_path, width, height, image_id)
         #idx +=1
@@ -113,7 +113,6 @@ def load_mask(mask_dir):
             print(mask_path)
             m = cv2.imread(mask_path, cv2.IMREAD_GRAYSCALE)
             m = m.astype(bool)
-
             mask.append(m)
     mask = np.stack(mask, axis=-1)
     return mask.astype(bool)
