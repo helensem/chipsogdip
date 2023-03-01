@@ -22,18 +22,18 @@ from detectron2.engine import DefaultPredictor
 
 
 
-def windowed_dataset(series, window_size=G.WINDOW_SIZE, batch_size=G.BATCH_SIZE, shuffle_buffer=G.SHUFFLE_BUFFER_SIZE):
-   """
-   We create time windows to create X and y features.
-   For example, if we choose a window of 30, we will create a dataset formed by 30 points as X
-   """
-   dataset = tf.data.Dataset.from_tensor_slices(series)
-   dataset = dataset.window(window_size + 1, shift=1, drop_remainder=True)
-   dataset = dataset.flat_map(lambda window: window.batch(window_size + 1))
-   dataset = dataset.shuffle(shuffle_buffer)
-   dataset = dataset.map(lambda window: (window[:-1], window[-1]))
-   dataset = dataset.batch(batch_size).prefetch(1)
-   return dataset
+# def windowed_dataset(series, window_size=G.WINDOW_SIZE, batch_size=G.BATCH_SIZE, shuffle_buffer=G.SHUFFLE_BUFFER_SIZE):
+#    """
+#    We create time windows to create X and y features.
+#    For example, if we choose a window of 30, we will create a dataset formed by 30 points as X
+#    """
+#    dataset = tf.data.Dataset.from_tensor_slices(series)
+#    dataset = dataset.window(window_size + 1, shift=1, drop_remainder=True)
+#    dataset = dataset.flat_map(lambda window: window.batch(window_size + 1))
+#    dataset = dataset.shuffle(shuffle_buffer)
+#    dataset = dataset.map(lambda window: (window[:-1], window[-1]))
+#    dataset = dataset.batch(batch_size).prefetch(1)
+#    return dataset
 
 def evaluate(hyperparameters):
     #####
