@@ -21,12 +21,16 @@ def apply_inference(predictor, metadata, output_path, data, image_path=None): #*
                     scale = 0.5,
                     instance_mode = ColorMode.IMAGE)
     out = v.draw_instance_predictions(results["instances"].to("cpu"))
+    v2 = Visualizer(image[:, :, ::-1],
+                    metadata,
+                    scale = 0.5,
+                    instance_mode = ColorMode.IMAGE)
 
     image_id = next(os.walk(os.path.dirname(image_path)))[2][0]
     output = os.path.join(output_path, image_id)
 
 
-    out_truth = v.draw_dataset_dict(data)
+    out_truth = v2.draw_dataset_dict(data)
     #cv2.imshow("imageout", out_truth.get_image()[:,:,::-1])
 
     vis = np.concatenate((out.get_image()[:,:,::-1], out_truth.get_image()[:,:,::-1]))
