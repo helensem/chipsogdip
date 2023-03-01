@@ -17,6 +17,44 @@ from PIL import ImageFile
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 
+##### Creating training images for GA ######### 
+
+def ga_train_sets():
+    os.makedirs(r"/cluster/home/helensem/Master/data/set1/train", exist_ok=True)
+    os.makedirs(r"/cluster/home/helensem/Master/data/set2/train", exist_ok=True)
+    os.makedirs(r"/cluster/home/helensem/Master/data/set3/train", exist_ok=True)
+    
+    image_ids = next(os.walk(r"/cluster/home/helensem/Master/Labeled_pictures/train"))[1]
+    set1 = []
+    set2 = []
+    set3 = []
+
+    for i in range(10): 
+        idx = random.uniform(0,len(image_ids), dtype=int)
+        set1.append(image_ids[idx])
+        del image_ids[idx]
+        idx = random.uniform(0,len(image_ids), dtype=int)
+        set2.append(image_ids[idx])
+        del image_ids[idx]
+        idx = random.uniform(0,len(image_ids), dtype=int)
+        set3.append(image_ids[idx])
+        del image_ids[idx]
+    
+    print(set1)
+    print(set2)
+    print(set3)
+
+    for image in set1: 
+        source = os.path.join(r"/cluster/home/helensem/Master/Labeled_pictures/train", image)
+        destination = r"/cluster/home/helensem/Master/data/set1/train"
+    
+
+
+
+
+
+
+
 ####### Creating COCO-format from png masks ###########
 
 def find_contours(sub_mask):

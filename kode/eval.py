@@ -29,7 +29,7 @@ def apply_inference(predictor, metadata, output_path, data, image_path=None): #*
     out_truth = v.draw_dataset_dict(data)
     #cv2.imshow("imageout", out_truth.get_image()[:,:,::-1])
 
-    vis = np.concatenate(out.get_image()[:,:,::-1], out_truth.get_image()[:,:,::-1])
+    vis = np.concatenate((out.get_image()[:,:,::-1], out_truth.get_image()[:,:,::-1]))
     cv2.imwrite(output, vis)
 
    
