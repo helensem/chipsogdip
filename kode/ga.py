@@ -190,6 +190,8 @@ LAMBDA = 5
 CXPB = 0.5
 MUTPB = 0.1
 
+print(toolbox.population)
+
 pop = toolbox.population(n=MU)
 hof = tools.HallOfFame(1)
 stats = tools.Statistics(lambda ind: ind.fitness.values)
