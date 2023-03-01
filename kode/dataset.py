@@ -30,7 +30,7 @@ def ga_train_sets():
     set2 = []
     set3 = []
 
-    for i in range(10): 
+    for i in range(200): 
         idx = random.randint(0,len(image_ids))
         set1.append(image_ids[idx])
         del image_ids[idx]
