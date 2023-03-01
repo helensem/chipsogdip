@@ -47,21 +47,21 @@ def ga_train_sets():
 
     for image_id in set1: 
         image_path = os.path.join(r"/cluster/home/helensem/Master/Labeled_pictures/train", image_id)
-        image = next(os.walk(image_path))[2]
+        image = next(os.walk(image_path))[2][0]
         source = os.path.join(image_path, image)
         destination = os.path.join(r"/cluster/home/helensem/Master/data/set1/train", image)
         shutil.copy(source, destination) 
     
     for image_id in set2: 
         image_path = os.path.join(r"/cluster/home/helensem/Master/Labeled_pictures/train", image_id)
-        image = next(os.walk(image_path))[2]
+        image = next(os.walk(image_path))[2][0]
         source = os.path.join(image_path, image)
         destination = os.path.join(r"/cluster/home/helensem/Master/data/set2/train", image)
         shutil.copy(source, destination)     
 
     for image_id in set3: 
         image_path = os.path.join(r"/cluster/home/helensem/Master/Labeled_pictures/train", image_id)
-        image = next(os.walk(image_path))[2]
+        image = next(os.walk(image_path))[2][0]
         source = os.path.join(image_path, image)
         destination = os.path.join(r"/cluster/home/helensem/Master/data/set3/train", image)
         shutil.copy(source, destination)  
