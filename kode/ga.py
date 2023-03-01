@@ -4,21 +4,20 @@ from deap import creator
 from deap import tools
 import deap.algorithms
 
-import tensorflow as tf
-from sklearn.preprocessing import MinMaxScaler
+
 import dask.dataframe as dd
 import pandas as pd
-from sklearn.model_selection import train_test_split
-from tensorflow.keras.layers import Dense, LSTM, Dropout
+
 import numpy as np
 import random
-from tensorflow.keras.optimizers import Adam
+
 import sys 
 sys.path.append("cluster/home/helensem/Master/chipsogdip/kode")
 from eval import evaluate_model
-from training import config, train
+from training import config, ga_train
 from dataset import load_damage_dicts
 import os
+
 from detectron2.engine import DefaultPredictor 
 
 
@@ -42,14 +41,15 @@ def evaluate(hyperparameters):
     ######
     #####
 
+    
+    dataset = r"/cluster/home/helensem/Master/data/set1"
     learning_rate = hyperparameters
-    cfg = config(learning_rate)
+    cfg = ga_train(learning_rate, dataset)
 
     #TRAIN
-    train(cfg)
 
     #EVALUATE 
-    val_dict = load_damage_dicts(r"/cluster/home/helensem/Master/Labeled_pictures", "val")
+    val_dict = load_damage_dicts(dataset, "val")
     cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
     cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.7
 

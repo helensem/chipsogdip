@@ -22,14 +22,16 @@ from detectron2.data import build_detection_test_loader
 from detectron2.engine import DefaultTrainer
 
 
-def config(learning_rate = 0.00025):
+def config():
+    """
+    Standard config """
     cfg = get_cfg() 
     cfg.merge_from_file(model_zoo.get_config_file("COCO-InstanceSegmentation/mask_rcnn_R_101_FPN_3x.yaml"))  #! MUST MATCH WITH TRAINING WEIGHTS
     cfg.DATALOADER.NUM_WORKERS = 2 
     cfg.DATASETS.TRAIN = ("damage_train")
     cfg.DATASETS.TEST = ()
     cfg.SOLVER.IMS_PER_BATCH = 1
-    cfg.SOLVER.BASE_LR = learning_rate #0.00025 
+    cfg.SOLVER.BASE_LR = 0.00025 
     cfg.SOLVER.MAX_ITER = 48930 #1631 img* 30 epochs
     cfg.SOLVER.STEPS = [] 
     cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 128 
@@ -38,12 +40,26 @@ def config(learning_rate = 0.00025):
 
     return cfg 
 
+def ga_train(dataset, learning_rate = 0.00025):
+    """ For training with the genetic algorithm, pa
+    """
+    for d in ["train", "val"]:
+        DatasetCatalog.register("ga_damage_" + d, lambda d=d: load_damage_dicts(dataset,d))
+        MetadataCatalog.get("ga_damage_" + d).set(thing_classes=["damage"])
+    
+    cfg = get_cfg() 
+    cfg.merge_from_file(model_zoo.get_config_file("COCO-InstanceSegmentation/mask_rcnn_R_101_FPN_3x.yaml"))  #! MUST MATCH WITH TRAINING WEIGHTS
+    cfg.DATALOADER.NUM_WORKERS = 2 
+    cfg.DATASETS.TRAIN = ("ga_damage_train")
+    cfg.DATASETS.TEST = ()
+    cfg.SOLVER.IMS_PER_BATCH = 1
+    cfg.SOLVER.BASE_LR = learning_rate #0.00025 
+    cfg.SOLVER.MAX_ITER = 200*30 #1631 img* 30 epochs
+    cfg.SOLVER.STEPS = [] 
+    cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 128 
+    cfg.MODEL.ROI_HEADS.NUM_CLASSES = 1 
+    cfg.OUTPUT_DIR = "/cluster/home/helensem/Master/output/run1/resnet101" #! MUST MATCH WITH CURRENT MODEL 
 
-
-
-def train(cfg): 
-
-    #Set pretrained weights 
     cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml") #! MUST MATCH WITH TRAINING WEIGHTS
     os.makedirs(cfg.OUTPUT_DIR, exist_ok=True)
     
@@ -51,6 +67,9 @@ def train(cfg):
     trainer = DefaultTrainer(cfg)
     trainer.resume_or_load(resume=False)
     trainer.train()
+    return cfg
+
+
 
 
 if __name__ == "__main__":

@@ -21,6 +21,8 @@ def apply_inference(predictor, metadata, output_path, data, image_path=None): #*
                     scale = 0.5,
                     instance_mode = ColorMode.IMAGE)
     out = v.draw_instance_predictions(results["instances"].to("cpu"))
+
+    # Dont know how to reset the image without predictions, so create new visualizer 
     v2 = Visualizer(image[:, :, ::-1],
                     metadata,
                     scale = 0.5,
@@ -37,7 +39,7 @@ def apply_inference(predictor, metadata, output_path, data, image_path=None): #*
     cv2.imwrite(output, vis)
 
    
-def evaluate_model(predictor, val_dict):
+def evaluate_model(predictor, val_dict, write_to_file = False):
     #image_ids = dataset_val.image_ids
     iou_corr_list = []
     iou_bg_list = []
@@ -70,9 +72,10 @@ def evaluate_model(predictor, val_dict):
     print(" Corrosion IoU =", mean_corr_iou)
     print("BG IoU=", mean_bg_iou)
     print("Mean IoU =", (mean_corr_iou + mean_bg_iou) / 2)
-    iou_string += "Total mean values: \n" + " Corrosion IoU: " + str(mean_corr_iou) + "\n" + "BG IoU=" + str(mean_bg_iou) + "\n" + "Mean IoU =" + str((mean_corr_iou + mean_bg_iou) / 2)
-    with open("output.txt", "w") as f: 
-        f.write()
+    if write_to_file:
+        iou_string += "Total mean values: \n" + " Corrosion IoU: " + str(mean_corr_iou) + "\n" + "BG IoU=" + str(mean_bg_iou) + "\n" + "Mean IoU =" + str((mean_corr_iou + mean_bg_iou) / 2)
+        with open("output.txt", "w") as f: 
+            f.write()
     return mean_corr_iou, mean_bg_iou, (mean_corr_iou + mean_bg_iou) / 2
 
 
