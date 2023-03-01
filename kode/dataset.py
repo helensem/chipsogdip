@@ -15,6 +15,7 @@ from detectron2.data import MetadataCatalog, DatasetCatalog
 from detectron2.structures import BoxMode 
 from PIL import ImageFile
 ImageFile.LOAD_TRUNCATED_IMAGES = True
+import shutil
 
 
 ##### Creating training images for GA ######### 
@@ -44,10 +45,26 @@ def ga_train_sets():
     print(set2)
     print(set3)
 
-    for image in set1: 
-        source = os.path.join(r"/cluster/home/helensem/Master/Labeled_pictures/train", image)
-        destination = r"/cluster/home/helensem/Master/data/set1/train"
+    for image_id in set1: 
+        image_path = os.path.join(r"/cluster/home/helensem/Master/Labeled_pictures/train", image_id)
+        image = next(os.walk(image_path))[2]
+        source = os.path.join(image_path, image)
+        destination = os.path.join(r"/cluster/home/helensem/Master/data/set1/train", image)
+        shutil.copy(source, destination) 
     
+    for image_id in set2: 
+        image_path = os.path.join(r"/cluster/home/helensem/Master/Labeled_pictures/train", image_id)
+        image = next(os.walk(image_path))[2]
+        source = os.path.join(image_path, image)
+        destination = os.path.join(r"/cluster/home/helensem/Master/data/set2/train", image)
+        shutil.copy(source, destination)     
+
+    for image_id in set3: 
+        image_path = os.path.join(r"/cluster/home/helensem/Master/Labeled_pictures/train", image_id)
+        image = next(os.walk(image_path))[2]
+        source = os.path.join(image_path, image)
+        destination = os.path.join(r"/cluster/home/helensem/Master/data/set3/train", image)
+        shutil.copy(source, destination)  
 
 
 
@@ -208,22 +225,24 @@ def get_jason_dict(subset="train"):
 
 if __name__ == "__main__": 
 
+    ga_train_sets()
+
     #print(load_damage_dicts(r"/cluster/home/helensem/Master/data", "train"))
 
     #Load data to detectron 
-    for d in ["train", "val"]:
-        DatasetCatalog.register("damage_" + d, lambda d=d: load_damage_dicts(r"/cluster/home/helensem/Master/data", d))
-        MetadataCatalog.get("damage_" + d).set(thing_classes=["sky"])
+    # for d in ["train", "val"]:
+    #     DatasetCatalog.register("damage_" + d, lambda d=d: load_damage_dicts(r"/cluster/home/helensem/Master/data", d))
+    #     MetadataCatalog.get("damage_" + d).set(thing_classes=["sky"])
 
-    damage_metadata = MetadataCatalog.get("damage_train")
-    dataset_dicts = load_damage_dicts(r"/cluster/home/helensem/Master/data", "train")
+    # damage_metadata = MetadataCatalog.get("damage_train")
+    # dataset_dicts = load_damage_dicts(r"/cluster/home/helensem/Master/data", "train")
 
-    #Visualization 
-    for d in random.sample(dataset_dicts, 1): 
-       img = cv2.imread(d["file_name"])
-       visualizer = Visualizer(img[:,:,::-1], metadata = damage_metadata, scale =0.5)
-       out = visualizer.draw_dataset_dict(d)
-       cv2.imshow("imageout", out.get_image()[:,:,::-1])
-       cv2.waitKey(0)
-       # closing all open windows
-       cv2.destroyAllWindows()
+    # #Visualization 
+    # for d in random.sample(dataset_dicts, 1): 
+    #    img = cv2.imread(d["file_name"])
+    #    visualizer = Visualizer(img[:,:,::-1], metadata = damage_metadata, scale =0.5)
+    #    out = visualizer.draw_dataset_dict(d)
+    #    cv2.imshow("imageout", out.get_image()[:,:,::-1])
+    #    cv2.waitKey(0)
+    #    # closing all open windows
+    #    cv2.destroyAllWindows()
