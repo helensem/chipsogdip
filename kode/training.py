@@ -73,7 +73,7 @@ def ga_train(dataset, learning_rate = 0.00025):
 
 
 if __name__ == "__main__":
-    mode = "inference"
+    mode = "evaluation"
     for d in ["train", "val"]:
         DatasetCatalog.register("damage_" + d, lambda d=d: load_damage_dicts(r"/cluster/home/helensem/Master/Labeled_pictures",d))
         MetadataCatalog.get("damage_" + d).set(thing_classes=["damage"])
