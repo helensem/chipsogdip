@@ -74,7 +74,7 @@ def evaluate_model(predictor, val_dict, write_to_file = False):
     print("Mean IoU =", (mean_corr_iou + mean_bg_iou) / 2)
     if write_to_file:
         iou_string += "Total mean values: \n" + " Corrosion IoU: " + str(mean_corr_iou) + "\n" + "BG IoU=" + str(mean_bg_iou) + "\n" + "Mean IoU =" + str((mean_corr_iou + mean_bg_iou) / 2)
-        with open("output.txt", "w") as f: 
+        with open(r"/cluster/home/helensem/Maser/output/run1/resnet101/output.txt", "w") as f: 
             f.write()
     return mean_corr_iou, mean_bg_iou, (mean_corr_iou + mean_bg_iou) / 2
 
