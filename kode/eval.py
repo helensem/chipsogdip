@@ -62,7 +62,7 @@ def evaluate_model(predictor, val_dict, write_to_file = False):
         iou_corr = compute_overlaps_masks(mask_gt, mask_pred)[0][0]
         iou_bg = compute_overlaps_masks(mask_gt, mask_pred, BG=True)[0][0]
         print(d["image_id"], "IoU =", (iou_corr, iou_bg))
-        string = d["image_id"] + " IoU = " + str((iou_corr, iou_bg) +"\n")
+        string = d["image_id"] + " IoU = " + str((iou_corr, iou_bg)) +"\n"
         iou_string+= string
         iou_corr_list.append(iou_corr)
         iou_bg_list.append(iou_bg)
