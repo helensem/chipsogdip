@@ -146,7 +146,7 @@ if __name__ == "__main__":
 
         predictor = DefaultPredictor(cfg)
 
-        evaluate_model(predictor, val_dict) 
+        evaluate_model(predictor, val_dict, True) 
 
     else: 
         print("No mode chosen")
