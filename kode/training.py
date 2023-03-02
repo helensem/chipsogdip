@@ -40,7 +40,7 @@ def config():
 
     return cfg 
 
-def ga_train(dataset, learning_rate = 0.00025):
+def ga_train(dataset, indv, learning_rate = 0.00025):
     """ For training with the genetic algorithm, pa
     """
     for d in ["train", "val"]:
@@ -58,7 +58,7 @@ def ga_train(dataset, learning_rate = 0.00025):
     cfg.SOLVER.STEPS = [] 
     cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 128 
     cfg.MODEL.ROI_HEADS.NUM_CLASSES = 1 
-    cfg.OUTPUT_DIR = "/cluster/home/helensem/Master/output/run1/resnet101" #! MUST MATCH WITH CURRENT MODEL 
+    cfg.OUTPUT_DIR = f"/cluster/home/helensem/Master/output/run_ga/{indv}" #! MUST MATCH WITH CURRENT MODEL 
 
     cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml") #! MUST MATCH WITH TRAINING WEIGHTS
     os.makedirs(cfg.OUTPUT_DIR, exist_ok=True)
@@ -73,7 +73,7 @@ def ga_train(dataset, learning_rate = 0.00025):
 
 
 if __name__ == "__main__":
-    mode = "evaluation"
+    mode = "evaluate"
     for d in ["train", "val"]:
         DatasetCatalog.register("damage_" + d, lambda d=d: load_damage_dicts(r"/cluster/home/helensem/Master/Labeled_pictures",d))
         MetadataCatalog.get("damage_" + d).set(thing_classes=["damage"])
