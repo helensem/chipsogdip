@@ -88,4 +88,4 @@ def ga_drive(cfg_files_path, image_path):
 
 if __name__ == "__main__":
     indvs = 2
-    initialize(indvs) 
+    print(create_init_values(indvs)) 
