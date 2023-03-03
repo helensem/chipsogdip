@@ -251,9 +251,10 @@ def get_best(population):
 	return population[max_index]
 
 
-mutation_probability = 0.2
-generations = 20 
-hyperparameters = generate_hyperparameters()
+mutation_rate = 0.2
+generations = 3 
+hyperparameters = {}
+hyperparameters["learning_rate"]= np.linspace(0.001, 0.1) #generate_hyperparameters()
 population_size = 2
 
 population = [dict(zip(hyperparameters.keys(), [random.choice(values) for values in hyperparameters.values()])) for _ in range(population_size)]
@@ -274,9 +275,45 @@ population = [dict(zip(hyperparameters.keys(), [random.choice(values) for values
 # 	# replace the old population with the new population
 # 	population = [child1, child2] + population[2:]
 
+
+# run the genetic algorithm
+
+
 if __name__ == "__main__":
-    print(population)
-     
+    for generation in range(generations):
+        # evaluate the fitness of each individual in the population
+        fitness_scores = [calculate_fitness(individual) for individual in population]
+        
+        # select the fittest individuals to breed the next generation
+        sorted_population = [x for _, x in sorted(zip(fitness_scores, population), reverse=True)]
+        fittest_individuals = sorted_population[:int(population_size/2)]
+        
+        # create the next generation by breeding the fittest individuals
+        new_population = []
+        while len(new_population) < population_size:
+            # randomly select two parents from the fittest individuals
+            parent1, parent2 = random.sample(fittest_individuals, k=2)
+            
+            # create a new individual by randomly selecting hyperparameters from the parents
+            new_individual = {}
+            for key in hyperparameters.keys():
+                if random.random() < mutation_rate:
+                    # randomly mutate the hyperparameter with a small random value
+                    new_individual[key] = parent1[key] + random.gauss(0, 0.1)
+                else:
+                    # randomly select the hyperparameter from one of the parents
+                    new_individual[key] = random.choice([parent1[key], parent2[key]])
+            new_population.append(new_individual)
+        
+        # update the population with the new generation
+        population = new_population
+
+    # select the fittest individual from the final population
+    fitness_scores = [calculate_fitness(individual) for individual in population]
+    sorted_population = [x for _, x in sorted(zip(fitness_scores, population), reverse=True)]
+    fittest_individual = sorted_population[0]
+    print("Best individual is: ", fittest_individual)
+        
 
 
 
