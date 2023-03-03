@@ -1,11 +1,11 @@
-import deap 
-from deap import base
-from deap import creator
-from deap import tools
-import deap.algorithms
+# import deap 
+# from deap import base
+# from deap import creator
+# from deap import tools
+# import deap.algorithms
 
 
-import dask.dataframe as dd
+# import dask.dataframe as dd
 import pandas as pd
 
 import numpy as np
@@ -171,10 +171,9 @@ def generate_hyperparameters():
     init_values["PRE_NMS_LIMIT"] = np.linspace(4000,8000,dtype=int)
     init_values["POST_NMS_ROIS_TRAINING"] = np.linspace(1000,3000,dtype=int)
     init_values["POST_NMS_ROIS_INFERENCE"] = np.linspace(600,2000,dtype=int)
-    init_values["MEAN_PIXEL"] = np.array([np.linspace(115.0,130.0,), 
-                                            np.linspace(110.0,125.0),
-                                            np.linspace(95.0,115.0)])
-    print(init_values["MEAN_PIXEL"]) 
+    #init_values["MEAN_PIXEL"] = np.array([np.linspace(115.0,130.0,), 
+                                          #  np.linspace(110.0,125.0),
+                                           # np.linspace(95.0,115.0)])
     init_values["TRAIN_ROIS_PER_IMAGE"] = np.linspace(150,500,dtype=int)
     init_values["ROI_POSITIVE_RATIO"] = np.linspace(0.2, 0.5)
     init_values["MAX_GT_INSTANCES"] = np.linspace(70,400,dtype=int)
@@ -191,17 +190,25 @@ def generate_hyperparameters():
     return init_values
 
 
-def generate_population(size):
-	population = []
-	for _ in range(size):
-		genes = [0, 1]
-		chromosome = []
-		for _ in range(len(items)):
-			chromosome.append(random.choice(genes))
-		population.append(chromosome)
-	print("Generated a random population of size", size)
-	return population
+def calculate_fitness(hyperparameters):
 
+    dataset = r"/cluster/home/helensem/Master/data/set1"
+    learning_rate = hyperparameters["learning_rate"]
+    cfg = ga_train(learning_rate, dataset)
+
+    #TRAIN
+
+    #EVALUATE 
+    val_dict = load_damage_dicts(dataset, "val")
+    cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
+    cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.7
+
+    predictor = DefaultPredictor(cfg)
+
+    corr_iou, bg_iou, mean_iou = evaluate_model(predictor, val_dict) 
+    score = 1 - mean_iou 
+
+    return (score,)
 
 def select_chromosomes(population):
 	fitness_values = []
@@ -247,7 +254,7 @@ def get_best(population):
 mutation_probability = 0.2
 generations = 20 
 hyperparameters = generate_hyperparameters()
-population_size = 20
+population_size = 2
 
 population = [dict(zip(hyperparameters.keys(), [random.choice(values) for values in hyperparameters.values()])) for _ in range(population_size)]
 
