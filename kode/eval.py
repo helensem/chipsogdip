@@ -59,7 +59,8 @@ def evaluate_model(predictor, val_dict, write_to_file = False):
             continue
 
         mask_pred = combine_masks_to_one(predicted_masks)
-        iou_corr = compute_overlaps_masks(mask_gt, mask_pred)[0][0]
+
+        iou_corr = iou_numpy(mask_pred, mask_gt)#compute_overlaps_masks(mask_gt, mask_pred)[0][0]
         iou_bg = compute_overlaps_masks(mask_gt, mask_pred, BG=True)[0][0]
         print(d["image_id"], "IoU =", (iou_corr, iou_bg))
         string = d["image_id"] + " IoU = " + str((iou_corr, iou_bg)) +"\n"
@@ -84,6 +85,18 @@ def combine_masks_to_one(masks):
     for i in range(masks.shape[-1]):
         combined_mask += masks[:, :, i]
     return np.expand_dims(combined_mask, 2)
+
+
+def iou_numpy(outputs: np.array, labels: np.array):
+    SMOOTH = 1e-6
+
+    outputs = outputs.squeeze(1)
+    
+    intersection = (outputs & labels).sum((1, 2))
+    union = (outputs | labels).sum((1, 2))
+    
+    iou = (intersection + SMOOTH) / (union + SMOOTH)
+
 
 def compute_overlaps_masks(masks1, masks2, BG=False):
     """Computes IoU overlaps between two sets of masks .
