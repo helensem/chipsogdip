@@ -90,7 +90,7 @@ def combine_masks_to_one(masks):
 def iou_numpy(outputs: np.array, labels: np.array):
     SMOOTH = 1e-6
 
-    outputs = outputs.squeeze(1)
+    #outputs = outputs.squeeze(1)
     
     intersection = (outputs & labels).sum((1, 2))
     union = (outputs | labels).sum((1, 2))
