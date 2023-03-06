@@ -68,7 +68,7 @@ if __name__ == "__main__":
     
     elif mode == "inference": 
         cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
-        cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.7
+        cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.9
 
         predictor = DefaultPredictor(cfg)
         output_dir = os.path.join(cfg.OUTPUT_DIR, "images")
@@ -81,7 +81,7 @@ if __name__ == "__main__":
     elif mode == "predict":
 
         cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
-        cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.7
+        cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.9
 
         predictor = DefaultPredictor(cfg) 
 
@@ -100,21 +100,10 @@ if __name__ == "__main__":
             cv2.waitKey(0)
             cv2.destroyAllWindows()
     
-    elif mode == "coco_evaluate":
-
-        cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
-        cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.7
-
-        predictor = DefaultPredictor(cfg) 
-
-        evaluator = COCOEvaluator("damage_val", output_dir = cfg.OUTPUT_DIR)
-        val_loader = build_detection_test_loader(cfg, "damage_val")
-        print(inference_on_dataset(predictor.model, val_loader, evaluator))
-    
     elif mode == "evaluate":
         val_dict = load_damage_dicts(r"/cluster/home/helensem/Master/Labeled_pictures", "val")
         cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
-        cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.7
+        cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.9
 
         predictor = DefaultPredictor(cfg)
 
