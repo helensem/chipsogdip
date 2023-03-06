@@ -54,7 +54,7 @@ def evaluate_model(predictor, val_dict, write_to_file = False):
         outputs = predictor(image)
 
         predicted_masks = outputs['instances'].to("cpu").pred_masks.numpy()
-        predicted_masks = np.transposed(predicted_masks, (1,2,0)) #* (N x H x W) to (H x W x N)
+        predicted_masks = np.transpose(predicted_masks, (1,2,0)) #* (N x H x W) to (H x W x N)
         if predicted_masks.shape[-1] == 0:
             continue
         mask_pred = combine_masks_to_one(predicted_masks)
