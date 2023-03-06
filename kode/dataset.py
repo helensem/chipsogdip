@@ -155,9 +155,9 @@ def load_damage_dicts(dataset_dir, subset): #? Possibly write this to a JSON-fil
     
     #* For writing to JSON-file
     json_object = json.dumps(dataset_dicts,indent=200)
-    with open(f"/cluster/home/helensem/Master/chipsogdip/damage_{subset}.json", "w") as f:
-        f.write(json_object)
-    #return dataset_dicts
+    #with open(f"/cluster/home/helensem/Master/chipsogdip/damage_{subset}.json", "w") as f:
+    #    f.write(json_object)
+    return dataset_dicts
 
 
 def load_mask(mask_dir):
@@ -213,11 +213,11 @@ def load_sky_dicts(path, subset):
 def get_jason_dict(subset="train"):
 
     if subset == "train":
-        with open(r"/cluster/home/helensem/Master/damage_train.json", "r") as f:
+        with open(r"/cluster/home/helensem/Master/chipsogdip/damage_train.json", "r") as f:
             data = json.load(f)
         return data
     if subset == "val":
-        with open(r"/cluster/home/helensem/Master/damage_val.json", "r") as f:
+        with open(r"/cluster/home/helensem/Master/chipsogdip/damage_val.json", "r") as f:
             data = json.load(f)            
         return data
 
