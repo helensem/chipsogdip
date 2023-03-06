@@ -14,11 +14,12 @@ import random
 import sys 
 sys.path.append("cluster/home/helensem/Master/chipsogdip/kode")
 from eval import evaluate_model
-from training import config, ga_train
-from dataset import load_damage_dicts
+from training import config
+from dataset import load_damage_dicts, get_jason_dict
 import os
 
-from detectron2.engine import DefaultPredictor 
+from detectron2.engine import DefaultPredictor, DefaultTrainer
+from detectron2.data import MetadataCatalog, DatasetCatalog
 
 
 
@@ -35,30 +36,7 @@ from detectron2.engine import DefaultPredictor
 #    dataset = dataset.batch(batch_size).prefetch(1)
 #    return dataset
 
-def calculate_fitness(hyperparameters):
-    #####
-    ##### CHANGE HERE #####
-    ######
-    #####
 
-    
-    dataset = r"/cluster/home/helensem/Master/data/set1"
-    learning_rate = hyperparameters
-    cfg = ga_train(learning_rate, dataset)
-
-    #TRAIN
-
-    #EVALUATE 
-    val_dict = load_damage_dicts(dataset, "val")
-    cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
-    cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.7
-
-    predictor = DefaultPredictor(cfg)
-
-    corr_iou, bg_iou, mean_iou = evaluate_model(predictor, val_dict) 
-    score = 1 - mean_iou 
-
-    return (score,)
 
 def generate_random_hyperparameters_full():
     rpn_anchor_stride = random.randint(1,4)
@@ -189,26 +167,44 @@ def generate_hyperparameters():
     init_values["mrcnn_mask_loss"] = np.linspace(1,10)
     return init_values
 
+def ga_train(indv, learning_rate = 0.00025):
+    """ For training with the genetic algorithm, changing the hyperparameters
+    """
 
-def calculate_fitness(hyperparameters):
+    
+    cfg = config() 
+    cfg.DATASETS.TRAIN = ("ga_damage_train")
+    cfg.SOLVER.BASE_LR = learning_rate #0.00025 
+    cfg.SOLVER.MAX_ITER = 200*30 #1631 img* 30 epochs
+    cfg.OUTPUT_DIR = f"/cluster/home/helensem/Master/output/run_ga/{indv}" #! MUST MATCH WITH CURRENT MODEL 
+    os.makedirs(cfg.OUTPUT_DIR, exist_ok=True)
+    
+    #TRAIN
+    trainer = DefaultTrainer(cfg)
+    trainer.resume_or_load(resume=False)
+    trainer.train()
+    return cfg
 
-    dataset = r"/cluster/home/helensem/Master/data/set1"
+
+def calculate_fitness(indv, hyperparameters):
+    
+    #dataset = r"/cluster/home/helensem/Master/data/set1"
     learning_rate = hyperparameters["learning_rate"]
-    cfg = ga_train(learning_rate, dataset)
+    cfg = ga_train(indv, learning_rate)
 
     #TRAIN
 
     #EVALUATE 
-    val_dict = load_damage_dicts(dataset, "val")
+    val_dict = get_jason_dict("val")
     cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
-    cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.7
+    #cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.7
 
     predictor = DefaultPredictor(cfg)
 
     corr_iou, bg_iou, mean_iou = evaluate_model(predictor, val_dict) 
     score = 1 - mean_iou 
 
-    return (score,)
+    return score
 
 def select_chromosomes(population):
 	fitness_values = []
@@ -280,9 +276,14 @@ population = [dict(zip(hyperparameters.keys(), [random.choice(values) for values
 
 
 if __name__ == "__main__":
+
+    for d in ["train", "val"]:
+        DatasetCatalog.register("ga_damage_" + d, lambda d=d: get_jason_dict(d))
+        MetadataCatalog.get("ga_damage_" + d).set(thing_classes=["damage"])
+
     for generation in range(generations):
         # evaluate the fitness of each individual in the population
-        fitness_scores = [calculate_fitness(individual) for individual in population]
+        fitness_scores = [calculate_fitness(idx, individual) for idx, individual in enumerate(population)]
         
         # select the fittest individuals to breed the next generation
         sorted_population = [x for _, x in sorted(zip(fitness_scores, population), reverse=True)]
