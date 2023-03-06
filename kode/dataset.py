@@ -154,10 +154,10 @@ def load_damage_dicts(dataset_dir, subset): #? Possibly write this to a JSON-fil
         dataset_dicts.append(record)
     
     #* For writing to JSON-file
-    #json_object = json.dumps(dataset_dicts,indent=700)
-    #with open(f"damage_{subset}.json", "w") as f:
-    #    f.write(json_object)
-    return dataset_dicts
+    json_object = json.dumps(dataset_dicts,indent=200)
+    with open(f"/cluster/home/helensem/Master/chipsogdip/damage_{subset}.json", "w") as f:
+        f.write(json_object)
+    #return dataset_dicts
 
 
 def load_mask(mask_dir):
@@ -226,9 +226,11 @@ def get_jason_dict(subset="train"):
 
 if __name__ == "__main__": 
 
-    ga_train_sets()
+    #ga_train_sets()
 
     #print(load_damage_dicts(r"/cluster/home/helensem/Master/data", "train"))
+    load_damage_dicts(r"/cluster/home/helensem/Master/data/set1", "train")
+    load_damage_dicts(r"/cluster/home/helensem/Master/data/set1", "val")
 
     #Load data to detectron 
     # for d in ["train", "val"]:
