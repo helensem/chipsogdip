@@ -54,13 +54,12 @@ def evaluate_model(predictor, val_dict, write_to_file = False):
         outputs = predictor(image)
 
         predicted_masks = outputs['instances'].to("cpu").pred_masks.numpy()
-        predicted_masks = predicted_masks.T
+        predicted_masks = np.transposed(predicted_masks, (1,2,0)) #* (N x H x W) to (H x W x N)
         if predicted_masks.shape[-1] == 0:
             continue
-
         mask_pred = combine_masks_to_one(predicted_masks)
 
-        iou_corr = iou_numpy(mask_pred, mask_gt)#compute_overlaps_masks(mask_gt, mask_pred)[0][0]
+        iou_corr = compute_overlaps_masks(mask_gt, mask_pred)[0][0]
         iou_bg = compute_overlaps_masks(mask_gt, mask_pred, BG=True)[0][0]
         print(d["image_id"], "IoU =", (iou_corr, iou_bg))
         string = d["image_id"] + " IoU = " + str((iou_corr, iou_bg)) +"\n"
