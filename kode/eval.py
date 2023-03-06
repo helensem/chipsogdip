@@ -87,15 +87,18 @@ def combine_masks_to_one(masks):
     return np.expand_dims(combined_mask, 2)
 
 
+
 def iou_numpy(outputs: np.array, labels: np.array):
     SMOOTH = 1e-6
 
-    #outputs = outputs.squeeze(1)
+    outputs = outputs.squeeze(axis=-1)
     
     intersection = (outputs & labels).sum((1, 2))
     union = (outputs | labels).sum((1, 2))
     
     iou = (intersection + SMOOTH) / (union + SMOOTH)
+
+    return iou
 
 
 def compute_overlaps_masks(masks1, masks2, BG=False):
