@@ -138,11 +138,11 @@ def load_damage_dicts(dataset_dir, subset): #? Possibly write this to a JSON-fil
                 #print(mask_path)
                 mask = cv2.imread(mask_path)
                 print("mask shape:", mask.shape)
-                if mask.shape[0]!=height:
-                    print("MISMATCH:", image_dir)
                 if mask is None: 
                     print("Couldn't retrieve mask: ", mask_path)
                     continue
+                if mask.shape[0]!=height:
+                    print("MISMATCH:", image_dir)
                 if not(255 in mask):
                     print("mask is empty: ", mask_path)
                     continue
