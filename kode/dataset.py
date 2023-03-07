@@ -132,7 +132,7 @@ def load_damage_dicts(dataset_dir, subset): #? Possibly write this to a JSON-fil
         #idx +=1
         mask_dir = os.path.join(image_dir, 'masks')
         objs = []
-        for f in next(os.walk(mask_dir))[2][0]:
+        for f in next(os.walk(mask_dir))[2]:
             if f.endswith('.png') and ('corrosion' or 'grov_merking' in f):
                 mask_path = os.path.join(mask_dir, f)
                 #print(mask_path)
