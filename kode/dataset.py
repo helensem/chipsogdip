@@ -213,11 +213,11 @@ def load_sky_dicts(path, subset):
 def get_jason_dict(subset="train"):
 
     if subset == "train":
-        with open(r"/cluster/home/helensem/Master/damage_train.json", "r") as f:
+        with open(r"/cluster/home/helensem/Master/chipsogdip/damage_train.json", "r") as f:
             data = json.load(f)
         return data
     if subset == "val":
-        with open(r"/cluster/home/helensem/Master/damage_val.json", "r") as f:
+        with open(r"/cluster/home/helensem/Master/chipsogdip/damage_val.json", "r") as f:
             data = json.load(f)            
         return data
 
@@ -231,6 +231,12 @@ if __name__ == "__main__":
     #print(load_damage_dicts(r"/cluster/home/helensem/Master/data", "train"))
     train_dict = load_damage_dicts(r"/cluster/home/helensem/Master/Labeled_pictures", "train")
     val_dict = load_damage_dicts(r"/cluster/home/helensem/Master/data/Labeled_pictures", "val")
+    #load_damage_dicts(r"/cluster/home/helensem/Master/data/set1", "train")
+    #load_damage_dicts(r"/cluster/home/helensem/Master/data/set1", "val")
+    im = cv2.imread(r"/cluster/home/helensem/Master/data/train/IMG_3400/1.png")
+    print(im.shape)
+    mask = cv2.imread(r"/cluster/home/helensem/Master/data/train/IMG_3400/masks/grov_merking_1.png")
+    print(mask.shape)
 
 
     #Load data to detectron 
