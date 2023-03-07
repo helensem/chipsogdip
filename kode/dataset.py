@@ -137,7 +137,7 @@ def load_damage_dicts(dataset_dir, subset): #? Possibly write this to a JSON-fil
                 #print(mask_path)
                 mask = cv2.imread(mask_path)
                 if mask.shape[0]!=height:
-                    print(image_dir)
+                    print("MISMATCH:", image_dir)
                 if mask is None: 
                     print("Couldn't retrieve mask: ", mask_path)
                     continue
@@ -230,7 +230,7 @@ if __name__ == "__main__":
 
     #print(load_damage_dicts(r"/cluster/home/helensem/Master/data", "train"))
     train_dict = load_damage_dicts(r"/cluster/home/helensem/Master/Labeled_pictures", "train")
-    val_dict = load_damage_dicts(r"/cluster/home/helensem/Master/data/Labeled_pictures", "val")
+    val_dict = load_damage_dicts(r"/cluster/home/helensem/Master/Labeled_pictures", "val")
     #load_damage_dicts(r"/cluster/home/helensem/Master/data/set1", "train")
     #load_damage_dicts(r"/cluster/home/helensem/Master/data/set1", "val")
     #im = cv2.imread(r"/cluster/home/helensem/Master/data/train/IMG_3400/1.png")
