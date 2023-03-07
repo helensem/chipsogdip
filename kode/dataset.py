@@ -233,10 +233,10 @@ if __name__ == "__main__":
     val_dict = load_damage_dicts(r"/cluster/home/helensem/Master/data/Labeled_pictures", "val")
     #load_damage_dicts(r"/cluster/home/helensem/Master/data/set1", "train")
     #load_damage_dicts(r"/cluster/home/helensem/Master/data/set1", "val")
-    im = cv2.imread(r"/cluster/home/helensem/Master/data/train/IMG_3400/1.png")
-    print(im.shape)
-    mask = cv2.imread(r"/cluster/home/helensem/Master/data/train/IMG_3400/masks/grov_merking_1.png")
-    print(mask.shape)
+    #im = cv2.imread(r"/cluster/home/helensem/Master/data/train/IMG_3400/1.png")
+    #print(im.shape)
+    #mask = cv2.imread(r"/cluster/home/helensem/Master/data/train/IMG_3400/masks/grov_merking_1.png")
+    #print(mask.shape)
 
 
     #Load data to detectron 
