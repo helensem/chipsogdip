@@ -120,7 +120,7 @@ def load_damage_dicts(dataset_dir, subset): #? Possibly write this to a JSON-fil
     for image_id in image_ids:
 
         image_dir = os.path.join(dataset_dir, image_id)
-        #print(image_dir)
+        print(image_dir)
         (_, _, file_names) = next(os.walk(image_dir))
         file_name = file_names[0]
         
