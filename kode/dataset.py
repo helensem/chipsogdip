@@ -120,7 +120,7 @@ def load_damage_dicts(dataset_dir, subset): #? Possibly write this to a JSON-fil
     for image_id in image_ids:
 
         image_dir = os.path.join(dataset_dir, image_id)
-        print(image_dir)
+        #print(image_dir)
         (_, _, file_names) = next(os.walk(image_dir))
         file_name = file_names[0]
         
@@ -131,11 +131,13 @@ def load_damage_dicts(dataset_dir, subset): #? Possibly write this to a JSON-fil
         #idx +=1
         mask_dir = os.path.join(image_dir, 'masks')
         objs = []
-        for f in next(os.walk(mask_dir))[2]:
+        for f in next(os.walk(mask_dir))[2][0]:
             if f.endswith('.png') and ('corrosion' or 'grov_merking' in f):
                 mask_path = os.path.join(mask_dir, f)
                 #print(mask_path)
                 mask = cv2.imread(mask_path)
+                if mask.shape[0]!=height:
+                    print(image_dir)
                 if mask is None: 
                     print("Couldn't retrieve mask: ", mask_path)
                     continue
@@ -154,20 +156,18 @@ def load_damage_dicts(dataset_dir, subset): #? Possibly write this to a JSON-fil
         dataset_dicts.append(record)
     
     #* For writing to JSON-file
-    json_object = json.dumps(dataset_dicts,indent=200)
-    with open(f"/cluster/home/helensem/Master/chipsogdip/damage_{subset}.json", "w") as f:
-        f.write(json_object)
-    #return dataset_dicts
+    #json_object = json.dumps(dataset_dicts,indent=200)
+    #with open(f"/cluster/home/helensem/Master/chipsogdip/damage_{subset}.json", "w") as f:
+     #   f.write(json_object)
+    return dataset_dicts
 
 
-def load_mask(mask_dir):
+def load_mask(mask_dir, im_height):
     mask = []
     for f in next(os.walk(mask_dir))[2]:
         if f.endswith('.png') and ('corrosion' or 'grov_merking' in f):
             mask_path = os.path.join(mask_dir, f)
             m = cv2.imread(mask_path, cv2.IMREAD_GRAYSCALE)
-            if not(255 in m): 
-                print("mask is empty")
             m = m.astype(bool)
             mask.append(m)
     mask = np.stack(mask, axis=-1)
@@ -229,8 +229,9 @@ if __name__ == "__main__":
     #ga_train_sets()
 
     #print(load_damage_dicts(r"/cluster/home/helensem/Master/data", "train"))
-    load_damage_dicts(r"/cluster/home/helensem/Master/data/set1", "train")
-    load_damage_dicts(r"/cluster/home/helensem/Master/data/set1", "val")
+    train_dict = load_damage_dicts(r"/cluster/home/helensem/Master/Labeled_pictures", "train")
+    val_dict = load_damage_dicts(r"/cluster/home/helensem/Master/data/Labeled_pictures", "val")
+
 
     #Load data to detectron 
     # for d in ["train", "val"]:
