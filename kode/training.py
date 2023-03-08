@@ -9,6 +9,7 @@ import os,json,cv2,random, sys
 sys.path.append(r"/cluster/home/helensem/Master/chipsogdip/kode")
 from dataset import * 
 from eval import * 
+from LossEvalHook import LossEvalHook 
 
 from detectron2 import model_zoo
 from detectron2.engine import DefaultPredictor
@@ -20,6 +21,36 @@ from detectron2.evaluation import COCOEvaluator, inference_on_dataset
 from detectron2.data import build_detection_test_loader 
 
 from detectron2.engine import DefaultTrainer
+from detectron2.data import DatasetMapper, build_detection_test_loader
+from detectron2.engine import DefaultTrainer
+
+
+class CustomTrainer(DefaultTrainer):
+    """
+    Custom Trainer deriving from the "DefaultTrainer"
+
+    Overloads build_hooks to add a hook to calculate loss on the test set during training.
+    """
+    @classmethod
+    def build_evaluator(cls, cfg, dataset_name, output_folder=None):
+        if output_folder is None:
+            output_folder = os.path.join(cfg.OUTPUT_DIR, "inference")
+        return COCOEvaluator(dataset_name, cfg, True, output_folder)
+
+    def build_hooks(self):
+        hooks = super().build_hooks()
+        hooks.insert(-1, LossEvalHook(
+            100, # Frequency of calculation - every 100 iterations here
+            self.model,
+            build_detection_test_loader(
+                self.cfg,
+                self.cfg.DATASETS.TEST[0],
+                DatasetMapper(self.cfg, True)
+            )
+        ))
+
+        return hooks
+
 
 
 def config():
@@ -29,11 +60,13 @@ def config():
     cfg.merge_from_file(model_zoo.get_config_file("COCO-InstanceSegmentation/mask_rcnn_R_101_FPN_3x.yaml"))  #! MUST MATCH WITH TRAINING WEIGHTS
     cfg.DATALOADER.NUM_WORKERS = 2 
     cfg.DATASETS.TRAIN = ("damage_train")
-    cfg.DATASETS.TEST = ()
+    cfg.DATASETS.TEST = ("damage_test",)
+    cfg.TEST.EVAL_PERIOD = 100 
     cfg.SOLVER.IMS_PER_BATCH = 1
-    cfg.SOLVER.BASE_LR = 0.00025 
+    cfg.SOLVER.BASE_LR = 0.0005
+    cfg.SOLVER.GAMMA = 0.5
     cfg.SOLVER.MAX_ITER = 48930 #1631 img* 30 epochs
-    cfg.SOLVER.STEPS = [] 
+    cfg.SOLVER.STEPS = [16310, 32620] #Reduce lr by half per 10th epoch  
     cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 128 
     cfg.MODEL.ROI_HEADS.NUM_CLASSES = 1 
     cfg.OUTPUT_DIR = "/cluster/home/helensem/Master/output/run1/resnet101" #! MUST MATCH WITH CURRENT MODEL 
@@ -62,7 +95,7 @@ if __name__ == "__main__":
 
         
         #TRAIN
-        trainer = DefaultTrainer(cfg)
+        trainer = CustomTrainer(cfg)
         trainer.resume_or_load(resume=False)
         trainer.train() 
     
