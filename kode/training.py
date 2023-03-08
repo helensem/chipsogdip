@@ -69,7 +69,7 @@ def config():
     cfg.SOLVER.STEPS = [16310, 32620] #Reduce lr by half per 10th epoch  
     cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 128 
     cfg.MODEL.ROI_HEADS.NUM_CLASSES = 1 
-    cfg.OUTPUT_DIR = "/cluster/home/helensem/Master/output/run1/resnet101" #! MUST MATCH WITH CURRENT MODEL 
+    cfg.OUTPUT_DIR = "/cluster/home/helensem/Master/output/run2/resnet101" #! MUST MATCH WITH CURRENT MODEL 
 
     return cfg 
 
