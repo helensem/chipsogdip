@@ -163,7 +163,7 @@ def load_damage_dicts(dataset_dir, subset): #? Possibly write this to a JSON-fil
     return dataset_dicts
 
 
-def load_mask(mask_dir, im_height):
+def load_mask(mask_dir):
     mask = []
     for f in next(os.walk(mask_dir))[2]:
         if f.endswith('.png') and ('corrosion' or 'grov_merking' in f):
