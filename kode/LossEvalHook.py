@@ -6,6 +6,7 @@ import detectron2.utils.comm as comm
 import torch
 import time
 import datetime
+import numpy as np
 
 class LossEvalHook(HookBase):
     def __init__(self, eval_period, model, data_loader):
