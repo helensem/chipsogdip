@@ -59,8 +59,8 @@ def config():
     cfg = get_cfg() 
     cfg.merge_from_file(model_zoo.get_config_file("COCO-InstanceSegmentation/mask_rcnn_R_101_FPN_3x.yaml"))  #! MUST MATCH WITH TRAINING WEIGHTS
     cfg.DATALOADER.NUM_WORKERS = 2 
-    cfg.DATASETS.TRAIN = ("damage_train")
-    cfg.DATASETS.TEST = ("damage_test",)
+    cfg.DATASETS.TRAIN = ("damage_train",)
+    cfg.DATASETS.TEST = ("damage_val",)
     cfg.TEST.EVAL_PERIOD = 100 
     cfg.SOLVER.IMS_PER_BATCH = 1
     cfg.SOLVER.BASE_LR = 0.0005
