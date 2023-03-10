@@ -41,7 +41,7 @@ if __name__ == '__main__':
     print('Validation images:', len(val_dataset))
     print("Classes:", train_dataset.classes)
     img, mask = val_dataset[0]
-    mask = mask.asnumpy()
+    #mask = mask.asnumpy()
     print(mask.shape)
     from gluoncv.utils.viz import get_color_pallete
     mask = get_color_pallete(mask.asnumpy(), dataset='ade20k')
