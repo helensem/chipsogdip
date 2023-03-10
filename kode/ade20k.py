@@ -45,5 +45,5 @@ if __name__ == '__main__':
     #mask = mask.asnumpy()
     print(mask.shape)
     mask = mask.asnumpy()
-    mask = np.where(mask==3, [1, 0])
+    mask = np.where(mask==3, 1,0)
     print(mask)
