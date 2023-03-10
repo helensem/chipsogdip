@@ -147,4 +147,4 @@ if __name__ == '__main__':
     print("Classes:", train_dataset.classes)
     img, mask = val_dataset[0]
     mask = mask.asnumpy()
-    print(mask.shape)
+    print(mask)
