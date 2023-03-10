@@ -145,3 +145,6 @@ if __name__ == '__main__':
     print('Training images:', len(train_dataset))
     print('Validation images:', len(val_dataset))
     print("Classes:", train_dataset.classes)
+    img, mask = val_dataset[0]
+    mask = mask.asnumpy()
+    print(mask.shape)
