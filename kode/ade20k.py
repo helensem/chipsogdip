@@ -34,8 +34,8 @@ _TARGET_DIR = os.path.expanduser('~/.mxnet/datasets/ade')
 
 if __name__ == '__main__':
     root = r"/cluster/home/helensem/Master/ade"
-    train_dataset = ADE20KSegmentation(split='train')
-    val_dataset = ADE20KSegmentation(split='val')
+    train_dataset = ADE20KSegmentation(root,split='train')
+    val_dataset = ADE20KSegmentation(root, split='val')
     train_dataset.CLASSES = {"sky"}
     val_dataset.CLASSES = {"sky"}
     train_dataset.NUM_CLASS = 1
