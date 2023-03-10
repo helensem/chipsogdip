@@ -5,6 +5,7 @@ import shutil
 #import zipfile
 #from gluoncv.utils import download, makedirs
 from gluoncv.data import ADE20KSegmentation
+import numpy as np 
 
 
 _TARGET_DIR = os.path.expanduser('~/.mxnet/datasets/ade')
@@ -43,6 +44,6 @@ if __name__ == '__main__':
     img, mask = val_dataset[0]
     #mask = mask.asnumpy()
     print(mask.shape)
-    from gluoncv.utils.viz import get_color_pallete
-    mask = get_color_pallete(mask.asnumpy(), dataset='ade20k')
-    mask.save('mask.png')
+    mask = mask.asnumpy()
+    mask = np.where(mask==3, [1, 0])
+    print(mask)
