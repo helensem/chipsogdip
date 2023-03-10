@@ -4,6 +4,8 @@ import shutil
 import argparse
 import zipfile
 from gluoncv.utils import download, makedirs
+from gluoncv.data import ADE20KSegmentation
+
 
 _TARGET_DIR = os.path.expanduser('~/.mxnet/datasets/ade')
 
@@ -31,11 +33,13 @@ def download_ade(path, overwrite=False):
 
 
 if __name__ == '__main__':
-    args = parse_args()
-    makedirs(os.path.expanduser('~/.mxnet/datasets'))
-    if args.download_dir is not None:
-        if os.path.isdir(_TARGET_DIR):
-            os.remove(_TARGET_DIR)
-        # make symlink
-        os.symlink(args.download_dir, _TARGET_DIR)
-    download_ade(_TARGET_DIR, overwrite=False)
+    root = r"/cluster/home/helensem/Master/ade"
+    train_dataset = ADE20KSegmentation(split='train')
+    val_dataset = ADE20KSegmentation(split='val')
+    train_dataset.CLASSES = {"sky"}
+    val_dataset.CLASSES = {"sky"}
+    train_dataset.NUM_CLASS = 1
+    val_dataset.NUM_CLASS = 1
+    print('Training images:', len(train_dataset))
+    print('Validation images:', len(val_dataset))
+    print("Classes:", train_dataset.classes)
