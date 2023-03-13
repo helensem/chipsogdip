@@ -65,7 +65,8 @@ def load_sky_yolo(root, subset,destination):
         print(string)
         image_dest = os.path.join(destination, "images", subset, id)
         print("destination: ", image_dest)
-        image_source = os.path.join(source, id)
+        image_id = os.path.splitext(id) + '.jpg'
+        image_source = os.path.join(source, image_id)
         print("source: ", image_source)
         shutil.copy(image_source, image_dest)
 
