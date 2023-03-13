@@ -62,6 +62,7 @@ def load_sky_yolo(root, subset,destination):
             string += " "
             string += str(round(contours[i]/height, 6)) # y coordinate
             string += " "
+            
         image_id = os.path.splitext(id)[0] + '.jpg'
         image_source = os.path.join(source, image_id)
         image_dest = os.path.join(destination, "images", subset, image_id)

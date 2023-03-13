@@ -1,17 +1,9 @@
-import detectron2 
-
-from detectron2.utils.logger import setup_logger
-setup_logger("output/logger.log")
 
 import numpy as np 
 import os,json,cv2,random 
 #import skimage
 
-from detectron2 import model_zoo
-from detectron2.engine import DefaultPredictor
-from detectron2.config import get_cfg 
-from detectron2.utils.visualizer import Visualizer
-from detectron2.data import MetadataCatalog, DatasetCatalog
+
 from detectron2.structures import BoxMode 
 from PIL import ImageFile
 ImageFile.LOAD_TRUNCATED_IMAGES = True
@@ -209,6 +201,13 @@ def load_sky_dicts(path, subset):
     #with open(f"damage_{subset}.json", "w") as f:
     #    f.write(json_object)
     return dataset_dicts
+
+
+def load_sky_yolo(path, subset):
+    """Converts ADE20K dataset to YOLO format"""
+
+
+
 
 
 def get_jason_dict(subset="train"):

@@ -1,6 +1,7 @@
 import numpy as np 
 import cv2
 from detectron2.utils.visualizer import Visualizer, ColorMode
+from detectron2.engine import DefaultPredictor
 import os 
 import sys 
 
@@ -39,7 +40,8 @@ def apply_inference(predictor, metadata, output_path, data, image_path=None): #*
     cv2.imwrite(output, vis)
 
    
-def evaluate_model(predictor, val_dict, write_to_file = False):
+def evaluate_model(cfg, val_dict, write_to_file = False):
+    predictor = DefaultPredictor(cfg)
     #image_ids = dataset_val.image_ids
     iou_corr_list = []
     iou_bg_list = []
@@ -74,7 +76,7 @@ def evaluate_model(predictor, val_dict, write_to_file = False):
     print("Mean IoU =", (mean_corr_iou + mean_bg_iou) / 2)
     if write_to_file:
         iou_string += "Total mean values: \n" + " Corrosion IoU: " + str(mean_corr_iou) + "\n" + "BG IoU=" + str(mean_bg_iou) + "\n" + "Mean IoU =" + str((mean_corr_iou + mean_bg_iou) / 2)
-        with open(r"/cluster/home/helensem/Master/output/run1/resnet101/output.txt", "w") as f: 
+        with open(os.path.join(cfg.OUTPUT_DIR,"output.txt"), "w") as f: 
             f.write(iou_string)
     return mean_corr_iou, mean_bg_iou, (mean_corr_iou + mean_bg_iou) / 2
 

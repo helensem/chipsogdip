@@ -35,7 +35,10 @@ class CustomTrainer(DefaultTrainer):
     def build_evaluator(cls, cfg, dataset_name, output_folder=None):
         if output_folder is None:
             output_folder = os.path.join(cfg.OUTPUT_DIR, "inference")
-        return COCOEvaluator(dataset_name, cfg, True, output_folder)
+        
+        
+        dataset_dict = DatasetCatalog.get(dataset_name)
+        return evaluate_model(cfg, dataset_dict) 
 
     def build_hooks(self):
         hooks = super().build_hooks()
@@ -58,10 +61,10 @@ def config():
     Standard config """
     cfg = get_cfg() 
     cfg.merge_from_file(model_zoo.get_config_file("COCO-InstanceSegmentation/mask_rcnn_R_101_FPN_3x.yaml"))  #! MUST MATCH WITH TRAINING WEIGHTS
-    cfg.DATALOADER.NUM_WORKERS = 2 
+    cfg.DATALOADER.NUM_WORKERS = 1
     cfg.DATASETS.TRAIN = ("damage_train",)
     cfg.DATASETS.TEST = ("damage_val",)
-    cfg.TEST.EVAL_PERIOD = 100 
+    cfg.TEST.EVAL_PERIOD = 1630
     cfg.SOLVER.IMS_PER_BATCH = 1
     cfg.SOLVER.BASE_LR = 0.0005
     cfg.SOLVER.GAMMA = 0.5
@@ -138,9 +141,7 @@ if __name__ == "__main__":
         cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
         cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.8
 
-        predictor = DefaultPredictor(cfg)
-
-        evaluate_model(predictor, val_dict, True) 
+        evaluate_model(cfg, val_dict, True) 
 
     else: 
         print("No mode chosen")
