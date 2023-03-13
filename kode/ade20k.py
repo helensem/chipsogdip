@@ -52,7 +52,8 @@ def load_sky_yolo(root, subset,destination):
         #print(mask)
         contour = find_contours(mask) 
         contours = contour.flatten().tolist()
-        print(contours)
+        if len(contours) < 5:
+            continue
         string = "0 "
         height, width = mask.shape
         print(mask.shape)
@@ -61,12 +62,10 @@ def load_sky_yolo(root, subset,destination):
             string += " "
             string += str(round(contours[i]/height, 6)) # y coordinate
             string += " "
-       
-        print(string)
-        image_dest = os.path.join(destination, "images", subset, id)
-        print("destination: ", image_dest)
         image_id = os.path.splitext(id)[0] + '.jpg'
         image_source = os.path.join(source, image_id)
+        image_dest = os.path.join(destination, "images", subset, image_id)
+        print("destination: ", image_dest)
         print("source: ", image_source)
         shutil.copy(image_source, image_dest)
 
