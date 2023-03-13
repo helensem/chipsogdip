@@ -4,7 +4,7 @@ import shutil
 #import argparse
 #import zipfile
 #from gluoncv.utils import download, makedirs
-from gluoncv.data import ADE20KSegmentation
+#from gluoncv.data import ADE20KSegmentation
 import numpy as np 
 import sys 
 import cv2
@@ -35,11 +35,11 @@ def load_sky_yolo(root, subset,destination):
         dir = 'training'
     else: 
         dir = 'validation'
-    #dataset = ADE20KSegmentation(root,split=subset)
-    source = os.path.join(root,"ADEChallengeData2016", "images", dir)
-    mask_dir = os.path.join(root, "ADEChallengeData2016", "annotations", dir )
+
+    source = os.path.join(root, "images", dir)
+    mask_dir = os.path.join(root, "annotations", dir)
     mask_ids = next(os.walk(mask_dir))[2]
-    #idx = 0
+
     for id in mask_ids:
         mask_path = os.path.join(mask_dir, id)
         mask = cv2.imread(mask_path, cv2.IMREAD_GRAYSCALE)
@@ -67,21 +67,22 @@ def load_sky_yolo(root, subset,destination):
         print("destination: ", image_dest)
         image_source = os.path.join(source, id)
         print("source: ", image_source)
-        #shutil.copy(image_source, image_dest)
+        shutil.copy(image_source, image_dest)
+
         txt_id = os.path.splitext(id)[0]+'.txt' 
         txt_path = os.path.join(destination, "labels", subset, txt_id)
         print(txt_path)
-        #with open(txt_path, "w") as f: 
-         # f.write(string)
+        with open(txt_path, "w") as f: 
+          f.write(string)
 
-        #image_dir = os.path.join(dataset_dir, image_id)
-        #(_, _, file_names) = next(os.walk(image_dir))
-        #file_name = file_names[0]
 
 if __name__ == '__main__':
-    root = r"/cluster/home/helensem/Master/ade"
-    subset = 'train'
-    destination = r"/cluster/home/helensem/Master/"
+    destination = r"/cluster/home/helensem/Master/sky_data"
+    root = r"/cluster/home/helensem/Master/ade/ADEChallengeData2016"
+
+    for d in ['train', 'val']:
+        load_sky_yolo(root, d, destination)
+    
 
 
     #train_dataset = ADE20KSegmentation(root,split='train')
