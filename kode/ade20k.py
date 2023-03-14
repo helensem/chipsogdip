@@ -24,7 +24,7 @@ def find_contours(sub_mask):
     ret, thresh = cv2.threshold(sub_mask, 127, 255, 0)
     contours, hierarchy = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     assert len(contours)!= 0, print(contours)
-    return contours[0]
+    return contours
 
 def load_sky_yolo(root, subset,destination): 
     """
@@ -38,6 +38,7 @@ def load_sky_yolo(root, subset,destination):
 
     source = os.path.join(root, "images", dir)
     mask_dir = os.path.join(root, "annotations", dir)
+    print(mask_dir)
     mask_ids = next(os.walk(mask_dir))[2]
 
     for id in mask_ids:
@@ -45,31 +46,35 @@ def load_sky_yolo(root, subset,destination):
         mask = cv2.imread(mask_path, cv2.IMREAD_GRAYSCALE)
         #print(mask)
         #print(mask.dtype)
+        string = ""
         mask = np.where(mask==3, 255,0)
+        if id == "ADE_val_00000370.png":
+            print(mask)
         if 255 not in mask: 
             continue
         mask = mask.astype('uint8')
         #print(mask)
-        contour = find_contours(mask) 
-        contours = contour.flatten().tolist()
-        if len(contours) < 5:
-            continue
-        string = "0 "
         height, width = mask.shape
-        print(mask.shape)
-        for i in range(1,len(contours),2): 
-            string += str(round(contours[i-1]/width,6)) #x coordinate
-            string += " "
-            string += str(round(contours[i]/height, 6)) # y coordinate
-            string += " "
-            
+        contours = find_contours(mask)
+        for contour in contours:
+            contour_list = contour.flatten().tolist()
+            if len(contour_list) < 5:
+                continue
+            string += "0 "
+        #print(mask.shape)
+            for i in range(1,len(contour_list),2): 
+                string += str(round(contour_list[i-1]/width,6)) #x coordinate
+                string += " "
+                string += str(round(contour_list[i]/height, 6)) # y coordinate
+                string += " "
+            string+= "\n"
         image_id = os.path.splitext(id)[0] + '.jpg'
         image_source = os.path.join(source, image_id)
         image_dest = os.path.join(destination, "images", subset, image_id)
-        print("destination: ", image_dest)
-        print("source: ", image_source)
-        shutil.copy(image_source, image_dest)
-
+        #print("destination: ", image_dest)
+        #print("source: ", image_source)
+        #shutil.copy(image_source, image_dest)
+        print(string)
         txt_id = os.path.splitext(id)[0]+'.txt' 
         txt_path = os.path.join(destination, "labels", subset, txt_id)
         print(txt_path)
@@ -78,6 +83,7 @@ def load_sky_yolo(root, subset,destination):
 
 
 if __name__ == '__main__':
+    
     destination = r"/cluster/home/helensem/Master/sky_data"
     root = r"/cluster/home/helensem/Master/ade/ADEChallengeData2016"
 
