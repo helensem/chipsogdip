@@ -207,8 +207,8 @@ def load_damage_yolo(root, subset,destination):
                     string += str(round(contour_list[i]/height, 6)) # y coordinate
                     string += " "
                 string+= "\n"
-    
-        image_dest = os.path.join(destination, "images", subset, file_name)
+        image_id = id +  os.path.splitext(file_name)[1]
+        image_dest = os.path.join(destination, "images", subset, image_id )
         print("destination: ", image_dest)
         print("source: ", image_path)
         shutil.copy(image_path, image_dest)
