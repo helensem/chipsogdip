@@ -211,13 +211,13 @@ def load_damage_yolo(root, subset,destination):
         image_dest = os.path.join(destination, "images", subset, file_name)
         print("destination: ", image_dest)
         print("source: ", image_path)
-        #shutil.copy(image_path, image_dest)
+        shutil.copy(image_path, image_dest)
         #print(string)
         txt_id = id +'.txt' 
         txt_path = os.path.join(destination, "labels", subset, txt_id)
         print(txt_path)
-        #with open(txt_path, "w") as f: 
-        #  f.write(string)
+        with open(txt_path, "w") as f: 
+          f.write(string)
 
 
 
