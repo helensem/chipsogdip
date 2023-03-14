@@ -237,7 +237,7 @@ def get_jason_dict(subset="train"):
 
 if __name__ == "__main__": 
     root = r"/cluster/home/helensem/Master/Labeled_pictures"
-    destination = r"cluster/home/helensem/Master/damage_data"
+    destination = r"/cluster/home/helensem/Master/damage_data"
 
     for d in ['train', 'val']:
         load_damage_yolo(root, d, destination)
