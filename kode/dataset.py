@@ -119,7 +119,6 @@ def load_damage_dicts(dataset_dir, subset): #? Possibly write this to a JSON-fil
         image_path = os.path.join(image_dir, file_name)
         #print(image_path)
         height, width = cv2.imread(image_path).shape[:2]
-        print("image shape:", (height, width))
         record = create_image_annotation(image_path, width, height, image_id)
         #idx +=1
         mask_dir = os.path.join(image_dir, 'masks')
@@ -166,47 +165,59 @@ def load_mask(mask_dir):
     mask = np.stack(mask, axis=-1)
     return mask.astype(bool)
 
+def load_damage_yolo(root, subset,destination): 
+    """
+    Loads the images from a dataset with a dictionary of the annotations, to be loaded in detectron 
+    """ 
+    assert subset in ['train', 'val']
+    source = os.path.join(root, dir)
 
-def load_sky_dicts(path, subset): 
-    dataset_dicts = []
+    image_ids = next(os.walk(source))[1]
 
-    assert subset in ["train", "val"]
-    dataset_dir = os.path.join(path, subset)
-    image_ids = next(os.walk(dataset_dir))[1] #names of all directories in dir
-    for image_id in image_ids:
-        image_dir = os.path.join(dataset_dir, image_id)
-        print(image_dir)
+    for id in image_ids:
+        image_dir = os.path.join(source, id)
         (_, _, file_names) = next(os.walk(image_dir))
-
-        for f in file_names: 
-            image_path = os.path.join(image_dir, f)
-            height, width = cv2.imread(image_path).shape[:2]
-            record = create_image_annotation(image_path, width, height, image_id)
+        file_name = file_names[0]
         
-
-            mask_dir = os.path.join(path, 'masks')
-            objs = []
-            image = image_id + ".png"
-            mask_path = os.path.join(mask_dir, image)
-        
-            mask = cv2.imread(mask_path)
-            contour = find_contours(mask)
-            obj = create_annotation_format(contour)
-            objs.append(obj)        
-            record["annotations"] = objs
-            dataset_dicts.append(record)
-
-    #* For loading JSON objects 
-    #json_object = json.dumps(dataset_dicts,indent=1631)
-    #with open(f"damage_{subset}.json", "w") as f:
-    #    f.write(json_object)
-    return dataset_dicts
-
-
-def load_sky_yolo(path, subset):
-    """Converts ADE20K dataset to YOLO format"""
-
-
+        image_path = os.path.join(image_dir, file_name)
+        height, width = cv2.imread(image_path).shape[:2]
+        mask_dir = os.path.join(image_dir, 'masks')
+        string = ""
+        for f in next(os.walk(mask_dir))[2]:
+            if f.endswith('.png') and ('corrosion' or 'grov_merking' in f):
+                mask_path = os.path.join(mask_dir, f)
+                #print(mask_path)
+                mask = cv2.imread(mask_path, cv2.IMREAD_GRAYSCALE)
+                if mask is None: 
+                    print("Couldn't retrieve mask: ", mask_path)
+                    continue
+                if mask.shape[0]!=height:
+                    print("MISMATCH:", image_dir)
+                if not(255 in mask):
+                    print("mask is empty: ", mask_path)
+                    continue
+                contour = find_contours(mask)
+                contour_list = contour.flatten().tolist()
+                if len(contour_list)<5:
+                    continue # Cant create polygons from too few coordinates
+                string += "0" 
+                for i in range(1,len(contour_list),2): 
+                    string += str(round(contour_list[i-1]/width,6)) #x coordinate
+                    string += " "
+                    string += str(round(contour_list[i]/height, 6)) # y coordinate
+                    string += " "
+                string+= "\n"
+    
+        image_dest = os.path.join(destination, "images", subset, file_name)
+        print("destination: ", image_dest)
+        print("source: ", image_path)
+        #shutil.copy(image_path, image_dest)
+        #print(string)
+        txt_id = id +'.txt' 
+        txt_path = os.path.join(destination, "labels", subset, txt_id)
+        print(txt_path)
+        #with open(txt_path, "w") as f: 
+        #  f.write(string)
 
 
 
@@ -225,12 +236,17 @@ def get_jason_dict(subset="train"):
 ####### MAIN ##################
 
 if __name__ == "__main__": 
+    root = r"/cluster/home/helensem/Master/Labeled_pictures"
+    destination = r"cluster/home/helensem/Master/damage_data"
+
+    for d in ['train', 'val']:
+        load_damage_yolo(root, d, destination)
 
     #ga_train_sets()
 
     #print(load_damage_dicts(r"/cluster/home/helensem/Master/data", "train"))
-    train_dict = load_damage_dicts(r"/cluster/home/helensem/Master/Labeled_pictures", "train")
-    val_dict = load_damage_dicts(r"/cluster/home/helensem/Master/Labeled_pictures", "val")
+    #train_dict = load_damage_dicts(r"/cluster/home/helensem/Master/Labeled_pictures", "train")
+    #val_dict = load_damage_dicts(r"/cluster/home/helensem/Master/Labeled_pictures", "val")
     #load_damage_dicts(r"/cluster/home/helensem/Master/data/set1", "train")
     #load_damage_dicts(r"/cluster/home/helensem/Master/data/set1", "val")
     #im = cv2.imread(r"/cluster/home/helensem/Master/data/train/IMG_3400/1.png")
