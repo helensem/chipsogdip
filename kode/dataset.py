@@ -170,7 +170,7 @@ def load_damage_yolo(root, subset,destination):
     Loads the images from a dataset with a dictionary of the annotations, to be loaded in detectron 
     """ 
     assert subset in ['train', 'val']
-    source = os.path.join(root, dir)
+    source = os.path.join(root, subset)
 
     image_ids = next(os.walk(source))[1]
 
