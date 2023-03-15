@@ -200,7 +200,7 @@ def load_damage_yolo(root, subset,destination):
                 contour_list = contour.flatten().tolist()
                 if len(contour_list)<5:
                     continue # Cant create polygons from too few coordinates
-                string += "0" 
+                string += "0 " 
                 for i in range(1,len(contour_list),2): 
                     string += str(round(contour_list[i-1]/width,6)) #x coordinate
                     string += " "
