@@ -170,7 +170,7 @@ def generate_hyperparameters():
 def ga_train(indv, generation, learning_rate = 0.00025):
     """ For training with the genetic algorithm, changing the hyperparameters
     """
-
+    print(learning_rate)
     
     cfg = config() 
     cfg.DATASETS.TRAIN = ("ga_damage_train")
