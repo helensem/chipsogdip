@@ -189,7 +189,7 @@ def ga_train(indv, generation, learning_rate = 0.00025):
 def calculate_fitness(indv, hyperparameters, generation):
     
     #dataset = r"/cluster/home/helensem/Master/data/set1"
-    learning_rate = hyperparameters["learning_rate"]
+    learning_rate = float(hyperparameters["learning_rate"])
     cfg = ga_train(indv, generation, learning_rate)
 
     #TRAIN
