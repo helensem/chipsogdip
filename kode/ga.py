@@ -167,7 +167,7 @@ def generate_hyperparameters():
     init_values["mrcnn_mask_loss"] = np.linspace(1,10)
     return init_values
 
-def ga_train(indv, learning_rate = 0.00025):
+def ga_train(indv, generation, learning_rate = 0.00025):
     """ For training with the genetic algorithm, changing the hyperparameters
     """
 
@@ -176,7 +176,7 @@ def ga_train(indv, learning_rate = 0.00025):
     cfg.DATASETS.TRAIN = ("ga_damage_train")
     cfg.SOLVER.BASE_LR = learning_rate #0.00025 
     cfg.SOLVER.MAX_ITER = 200*30 #1631 img* 30 epochs
-    cfg.OUTPUT_DIR = f"/cluster/home/helensem/Master/output/run_ga/{indv}" #! MUST MATCH WITH CURRENT MODEL 
+    cfg.OUTPUT_DIR = f"/cluster/work/helensem/Master/output/run_ga/gen_{generation}/{indv}" #! MUST MATCH WITH CURRENT MODEL 
     os.makedirs(cfg.OUTPUT_DIR, exist_ok=True)
     
     #TRAIN
@@ -186,11 +186,11 @@ def ga_train(indv, learning_rate = 0.00025):
     return cfg
 
 
-def calculate_fitness(indv, hyperparameters):
+def calculate_fitness(indv, hyperparameters, generation):
     
     #dataset = r"/cluster/home/helensem/Master/data/set1"
     learning_rate = hyperparameters["learning_rate"]
-    cfg = ga_train(indv, learning_rate)
+    cfg = ga_train(indv, generation, learning_rate)
 
     #TRAIN
 
@@ -282,7 +282,7 @@ if __name__ == "__main__":
 
     for generation in range(generations):
         # evaluate the fitness of each individual in the population
-        fitness_scores = [calculate_fitness(idx, individual) for idx, individual in enumerate(population)]
+        fitness_scores = [calculate_fitness(idx, individual, generation) for idx, individual in enumerate(population)]
         
         # select the fittest individuals to breed the next generation
         sorted_population = [x for _, x in sorted(zip(fitness_scores, population), reverse=True)]
