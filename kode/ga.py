@@ -15,10 +15,10 @@ import sys
 sys.path.append("cluster/home/helensem/Master/chipsogdip/kode")
 from eval import evaluate_model
 from training import config
-from dataset import load_damage_dicts, get_jason_dict
+from dataset import load_damage_dicts, get_json_dict
 import os
 
-from detectron2.engine import DefaultPredictor, DefaultTrainer
+from detectron2.engine import DefaultTrainer
 from detectron2.data import MetadataCatalog, DatasetCatalog
 
 
@@ -275,9 +275,10 @@ population = [dict(zip(hyperparameters.keys(), [random.choice(values) for values
 
 
 if __name__ == "__main__":
+    path = r"/cluster/home/helensem/Master/data/set1"
 
     for d in ["train", "val"]:
-        DatasetCatalog.register("ga_damage_" + d, lambda d=d: get_jason_dict(d))
+        DatasetCatalog.register("ga_damage_" + d, lambda d=d: get_json_dict(path, d))
         MetadataCatalog.get("ga_damage_" + d).set(thing_classes=["damage"])
 
     for generation in range(generations):
