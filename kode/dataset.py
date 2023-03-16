@@ -74,7 +74,7 @@ def find_contours(sub_mask):
     """
     assert sub_mask is not None, "file could not be read, check with os.path.exists()"
     imgray = cv2.cvtColor(sub_mask, cv2.COLOR_BGR2GRAY)
-    ret, thresh = cv2.threshold(sub_mask, 127, 255, 0)
+    ret, thresh = cv2.threshold(imgray, 127, 255, 0)
     contours, hierarchy = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     assert len(contours)!= 0, print(contours)
     return contours[0]
