@@ -36,9 +36,7 @@ class CustomTrainer(DefaultTrainer):
         if output_folder is None:
             output_folder = os.path.join(cfg.OUTPUT_DIR, "inference")
         
-        
-        dataset_dict = DatasetCatalog.get(dataset_name)
-        return evaluate_model(cfg, dataset_dict) 
+        return COCOEvaluator(dataset_name, cfg, True, output_folder)
 
     def build_hooks(self):
         hooks = super().build_hooks()
@@ -72,10 +70,10 @@ def config():
     cfg.SOLVER.STEPS = [16310, 32620] #Reduce lr by half per 10th epoch  
     cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 128 
     cfg.MODEL.ROI_HEADS.NUM_CLASSES = 1 
-    cfg.OUTPUT_DIR = "/cluster/home/helensem/Master/output/run2/resnet101" #! MUST MATCH WITH CURRENT MODEL 
+    cfg.OUTPUT_DIR = "/cluster/work/helensem/Master/output/run2/resnet101" #! MUST MATCH WITH CURRENT MODEL 
 
     return cfg 
-
+ 
 
 
 
