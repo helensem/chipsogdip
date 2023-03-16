@@ -148,9 +148,9 @@ def load_damage_dicts(dataset_dir, subset): #? Possibly write this to a JSON-fil
         dataset_dicts.append(record)
     
     #* For writing to JSON-file
-    #json_object = json.dumps(dataset_dicts,indent=200)
-    #with open(f"/cluster/home/helensem/Master/chipsogdip/damage_{subset}.json", "w") as f:
-     #   f.write(json_object)
+    json_object = json.dumps(dataset_dicts,indent=200)
+    with open(f"/cluster/home/helensem/Master/data/set1/damage_{subset}.json", "w") as f:
+        f.write(json_object)
     return dataset_dicts
 
 
@@ -172,8 +172,7 @@ def load_mask(mask_dir):
 
 
 ####### MAIN ##################
-
-#if __name__ == "__main__": 
+if __name__ == "__main__": 
  #   root = r"/cluster/home/helensem/Master/Labeled_pictures"
   #  destination = r"/cluster/home/helensem/Master/damage_data"
 
@@ -185,8 +184,8 @@ def load_mask(mask_dir):
     #print(load_damage_dicts(r"/cluster/home/helensem/Master/data", "train"))
     #train_dict = load_damage_dicts(r"/cluster/home/helensem/Master/Labeled_pictures", "train")
     #val_dict = load_damage_dicts(r"/cluster/home/helensem/Master/Labeled_pictures", "val")
-    #load_damage_dicts(r"/cluster/home/helensem/Master/data/set1", "train")
-    #load_damage_dicts(r"/cluster/home/helensem/Master/data/set1", "val")
+    load_damage_dicts(r"/cluster/home/helensem/Master/data/set1", "train")
+    load_damage_dicts(r"/cluster/home/helensem/Master/data/set1", "val")
     #im = cv2.imread(r"/cluster/home/helensem/Master/data/train/IMG_3400/1.png")
     #print(im.shape)
     #mask = cv2.imread(r"/cluster/home/helensem/Master/data/train/IMG_3400/masks/grov_merking_1.png")
