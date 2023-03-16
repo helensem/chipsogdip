@@ -175,7 +175,8 @@ def ga_train(indv, generation, learning_rate = 0.00025):
     cfg = config() 
     cfg.DATASETS.TRAIN = ("ga_damage_train")
     cfg.SOLVER.BASE_LR = learning_rate #0.00025 
-    cfg.SOLVER.MAX_ITER = 200*30 #1631 img* 30 epochs
+    cfg.SOLVER.MAX_ITER = 200*30 
+    cfg.SOLVER.STEPS = []
     cfg.OUTPUT_DIR = f"/cluster/work/helensem/Master/output/run_ga/gen_{generation}/{indv}" #! MUST MATCH WITH CURRENT MODEL 
     os.makedirs(cfg.OUTPUT_DIR, exist_ok=True)
     
@@ -249,7 +250,7 @@ def get_best(population):
 mutation_rate = 0.2
 generations = 3 
 hyperparameters = {}
-hyperparameters["learning_rate"]= np.linspace(0.001, 0.1) #generate_hyperparameters()
+hyperparameters["learning_rate"]= np.linspace(0.0001, 0.001) #generate_hyperparameters()
 population_size = 2
 
 population = [dict(zip(hyperparameters.keys(), [random.choice(values) for values in hyperparameters.values()])) for _ in range(population_size)]
