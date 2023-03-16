@@ -73,7 +73,7 @@ def find_contours(sub_mask):
         sub_mask (numpy array): binary mask 
     """
     assert sub_mask is not None, "file could not be read, check with os.path.exists()"
-    #imgray = cv2.cvtColor(sub_mask, cv2.COLOR_BGR2GRAY)
+    imgray = cv2.cvtColor(sub_mask, cv2.COLOR_BGR2GRAY)
     ret, thresh = cv2.threshold(sub_mask, 127, 255, 0)
     contours, hierarchy = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     assert len(contours)!= 0, print(contours)
@@ -165,6 +165,53 @@ def load_mask(mask_dir):
     mask = np.stack(mask, axis=-1)
     return mask.astype(bool)
 
+
+
+
+
+
+
+####### MAIN ##################
+
+#if __name__ == "__main__": 
+ #   root = r"/cluster/home/helensem/Master/Labeled_pictures"
+  #  destination = r"/cluster/home/helensem/Master/damage_data"
+
+   # for d in ['train', 'val']:
+    #    load_damage_yolo(root, d, destination)
+
+    #ga_train_sets()
+
+    #print(load_damage_dicts(r"/cluster/home/helensem/Master/data", "train"))
+    #train_dict = load_damage_dicts(r"/cluster/home/helensem/Master/Labeled_pictures", "train")
+    #val_dict = load_damage_dicts(r"/cluster/home/helensem/Master/Labeled_pictures", "val")
+    #load_damage_dicts(r"/cluster/home/helensem/Master/data/set1", "train")
+    #load_damage_dicts(r"/cluster/home/helensem/Master/data/set1", "val")
+    #im = cv2.imread(r"/cluster/home/helensem/Master/data/train/IMG_3400/1.png")
+    #print(im.shape)
+    #mask = cv2.imread(r"/cluster/home/helensem/Master/data/train/IMG_3400/masks/grov_merking_1.png")
+    #print(mask.shape)
+
+
+    #Load data to detectron 
+    # for d in ["train", "val"]:
+    #     DatasetCatalog.register("damage_" + d, lambda d=d: load_damage_dicts(r"/cluster/home/helensem/Master/data", d))
+    #     MetadataCatalog.get("damage_" + d).set(thing_classes=["sky"])
+
+    # damage_metadata = MetadataCatalog.get("damage_train")
+    # dataset_dicts = load_damage_dicts(r"/cluster/home/helensem/Master/data", "train")
+
+    # #Visualization 
+    # for d in random.sample(dataset_dicts, 1): 
+    #    img = cv2.imread(d["file_name"])
+    #    visualizer = Visualizer(img[:,:,::-1], metadata = damage_metadata, scale =0.5)
+    #    out = visualizer.draw_dataset_dict(d)
+    #    cv2.imshow("imageout", out.get_image()[:,:,::-1])
+    #    cv2.waitKey(0)
+    #    # closing all open windows
+    #    cv2.destroyAllWindows()
+
+
 def load_damage_yolo(root, subset,destination): 
     """
     Loads the images from a dataset with a dictionary of the annotations, to be loaded in detectron 
@@ -219,8 +266,6 @@ def load_damage_yolo(root, subset,destination):
         with open(txt_path, "w") as f: 
           f.write(string)
 
-
-
 def get_jason_dict(subset="train"):
 
     if subset == "train":
@@ -231,44 +276,3 @@ def get_jason_dict(subset="train"):
         with open(r"/cluster/home/helensem/Master/chipsogdip/damage_val.json", "r") as f:
             data = json.load(f)            
         return data
-
-
-####### MAIN ##################
-
-if __name__ == "__main__": 
-    root = r"/cluster/home/helensem/Master/Labeled_pictures"
-    destination = r"/cluster/home/helensem/Master/damage_data"
-
-    for d in ['train', 'val']:
-        load_damage_yolo(root, d, destination)
-
-    #ga_train_sets()
-
-    #print(load_damage_dicts(r"/cluster/home/helensem/Master/data", "train"))
-    #train_dict = load_damage_dicts(r"/cluster/home/helensem/Master/Labeled_pictures", "train")
-    #val_dict = load_damage_dicts(r"/cluster/home/helensem/Master/Labeled_pictures", "val")
-    #load_damage_dicts(r"/cluster/home/helensem/Master/data/set1", "train")
-    #load_damage_dicts(r"/cluster/home/helensem/Master/data/set1", "val")
-    #im = cv2.imread(r"/cluster/home/helensem/Master/data/train/IMG_3400/1.png")
-    #print(im.shape)
-    #mask = cv2.imread(r"/cluster/home/helensem/Master/data/train/IMG_3400/masks/grov_merking_1.png")
-    #print(mask.shape)
-
-
-    #Load data to detectron 
-    # for d in ["train", "val"]:
-    #     DatasetCatalog.register("damage_" + d, lambda d=d: load_damage_dicts(r"/cluster/home/helensem/Master/data", d))
-    #     MetadataCatalog.get("damage_" + d).set(thing_classes=["sky"])
-
-    # damage_metadata = MetadataCatalog.get("damage_train")
-    # dataset_dicts = load_damage_dicts(r"/cluster/home/helensem/Master/data", "train")
-
-    # #Visualization 
-    # for d in random.sample(dataset_dicts, 1): 
-    #    img = cv2.imread(d["file_name"])
-    #    visualizer = Visualizer(img[:,:,::-1], metadata = damage_metadata, scale =0.5)
-    #    out = visualizer.draw_dataset_dict(d)
-    #    cv2.imshow("imageout", out.get_image()[:,:,::-1])
-    #    cv2.waitKey(0)
-    #    # closing all open windows
-    #    cv2.destroyAllWindows()

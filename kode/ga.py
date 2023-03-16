@@ -199,9 +199,8 @@ def calculate_fitness(indv, hyperparameters):
     cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
     #cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.7
 
-    predictor = DefaultPredictor(cfg)
 
-    corr_iou, bg_iou, mean_iou = evaluate_model(predictor, val_dict) 
+    corr_iou, bg_iou, mean_iou = evaluate_model(cfg, val_dict) 
     score = 1 - mean_iou 
 
     return score
