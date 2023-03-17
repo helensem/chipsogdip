@@ -47,39 +47,41 @@ def load_sky_yolo(root, subset,destination):
         #print(mask)
         #print(mask.dtype)
         string = ""
-        mask = np.where(mask==3, 255,0)
-        if id == "ADE_val_00000370.png":
-            print(mask)
-        if 255 not in mask: 
-            continue
-        mask = mask.astype('uint8')
-        #print(mask)
-        height, width = mask.shape
-        contours = find_contours(mask)
-        for contour in contours:
-            contour_list = contour.flatten().tolist()
-            if len(contour_list) < 5:
+        for label in [3, 22]: # 3 for sky, 22 for water 
+            mask = np.where(mask==label, 255,0)
+            if 255 not in mask: 
                 continue
-            string += "0 "
-        #print(mask.shape)
-            for i in range(1,len(contour_list),2): 
-                string += str(round(contour_list[i-1]/width,6)) #x coordinate
-                string += " "
-                string += str(round(contour_list[i]/height, 6)) # y coordinate
-                string += " "
-            string+= "\n"
-        image_id = os.path.splitext(id)[0] + '.jpg'
-        image_source = os.path.join(source, image_id)
-        image_dest = os.path.join(destination, "images", subset, image_id)
-        #print("destination: ", image_dest)
-        #print("source: ", image_source)
-        shutil.copy(image_source, image_dest)
+            mask = mask.astype('uint8')
+            #print(mask)
+            height, width = mask.shape
+            contours = find_contours(mask)
+            for contour in contours:
+                contour_list = contour.flatten().tolist()
+                if len(contour_list) < 5:
+                    continue
+                if mask == 3:
+                    string += "0 "
+                else:
+                    string += "1 "
+            #print(mask.shape)
+                for i in range(1,len(contour_list),2): 
+                    string += str(round(contour_list[i-1]/width,6)) #x coordinate
+                    string += " "
+                    string += str(round(contour_list[i]/height, 6)) # y coordinate
+                    string += " "
+                string+= "\n"
+            image_id = os.path.splitext(id)[0] + '.jpg'
+            image_source = os.path.join(source, image_id)
+            image_dest = os.path.join(destination, "images", subset, image_id)
+            print("destination: ", image_dest)
+            print("source: ", image_source)
+            #shutil.copy(image_source, image_dest)
         print(string)
         txt_id = os.path.splitext(id)[0]+'.txt' 
         txt_path = os.path.join(destination, "labels", subset, txt_id)
         print(txt_path)
-        with open(txt_path, "w") as f: 
-          f.write(string)
+        #with open(txt_path, "w") as f: 
+        #  f.write(string)
 
 
 if __name__ == '__main__':
