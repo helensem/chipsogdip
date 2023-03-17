@@ -263,7 +263,7 @@ mutation_rate = 0.2
 generations = 3 
 hyperparameters = {}
 hyperparameters["learning_rate"]= np.linspace(0.0001, 0.001) #generate_hyperparameters()
-population_size = 2
+population_size = 4
 
 population = [dict(zip(hyperparameters.keys(), [random.choice(values) for values in hyperparameters.values()])) for _ in range(population_size)]
 
@@ -301,7 +301,6 @@ if __name__ == "__main__":
         # select the fittest individuals to breed the next generation
         sorted_population = [x for _, x in sorted(zip(fitness_scores, population), reverse=True)]
         fittest_individuals = sorted_population[:int(population_size/2)]
-        
         # create the next generation by breeding the fittest individuals
         new_population = []
         while len(new_population) < population_size:
