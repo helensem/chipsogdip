@@ -322,7 +322,7 @@ if __name__ == "__main__":
         population = new_population
 
     # select the fittest individual from the final population
-    fitness_scores = [calculate_fitness(individual) for individual in population]
+    fitness_scores = [calculate_fitness(idx, individual, generations) for idx, individual in enumerate(population)]
     sorted_population = [x for _, x in sorted(zip(fitness_scores, population), reverse=True)]
     fittest_individual = sorted_population[0]
     print("Best individual is: ", fittest_individual)
