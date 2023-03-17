@@ -76,7 +76,7 @@ def generate_random_hyperparameters(): #* For testing
 def mutate_hyperparameters(hyperparameters):
   mutation_probability = 0.05
   if random.uniform(0, 1) < mutation_probability:
-    hyperparameters['learning_rate'] = random.uniform(0.001, 0.1)
+    hyperparameters['learning_rate'] = random.uniform(0.0001, 0.001)
 
 def mutate_random_hyperparameters_full(hyperparameters):
     mutation_probability = 0.05
@@ -312,7 +312,7 @@ if __name__ == "__main__":
             for key in hyperparameters.keys():
                 if random.random() < mutation_rate:
                     # randomly mutate the hyperparameter with a small random value
-                    new_individual[key] = parent1[key] + random.gauss(0, 0.1)
+                    new_individual[key] = random.uniform(0.0001, 0.001)
                 else:
                     # randomly select the hyperparameter from one of the parents
                     new_individual[key] = random.choice([parent1[key], parent2[key]])
