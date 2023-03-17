@@ -70,18 +70,18 @@ def load_sky_yolo(root, subset,destination):
                     string += str(round(contour_list[i]/height, 6)) # y coordinate
                     string += " "
                 string+= "\n"
-            image_id = os.path.splitext(id)[0] + '.jpg'
-            image_source = os.path.join(source, image_id)
-            image_dest = os.path.join(destination, "images", subset, image_id)
-            print("destination: ", image_dest)
-            print("source: ", image_source)
-            #shutil.copy(image_source, image_dest)
+        image_id = os.path.splitext(id)[0] + '.jpg'
+        image_source = os.path.join(source, image_id)
+        image_dest = os.path.join(destination, "images", subset, image_id)
+        print("destination: ", image_dest)
+        print("source: ", image_source)
+        shutil.copy(image_source, image_dest)
         print(string)
         txt_id = os.path.splitext(id)[0]+'.txt' 
         txt_path = os.path.join(destination, "labels", subset, txt_id)
         print(txt_path)
-        #with open(txt_path, "w") as f: 
-        #  f.write(string)
+        with open(txt_path, "w") as f: 
+          f.write(string)
 
 
 if __name__ == '__main__':
