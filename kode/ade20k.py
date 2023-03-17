@@ -59,7 +59,7 @@ def load_sky_yolo(root, subset,destination):
                 contour_list = contour.flatten().tolist()
                 if len(contour_list) < 5:
                     continue
-                if mask == 3:
+                if label == 3:
                     string += "0 "
                 else:
                     string += "1 "
