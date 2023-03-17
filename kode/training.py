@@ -79,7 +79,7 @@ def config():
 
 
 if __name__ == "__main__":
-    mode = "inference"
+    mode = "train"
     for d in ["train", "val"]:
         DatasetCatalog.register("damage_" + d, lambda d=d: load_damage_dicts(r"/cluster/home/helensem/Master/Labeled_pictures",d))
         MetadataCatalog.get("damage_" + d).set(thing_classes=["damage"])
@@ -96,7 +96,7 @@ if __name__ == "__main__":
 
         
         #TRAIN
-        trainer = CustomTrainer(cfg)
+        trainer = DefaultTrainer(cfg)
         trainer.resume_or_load(resume=False)
         trainer.train() 
     
