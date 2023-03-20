@@ -75,53 +75,54 @@ def generate_random_hyperparameters(): #* For testing
 
 def mutate_hyperparameters(hyperparameters):
   mutation_probability = 0.05
-  if random.uniform(0, 1) < mutation_probability:
+  if key == "rpn_anchor_stride":
     hyperparameters['learning_rate'] = random.uniform(0.0001, 0.001)
 
-def mutate_random_hyperparameters_full(hyperparameters):
-    mutation_probability = 0.05
-    if random.uniform(0, 1) < mutation_probability:
-        hyperparameters["rpn_anchor_stride"] = random.randint(1,4)
-    if random.uniform(0, 1) < mutation_probability:
-        hyperparameters["rpn_nms_threshold"] = random.uniform(0.5,1)
-    if random.uniform(0, 1) < mutation_probability:
-         hyperparameters["rpn_train_anchors_per_image"] = np.random.choice([64, 128, 256, 512, 1024])
-    if random.uniform(0, 1) < mutation_probability:
-         hyperparameters["pre_nms_limit"] = random.uniform(1000,3000, dtype=int)
-    if random.uniform(0, 1) < mutation_probability:
-         hyperparameters["post_nms_rois_training"] = random.uniform(1000,3000, dtype=int)
-    if random.uniform(0, 1) < mutation_probability:
-        hyperparameters["post_nms_rois_inference"] = random.uniform(600,2000, dtype=int)
-    if random.uniform(0, 1) < mutation_probability:
-         hyperparameters["mean_pixel"] = np.array([random.uniform(115.0,130.0), 
+def mutate(key):
+    mut_value = 0
+    if key == "rpn_anchor_stride":
+        mut_value = random.randint(1,4)
+    if key == "rpn_nms_threshold":
+        mut_value = random.uniform(0.5,1)
+    if key == "rpn_train_anchors_per_image":
+         mut_value = np.random.choice([64, 128, 256, 512, 1024])
+    if key == "pre_nms_limit":
+         mut_value = random.uniform(1000,3000, dtype=int)
+    if key == "post_nms_rois_training":
+         mut_value = random.uniform(1000,3000, dtype=int)
+    if key == "post_nms_rois_inference":
+        mut_value = random.uniform(600,2000, dtype=int)
+    if key == "mean_pixel":
+         mut_value = np.array([random.uniform(115.0,130.0), 
                                             random.uniform(110.0,125.0),
                                             random.uniform(95.0,115.0)])             
-    if random.uniform(0, 1) < mutation_probability:
-        hyperparameters["train_rois_per_image = random.uniform(150,500, dtype=int)"]
-    if random.uniform(0, 1) < mutation_probability:
-        hyperparameters["rois_positive_ratio"] = random.uniform(0.2,0.5)
-    if random.uniform(0, 1) < mutation_probability:
-        hyperparameters["max_gt_instances"] = random.uniform(70,400, dtype=int)
-    if random.uniform(0, 1) < mutation_probability:
-        hyperparameters["detection_max_instances"] = random.uniform(70,400, dtype=int)
-    if random.uniform(0, 1) < mutation_probability:
-        hyperparameters["detection_min_confidence"] = random.uniform(0.3,0.9)
-    if random.uniform(0, 1) < mutation_probability:
-        hyperparameters["detection_nms_threshold"] = random.uniform(0.2,0.7)
-    if random.uniform(0, 1) < mutation_probability:
-        hyperparameters["learning_momentum"] = random.uniform(0.75,0.95)
-    if random.uniform(0, 1) < mutation_probability:
-        hyperparameters["weight_decay"] = random.uniform(0.00007, 0.000125)
-    if random.uniform(0, 1) < mutation_probability:
-        hyperparameters["rpn_class_loss"] = random.uniform(1,10)
-    if random.uniform(0, 1) < mutation_probability:
-        hyperparameters["rpn_bbox_loss"] = random.uniform(1,10)
-    if random.uniform(0, 1) < mutation_probability:
-        hyperparameters["mrcnn_class_loss"] = random.uniform(1,10)
-    if random.uniform(0, 1) < mutation_probability:
-        hyperparameters["mrcnn_bbox_loss"] = random.uniform(1,10)
-    if random.uniform(0, 1) < mutation_probability:
-        hyperparameters["mrcnn_mask_loss"] = random.uniform(1,10)
+    if key == "train_rois_per_image":
+        mut_value = random.uniform(150,500, dtype=int)
+    if key == "rois_positive_ratio":
+        mut_value = random.uniform(0.2,0.5)
+    if key == "max_gt_instances":
+        mut_value = random.uniform(70,400, dtype=int)
+    if key == "detection_max_instances":
+        mut_value = random.uniform(70,400, dtype=int)
+    if key == "detection_min_confidence":
+        mut_value = random.uniform(0.3,0.9)
+    if key == "detection_nms_threshold":
+        mut_value = random.uniform(0.2,0.7)
+    if key == "learning_momentum":
+        mut_value = random.uniform(0.75,0.95)
+    if key == "weight_decay":
+        mut_value = random.uniform(0.00007, 0.000125)
+    if key == "rpn_class_loss":
+        mut_value = random.uniform(1,10)
+    if key == "rpn_bbox_loss":
+        mut_value = random.uniform(1,10)
+    if key == "mrcnn_class_loss":
+        mut_value = random.uniform(1,10)
+    if key == "mrcnn_bbox_loss":
+        mut_value = random.uniform(1,10)
+    if key == "mrcnn_mask_loss":
+        mut_value = random.uniform(1,10)
+    return mut_value
 
 # def build_model(hidden_layer_size, learning_rate, dropout_rate):
 #     ##### CHANGE HERE ##########
@@ -239,24 +240,6 @@ def crossover(parent1, parent2):
 	print("Performed crossover between two chromosomes")
 	return child1, child2
 
-def mutate(chromosome):
-	mutation_point = random.randint(0, len(chromosome)-1)
-	if chromosome[mutation_point] == 0:
-		chromosome[mutation_point] = 1
-	else:
-		chromosome[mutation_point] = 0
-	print("Performed mutation on a chromosome")
-	return chromosome
-
-
-def get_best(population):
-	fitness_values = []
-	for chromosome in population:
-		fitness_values.append(calculate_fitness(chromosome))
-
-	max_value = max(fitness_values)
-	max_index = fitness_values.index(max_value)
-	return population[max_index]
 
 
 mutation_rate = 0.2
@@ -275,9 +258,9 @@ population = [dict(zip(hyperparameters.keys(), [random.choice(values) for values
 # 	child1, child2 = crossover(parent1, parent2)
 
 # 	# perform mutation on the two new chromosomes
-# 	if random.uniform(0, 1) < mutation_probability:
+# 	if key == "rpn_anchor_stride":
 # 		child1 = mutate(child1)
-# 	if random.uniform(0, 1) < mutation_probability:
+# 	if key == "rpn_anchor_stride":
 # 		child2 = mutate(child2)
 
 # 	# replace the old population with the new population
@@ -312,7 +295,7 @@ if __name__ == "__main__":
             for key in hyperparameters.keys():
                 if random.random() < mutation_rate:
                     # randomly mutate the hyperparameter with a small random value
-                    new_individual[key] = random.uniform(0.0001, 0.001)
+                    new_individual[key] = mutate(key)
                 else:
                     # randomly select the hyperparameter from one of the parents
                     new_individual[key] = random.choice([parent1[key], parent2[key]])
