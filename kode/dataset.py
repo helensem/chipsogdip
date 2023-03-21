@@ -167,12 +167,33 @@ def load_mask(mask_dir):
 
 
 
+def load_pictures(dataset_dir, subset): #? Possibly write this to a JSON-file? 
+    """
+    Loads the images from a dataset with a dictionary of the annotations, to be loaded in detectron 
+    """ 
 
+
+    assert subset in ["train", "val"]
+    dataset_dir = os.path.join(dataset_dir, subset)
+    image_ids = next(os.walk(dataset_dir))[1]
+    destination = r"/cluster/home/helensem/Master/damage_data"
+    #idx = 0
+    for image_id in image_ids:
+
+        image_dir = os.path.join(dataset_dir, image_id)
+        print(image_dir)
+        (_, _, file_names) = next(os.walk(image_dir))
+        file_name = file_names[0]
+        
+        image_path = os.path.join(image_dir, file_name)
+        destination_path = os.path.join(destination, file_name)
+        shutil.copy(image_path, destination_path)
 
 
 
 ####### MAIN ##################
-#if __name__ == "__main__": 
+if __name__ == "__main__": 
+    load_pictures(r"/cluster/home/helensem/Master/Labeled_pictures", "val")
  #   root = r"/cluster/home/helensem/Master/Labeled_pictures"
   #  destination = r"/cluster/home/helensem/Master/damage_data"
 
