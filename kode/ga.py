@@ -122,6 +122,8 @@ def mutate(key):
         mut_value = random.uniform(1,10)
     if key == "mrcnn_mask_loss":
         mut_value = random.uniform(1,10)
+    if key == "epochs": 
+        mut_value = random.uniform(20,40, dtype=int)
     return mut_value
 
 # def build_model(hidden_layer_size, learning_rate, dropout_rate):
@@ -148,34 +150,41 @@ def mutate(key):
 
 def generate_hyperparameters(): 
     init_values = {} 
-    init_values["RPN_ANCHOR_STRIDE"] = np.array([1,2,3,4])
-    init_values["RPN_NMS_THRESHOLD"] = np.linspace(0.5, 1)
-    init_values["RPN_TRAIN_ANCHORS_PER_IMAGE"] = np.array([64, 128, 256, 512, 1024])
-    init_values["PRE_NMS_LIMIT"] = np.linspace(4000,8000,dtype=int)
-    init_values["POST_NMS_ROIS_TRAINING"] = np.linspace(1000,3000,dtype=int)
-    init_values["POST_NMS_ROIS_INFERENCE"] = np.linspace(600,2000,dtype=int)
+    #init_values["rpn_anchor_stride"] = np.array([1,2,3,4])
+    init_values["rpn_nms_theshold"] = np.linspace(0.5, 1)
+    init_values["rpn_batch_size"] = np.array([64, 128, 256, 512, 1024])
+    init_values["pre_nms_limit"] = np.linspace(4000,8000,dtype=int)
+    init_values["post_nms_rois_training"] = np.linspace(1000,3000,dtype=int)
+    init_values["post_nms_rois_inference"] = np.linspace(600,2000,dtype=int)
+    pixels = np.array([random.shuffle(np.linspace(115.0,130.0)), 
+                                            random.shuffle(np.linspace(110.0,125.0)),
+                                            random.shuffle(np.linspace(100.0,115.0))])
+    init_values["mean_pixel"] = pixels.T
+
     #init_values["MEAN_PIXEL"] = np.array([np.linspace(115.0,130.0,), 
                                           #  np.linspace(110.0,125.0),
                                            # np.linspace(95.0,115.0)])
-    init_values["TRAIN_ROIS_PER_IMAGE"] = np.linspace(150,500,dtype=int)
-    init_values["ROI_POSITIVE_RATIO"] = np.linspace(0.2, 0.5)
-    init_values["MAX_GT_INSTANCES"] = np.linspace(70,400,dtype=int)
-    init_values["DETECTION_MAX_INSTANCES"] = np.linspace(70,400,dtype=int)
-    init_values["DETECTION_MIN_CONFIDENCE"] = np.linspace(0.3,0.9)
-    init_values["DETECTION_NMS_THRESHOLD"] = np.linspace(0.2,0.7)
-    init_values["LEARNING_MOMENTUM"] = np.linspace(0.75,0.95)
-    init_values["WEIGHT_DECAY"] = np.linspace(0.00007, 0.000125)
-    init_values["rpn_class_loss"] = np.linspace(1,10)
+    init_values["roi_batch_size"] = np.array([64, 128, 256, 512, 1024])#np.linspace(150,500,dtype=int)
+    init_values["roi_positive_ratio"] = np.linspace(0.2, 0.5)
+    #init_values["max_gt_instances"] = np.linspace(70,400,dtype=int)
+    #init_values["detection_max_instances"] = np.linspace(70,400,dtype=int)
+    init_values["detection_min_confidence"] = np.linspace(0.3,0.9)
+    #init_values["detection_nms_threshold"] = np.linspace(0.2,0.7)
+    init_values["learning_momentum"] = np.linspace(0.75,0.95)
+    init_values["weight_decay"] = np.linspace(0.00007, 0.000125)
+    #init_values["rpn_class_loss"] = np.linspace(1,10)
     init_values["rpn_bbox_loss"] = np.linspace(1,10)
-    init_values["mrcnn_class_loss"] = np.linspace(1,10)
+    #init_values["mrcnn_class_loss"] = np.linspace(1,10)
     init_values["mrcnn_bbox_loss"] = np.linspace(1,10)
-    init_values["mrcnn_mask_loss"] = np.linspace(1,10)
+    #init_values["mrcnn_mask_loss"] = np.linspace(1,10)
+    init_values["epochs"] = np.linspace(20,40, dtpye=int)
+    init_values["learning_rate"] = np.linspace(0.0001, 0.001)
     return init_values
 
-def ga_train(indv, generation, learning_rate = 0.00025):
+def ga_train(indv, generation, epochs, rpn_batch_size, roi_batch_size, rpn_nms_thresh, learning_rate, pre_nms_limit, post_nms_train, post_nms_val, roi_pos_ratio, momentum, weight_decay, det_thresh, rpn_bbox_loss, roi_bbox_loss):
     """ For training with the genetic algorithm, changing the hyperparameters
     """
-    print(learning_rate)
+    
     
     cfg = get_cfg() 
     cfg.merge_from_file(model_zoo.get_config_file("COCO-InstanceSegmentation/mask_rcnn_R_101_FPN_3x.yaml"))  #! MUST MATCH WITH TRAINING WEIGHTS
@@ -184,11 +193,28 @@ def ga_train(indv, generation, learning_rate = 0.00025):
     cfg.DATASETS.TEST = ()
     cfg.SOLVER.IMS_PER_BATCH = 1
     cfg.SOLVER.BASE_LR = learning_rate
-    cfg.SOLVER.GAMMA = 200*30
-    cfg.SOLVER.MAX_ITER =  200 #1631 img* 30 epochs
-    cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 128 
+    #cfg.SOLVER.GAMMA = 0.5
+    cfg.SOLVER.MAX_ITER =  epochs #30*200 #1631 img* 30 epochs
+    cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = roi_batch_size
     cfg.MODEL.ROI_HEADS.NUM_CLASSES = 1 
     cfg.OUTPUT_DIR = f"/cluster/work/helensem/Master/output/run_ga/gen_{generation}/{indv}" #! MUST MATCH WITH CURRENT MODEL 
+    
+    cfg.MODEL.RPN.BATCH_SIZE_PER_IMAGE = rpn_batch_size
+    cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = roi_batch_size
+
+    cfg.MODEL.RPN.PRE_NMS_TOPK_TRAIN = pre_nms_limit
+    cfg.MODEL.RPN.NMS_THRESH = rpn_nms_thresh
+    cfg.MODEL.RPN.POST_NMS_TOPK_TRAIN = post_nms_train 
+    cfg.MODEL.RPN.POST_NMS_TOPK_TEST = post_nms_val
+    
+    cfg.MODEL.ROI_HEADS.POSITIVE_FRACTION = roi_pos_ratio 
+    cfg.SOLVER.MOMENTUM = momentum
+    cfg.SOLVER.WEIGHT_DECAY = weight_decay
+    cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = det_thresh
+    cfg.MODEL.ROI_BOX_HEAD.BBOX_REG_LOSS_WEIGHT = roi_bbox_loss
+    
+    cfg.MODEL.RPN.BBOX_REG_LOSS_WEIGHT = rpn_bbox_loss
+
     os.makedirs(cfg.OUTPUT_DIR, exist_ok=True)
     
     #TRAIN
@@ -203,8 +229,24 @@ def ga_train(indv, generation, learning_rate = 0.00025):
 def calculate_fitness(indv, hyperparameters, generation):
     
     #dataset = r"/cluster/home/helensem/Master/data/set1"
+    #* Set hyperparameters
+    
+    epochs = int(hyperparameters["epochs"])
+    rpn_batch_size = int(hyperparameters["rpn_batch_size"])
+    roi_batch_size = int(hyperparameters["roi_batch_size"])
+    rpn_nms_thresh = float(hyperparameters["rpn_nms_threshold"])
     learning_rate = float(hyperparameters["learning_rate"])
-    cfg = ga_train(indv, generation, learning_rate)
+    pre_nms_limit = float(hyperparameters["pre_nms_limit"])
+    post_nms_train = float(hyperparameters["post_nms_training"])
+    post_nms_val = float(hyperparameters["post_nms_inference"])
+    roi_pos_ratio = float(hyperparameters["roi_positive_ratio"])
+    momentum = float(hyperparameters["learning_momentum"])
+    weight_decay = float(hyperparameters["weight_decay"])
+    det_thresh = float(hyperparameters["detection_min_confidence"])
+    rpn_bbox_loss = float(hyperparameters["rpn_bbox_loss"])
+    roi_bbox_loss = float(hyperparameters["roi_bbox_loss"])
+
+    cfg = ga_train(indv, generation, epochs, rpn_batch_size, roi_batch_size, rpn_nms_thresh, learning_rate, pre_nms_limit, post_nms_train, post_nms_val, roi_pos_ratio, momentum, weight_decay, det_thresh, rpn_bbox_loss, roi_bbox_loss)
 
     #TRAIN
 
@@ -244,8 +286,8 @@ def crossover(parent1, parent2):
 
 mutation_rate = 0.2
 generations = 3 
-hyperparameters = {}
-hyperparameters["learning_rate"]= np.linspace(0.0001, 0.001) #generate_hyperparameters()
+#hyperparameters = {}
+hyperparameters = generate_hyperparameters()
 population_size = 4
 
 population = [dict(zip(hyperparameters.keys(), [random.choice(values) for values in hyperparameters.values()])) for _ in range(population_size)]
