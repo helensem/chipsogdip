@@ -186,7 +186,9 @@ def load_pictures(dataset_dir, subset): #? Possibly write this to a JSON-file?
         file_name = file_names[0]
         
         image_path = os.path.join(image_dir, file_name)
-        destination_path = os.path.join(destination, file_name)
+        #destination_path = os.path.join(destination, file_name)
+        id = image_id +  os.path.splitext(file_name)[1]
+        destination_path = os.path.join(destination, image_id )
         shutil.copy(image_path, destination_path)
 
 
