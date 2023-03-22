@@ -151,7 +151,7 @@ def mutate(key):
 def generate_hyperparameters(): 
     init_values = {} 
     #init_values["rpn_anchor_stride"] = np.array([1,2,3,4])
-    init_values["rpn_nms_theshold"] = np.linspace(0.5, 1)
+    init_values["rpn_nms_threshold"] = np.linspace(0.5, 1)
     init_values["rpn_batch_size"] = np.array([64, 128, 256, 512, 1024])
     init_values["pre_nms_limit"] = np.linspace(4000,8000,dtype=int)
     init_values["post_nms_rois_training"] = np.linspace(1000,3000,dtype=int)
