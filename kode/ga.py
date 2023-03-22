@@ -236,9 +236,9 @@ def calculate_fitness(indv, hyperparameters, generation):
     roi_batch_size = int(hyperparameters["roi_batch_size"])
     rpn_nms_thresh = float(hyperparameters["rpn_nms_threshold"])
     learning_rate = float(hyperparameters["learning_rate"])
-    pre_nms_limit = float(hyperparameters["pre_nms_limit"])
-    post_nms_train = float(hyperparameters["post_nms_rois_training"])
-    post_nms_val = float(hyperparameters["post_nms_rois_inference"])
+    pre_nms_limit = int(hyperparameters["pre_nms_limit"])
+    post_nms_train = int(hyperparameters["post_nms_rois_training"])
+    post_nms_val = int(hyperparameters["post_nms_rois_inference"])
     roi_pos_ratio = float(hyperparameters["roi_positive_ratio"])
     momentum = float(hyperparameters["learning_momentum"])
     weight_decay = float(hyperparameters["weight_decay"])
@@ -260,27 +260,6 @@ def calculate_fitness(indv, hyperparameters, generation):
     score = 1 - mean_iou 
 
     return score
-
-def select_chromosomes(population):
-	fitness_values = []
-	for chromosome in population:
-		fitness_values.append(calculate_fitness(chromosome))
-	
-	fitness_values = [float(i)/sum(fitness_values) for i in fitness_values]
-	
-	parent1 = random.choices(population, hyperparameters=fitness_values, k=1)[0]
-	parent2 = random.choices(population, hyperparameters=fitness_values, k=1)[0]
-	
-	print("Selected two chromosomes for crossover")
-	return parent1, parent2
-
-def crossover(parent1, parent2):
-	crossover_point = random.randint(0, len(parent1)-1)
-	child1 = parent1[0:crossover_point] + parent2[crossover_point:]
-	child2 = parent2[0:crossover_point] + parent1[crossover_point:]
-	
-	print("Performed crossover between two chromosomes")
-	return child1, child2
 
 
 
@@ -354,6 +333,27 @@ if __name__ == "__main__":
         
 
 
+
+def select_chromosomes(population):
+	fitness_values = []
+	for chromosome in population:
+		fitness_values.append(calculate_fitness(chromosome))
+	
+	fitness_values = [float(i)/sum(fitness_values) for i in fitness_values]
+	
+	parent1 = random.choices(population, hyperparameters=fitness_values, k=1)[0]
+	parent2 = random.choices(population, hyperparameters=fitness_values, k=1)[0]
+	
+	print("Selected two chromosomes for crossover")
+	return parent1, parent2
+
+def crossover(parent1, parent2):
+	crossover_point = random.randint(0, len(parent1)-1)
+	child1 = parent1[0:crossover_point] + parent2[crossover_point:]
+	child2 = parent2[0:crossover_point] + parent1[crossover_point:]
+	
+	print("Performed crossover between two chromosomes")
+	return child1, child2
 
 
 
