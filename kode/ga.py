@@ -84,7 +84,7 @@ def mutate(key):
         mut_value = random.randint(1,4)
     if key == "rpn_nms_threshold":
         mut_value = random.uniform(0.5,1)
-    if key == "rpn_train_anchors_per_image":
+    if key == "rpn_batch_size":
          mut_value = np.random.choice([64, 128, 256, 512, 1024])
     if key == "pre_nms_limit":
          mut_value = random.uniform(1000,3000, dtype=int)
@@ -96,9 +96,9 @@ def mutate(key):
          mut_value = np.array([random.uniform(115.0,130.0), 
                                             random.uniform(110.0,125.0),
                                             random.uniform(95.0,115.0)])             
-    if key == "train_rois_per_image":
-        mut_value = random.uniform(150,500, dtype=int)
-    if key == "rois_positive_ratio":
+    if key == "roi_batch_size":
+        mut_value = np.random.choice([64, 128, 256, 512, 1024])
+    if key == "roi_positive_ratio":
         mut_value = random.uniform(0.2,0.5)
     if key == "max_gt_instances":
         mut_value = random.uniform(70,400, dtype=int)
@@ -177,7 +177,7 @@ def generate_hyperparameters():
     #init_values["mrcnn_class_loss"] = np.linspace(1,10)
     init_values["mrcnn_bbox_loss"] = np.linspace(1,10)
     #init_values["mrcnn_mask_loss"] = np.linspace(1,10)
-    init_values["epochs"] = np.linspace(20,40, dtpye=int)
+    init_values["epochs"] = np.linspace(20,40, dtype=int)
     init_values["learning_rate"] = np.linspace(0.0001, 0.001)
     return init_values
 
@@ -237,8 +237,8 @@ def calculate_fitness(indv, hyperparameters, generation):
     rpn_nms_thresh = float(hyperparameters["rpn_nms_threshold"])
     learning_rate = float(hyperparameters["learning_rate"])
     pre_nms_limit = float(hyperparameters["pre_nms_limit"])
-    post_nms_train = float(hyperparameters["post_nms_training"])
-    post_nms_val = float(hyperparameters["post_nms_inference"])
+    post_nms_train = float(hyperparameters["post_nms_rois_training"])
+    post_nms_val = float(hyperparameters["post_nms_rois_inference"])
     roi_pos_ratio = float(hyperparameters["roi_positive_ratio"])
     momentum = float(hyperparameters["learning_momentum"])
     weight_decay = float(hyperparameters["weight_decay"])
