@@ -118,7 +118,7 @@ def mutate(key):
         mut_value = random.uniform(1,10)
     if key == "mrcnn_class_loss":
         mut_value = random.uniform(1,10)
-    if key == "mrcnn_bbox_loss":
+    if key == "roi_bbox_loss":
         mut_value = random.uniform(1,10)
     if key == "mrcnn_mask_loss":
         mut_value = random.uniform(1,10)
@@ -175,7 +175,7 @@ def generate_hyperparameters():
     #init_values["rpn_class_loss"] = np.linspace(1,10)
     init_values["rpn_bbox_loss"] = np.linspace(1,10)
     #init_values["mrcnn_class_loss"] = np.linspace(1,10)
-    init_values["mrcnn_bbox_loss"] = np.linspace(1,10)
+    init_values["roi_bbox_loss"] = np.linspace(1,10)
     #init_values["mrcnn_mask_loss"] = np.linspace(1,10)
     init_values["epochs"] = np.linspace(20,40, dtype=int)
     init_values["learning_rate"] = np.linspace(0.0001, 0.001)
