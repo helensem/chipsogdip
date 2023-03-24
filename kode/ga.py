@@ -87,11 +87,11 @@ def mutate(key):
     if key == "rpn_batch_size":
          mut_value = np.random.choice([64, 128, 256, 512, 1024])
     if key == "pre_nms_limit":
-         mut_value = random.uniform(1000,3000, dtype=int)
+         mut_value = random.randint(1000,3000)
     if key == "post_nms_rois_training":
-         mut_value = random.uniform(1000,3000, dtype=int)
+         mut_value = random.randint(1000,3000)
     if key == "post_nms_rois_inference":
-        mut_value = random.uniform(600,2000, dtype=int)
+        mut_value = random.randint(600,2000)
     if key == "mean_pixel":
          mut_value = np.array([random.uniform(115.0,130.0), 
                                             random.uniform(110.0,125.0),
@@ -101,9 +101,9 @@ def mutate(key):
     if key == "roi_positive_ratio":
         mut_value = random.uniform(0.2,0.5)
     if key == "max_gt_instances":
-        mut_value = random.uniform(70,400, dtype=int)
+        mut_value = random.randint(70,400)
     if key == "detection_max_instances":
-        mut_value = random.uniform(70,400, dtype=int)
+        mut_value = random.randint(70,400)
     if key == "detection_min_confidence":
         mut_value = random.uniform(0.3,0.9)
     if key == "detection_nms_threshold":
@@ -123,7 +123,7 @@ def mutate(key):
     if key == "mrcnn_mask_loss":
         mut_value = random.uniform(1,10)
     if key == "epochs": 
-        mut_value = random.uniform(20,40, dtype=int)
+        mut_value = random.randint(20,40)
     return mut_value
 
 # def build_model(hidden_layer_size, learning_rate, dropout_rate):
