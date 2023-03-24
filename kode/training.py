@@ -59,10 +59,10 @@ def config():
     Standard config """
     cfg = get_cfg() 
     cfg.merge_from_file(model_zoo.get_config_file("COCO-InstanceSegmentation/mask_rcnn_X_101_32x8d_FPN_3x.yaml"))  #! MUST MATCH WITH TRAINING WEIGHTS
-    cfg.DATALOADER.NUM_WORKERS = 1
+    cfg.DATALOADER.NUM_WORKERS = 2
     cfg.DATASETS.TRAIN = ("damage_train",)
-    cfg.DATASETS.TEST = ("damage_val",)
-    cfg.TEST.EVAL_PERIOD = 1630
+    cfg.DATASETS.TEST = ()
+    #cfg.TEST.EVAL_PERIOD = 1630
     cfg.SOLVER.IMS_PER_BATCH = 1
     cfg.SOLVER.BASE_LR = 0.0005
     cfg.SOLVER.GAMMA = 0.5
@@ -70,7 +70,7 @@ def config():
     cfg.SOLVER.STEPS = [16310, 32620] #Reduce lr by half per 10th epoch  
     cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 128 
     cfg.MODEL.ROI_HEADS.NUM_CLASSES = 1 
-    cfg.OUTPUT_DIR = "/cluster/work/helensem/Master/output/run2/resneXt101" #! MUST MATCH WITH CURRENT MODEL 
+    cfg.OUTPUT_DIR = "/cluster/work/helensem/Master/output/run3/resneXt101" #! MUST MATCH WITH CURRENT MODEL 
 
     return cfg 
  
