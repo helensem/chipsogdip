@@ -82,48 +82,54 @@ def mutate(key):
     mut_value = 0
     if key == "rpn_anchor_stride":
         mut_value = random.randint(1,4)
-    if key == "rpn_nms_threshold":
+    elif key == "rpn_nms_threshold":
         mut_value = random.uniform(0.5,1)
-    if key == "rpn_batch_size":
+    elif key == "rpn_batch_size":
          mut_value = np.random.choice([64, 128, 256, 512, 1024])
-    if key == "pre_nms_limit":
+    elif key == "pre_nms_limit":
          mut_value = random.randint(1000,3000)
-    if key == "post_nms_rois_training":
+    elif key == "post_nms_rois_training":
          mut_value = random.randint(1000,3000)
-    if key == "post_nms_rois_inference":
+    elif key == "post_nms_rois_inference":
         mut_value = random.randint(600,2000)
-    if key == "mean_pixel":
+    elif key == "mean_pixel":
          mut_value = np.array([random.uniform(115.0,130.0), 
                                             random.uniform(110.0,125.0),
                                             random.uniform(95.0,115.0)])             
-    if key == "roi_batch_size":
+    elif key == "roi_batch_size":
         mut_value = np.random.choice([64, 128, 256, 512, 1024])
-    if key == "roi_positive_ratio":
+    elif key == "roi_positive_ratio":
         mut_value = random.uniform(0.2,0.5)
-    if key == "max_gt_instances":
+    elif key == "max_gt_instances":
         mut_value = random.randint(70,400)
-    if key == "detection_max_instances":
+    elif key == "detection_max_instances":
         mut_value = random.randint(70,400)
-    if key == "detection_min_confidence":
+    elif key == "detection_min_confidence":
         mut_value = random.uniform(0.3,0.9)
-    if key == "detection_nms_threshold":
+    elif key == "detection_nms_threshold":
         mut_value = random.uniform(0.2,0.7)
-    if key == "learning_momentum":
+    elif key == "learning_momentum":
         mut_value = random.uniform(0.75,0.95)
-    if key == "weight_decay":
+    elif key == "weight_decay":
         mut_value = random.uniform(0.00007, 0.000125)
-    if key == "rpn_class_loss":
+    elif key == "rpn_class_loss":
         mut_value = random.uniform(1,10)
-    if key == "rpn_bbox_loss":
+    elif key == "rpn_bbox_loss":
         mut_value = random.uniform(1,10)
-    if key == "mrcnn_class_loss":
+    elif key == "mrcnn_class_loss":
         mut_value = random.uniform(1,10)
-    if key == "roi_bbox_loss":
+    elif key == "roi_bbox_loss":
         mut_value = random.uniform(1,10)
-    if key == "mrcnn_mask_loss":
+    elif key == "mrcnn_mask_loss":
         mut_value = random.uniform(1,10)
-    if key == "epochs": 
+    elif key == "epochs": 
         mut_value = random.randint(20,40)
+    elif key == "img_min_size": 
+        mut_value = random.randint(500,1000)
+    elif key == "img_max_size": 
+        mut_value = random.randint(900,1600)
+    else: 
+        mut_value = 0
     return mut_value
 
 # def build_model(hidden_layer_size, learning_rate, dropout_rate):
@@ -179,9 +185,11 @@ def generate_hyperparameters():
     #init_values["mrcnn_mask_loss"] = np.linspace(1,10)
     init_values["epochs"] = np.linspace(20,40, dtype=int)
     init_values["learning_rate"] = np.linspace(0.0001, 0.001)
+    init_values["img_min_size"] = np.linspace(500,1000, dtype=int)
+    init_values["img_max_size"] = np.linspace(init_values["img_min_size"], 1600, dtype=int)
     return init_values
 
-def ga_train(indv, generation, epochs, rpn_batch_size, roi_batch_size, rpn_nms_thresh, learning_rate, pre_nms_limit, post_nms_train, post_nms_val, roi_pos_ratio, momentum, weight_decay, det_thresh, rpn_bbox_loss, roi_bbox_loss):
+def ga_train(indv, generation, epochs, rpn_batch_size, roi_batch_size, rpn_nms_thresh, learning_rate, pre_nms_limit, post_nms_train, post_nms_val, roi_pos_ratio, momentum, weight_decay, det_thresh, rpn_bbox_loss, roi_bbox_loss, img_min_size, img_max_size):
     """ For training with the genetic algorithm, changing the hyperparameters
     """
     
@@ -215,6 +223,12 @@ def ga_train(indv, generation, epochs, rpn_batch_size, roi_batch_size, rpn_nms_t
     
     cfg.MODEL.RPN.BBOX_REG_LOSS_WEIGHT = rpn_bbox_loss
 
+    cfg.INPUT.MIN_SIZE_TRAIN = (img_min_size,) 
+    if img_max_size < img_min_size: 
+        img_max_size = img_min_size + 100
+    # maximum image size for the train set
+    cfg.INPUT.MAX_SIZE_TRAIN = img_max_size
+
     os.makedirs(cfg.OUTPUT_DIR, exist_ok=True)
     
     #TRAIN
@@ -245,8 +259,10 @@ def calculate_fitness(indv, hyperparameters, generation):
     det_thresh = float(hyperparameters["detection_min_confidence"])
     rpn_bbox_loss = float(hyperparameters["rpn_bbox_loss"])
     roi_bbox_loss = float(hyperparameters["roi_bbox_loss"])
+    img_min_size = int(hyperparameters["img_min_size"])
+    img_max_size = int(hyperparameters["img_max_size"])
 
-    cfg = ga_train(indv, generation, epochs, rpn_batch_size, roi_batch_size, rpn_nms_thresh, learning_rate, pre_nms_limit, post_nms_train, post_nms_val, roi_pos_ratio, momentum, weight_decay, det_thresh, rpn_bbox_loss, roi_bbox_loss)
+    cfg = ga_train(indv, generation, epochs, rpn_batch_size, roi_batch_size, rpn_nms_thresh, learning_rate, pre_nms_limit, post_nms_train, post_nms_val, roi_pos_ratio, momentum, weight_decay, det_thresh, rpn_bbox_loss, roi_bbox_loss, img_min_size, img_max_size)
 
     #TRAIN
 
@@ -329,6 +345,9 @@ if __name__ == "__main__":
     fitness_scores = [calculate_fitness(idx, individual, generations) for idx, individual in enumerate(population)]
     sorted_population = [x for _, x in sorted(zip(fitness_scores, population), reverse=True)]
     fittest_individual = sorted_population[0]
+    txt_file = r"/cluster/work/helensem/Master/output/ga_train/fittest_ind.txt"
+    with open(txt_file, "w") as f:
+        f.write(fittest_individual)
     print("Best individual is: ", fittest_individual)
         
 
