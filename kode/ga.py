@@ -188,7 +188,7 @@ def generate_hyperparameters():
     init_values["epochs"] = np.linspace(20,40, dtype=int)
     init_values["learning_rate"] = np.linspace(0.0001, 0.001)
     init_values["img_min_size"] = np.linspace(500,1000, dtype=int)
-    init_values["img_max_size"] = np.linspace(init_values["img_min_size"], 1600, dtype=int)
+    init_values["img_max_size"] = init_values["img_min_size"] + 200
     return init_values
 
 def ga_train(indv, generation, epochs, rpn_batch_size, roi_batch_size, rpn_nms_thresh, learning_rate, pre_nms_limit, post_nms_train, post_nms_val, roi_pos_ratio, momentum, weight_decay, det_thresh, rpn_bbox_loss, roi_bbox_loss, img_min_size, img_max_size):
