@@ -82,6 +82,8 @@ def mutate(key):
     mut_value = 0
     if key == "rpn_anchor_stride":
         mut_value = random.randint(1,4)
+    elif key == "learning_rate": 
+        mut_value = random.uniform(0.0001,0.001)
     elif key == "rpn_nms_threshold":
         mut_value = random.uniform(0.5,1)
     elif key == "rpn_batch_size":
