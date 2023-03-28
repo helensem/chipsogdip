@@ -195,7 +195,7 @@ def load_pictures(dataset_dir, subset): #? Possibly write this to a JSON-file?
 
 ####### MAIN ##################
 if __name__ == "__main__": 
-    load_pictures(r"/cluster/home/helensem/Master/Labeled_pictures", "val")
+    #load_pictures(r"/cluster/home/helensem/Master/Labeled_pictures", "val")
  #   root = r"/cluster/home/helensem/Master/Labeled_pictures"
   #  destination = r"/cluster/home/helensem/Master/damage_data"
 
@@ -207,8 +207,8 @@ if __name__ == "__main__":
     #print(load_damage_dicts(r"/cluster/home/helensem/Master/data", "train"))
     #train_dict = load_damage_dicts(r"/cluster/home/helensem/Master/Labeled_pictures", "train")
     #val_dict = load_damage_dicts(r"/cluster/home/helensem/Master/Labeled_pictures", "val")
-    #load_damage_dicts(r"/cluster/home/helensem/Master/data/set1", "train")
-    #load_damage_dicts(r"/cluster/home/helensem/Master/data/set1", "val")
+    load_damage_dicts(r"/cluster/home/helensem/Master/data/set1", "train")
+    load_damage_dicts(r"/cluster/home/helensem/Master/data/set1", "val")
     #im = cv2.imread(r"/cluster/home/helensem/Master/data/train/IMG_3400/1.png")
     #print(im.shape)
     #mask = cv2.imread(r"/cluster/home/helensem/Master/data/train/IMG_3400/masks/grov_merking_1.png")
