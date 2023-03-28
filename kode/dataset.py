@@ -148,9 +148,9 @@ def load_damage_dicts(dataset_dir, subset): #? Possibly write this to a JSON-fil
         dataset_dicts.append(record)
     
     #* For writing to JSON-file
-    json_object = json.dumps(dataset_dicts,indent=200)
-    with open(f"/cluster/home/helensem/Master/data/set1/damage_{subset}.json", "w") as f:
-        f.write(json_object)
+    #json_object = json.dumps(dataset_dicts,indent=200)
+    #with open(f"/cluster/home/helensem/Master/data/set1/damage_{subset}.json", "w") as f:
+     #   f.write(json_object)
     return dataset_dicts
 
 
