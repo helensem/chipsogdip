@@ -204,7 +204,7 @@ if __name__ == "__main__":
    # for d in ['train', 'val']:
     #    load_damage_yolo(root, d, destination)
 
-    #ga_train_sets()
+    ga_train_sets()
 
     #print(load_damage_dicts(r"/cluster/home/helensem/Master/data", "train"))
     #train_dict = load_damage_dicts(r"/cluster/home/helensem/Master/Labeled_pictures", "train")
