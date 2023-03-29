@@ -99,7 +99,7 @@ def create_annotation_format(contour):
     }
 
 
-def load_damage_dicts(dataset_dir, subset): #? Possibly write this to a JSON-file? 
+def load_damage_dicts(dataset_dir, subset, write_to_file = False): #? Possibly write this to a JSON-file? 
     """
     Loads the images from a dataset with a dictionary of the annotations, to be loaded in detectron 
     """ 
@@ -148,9 +148,11 @@ def load_damage_dicts(dataset_dir, subset): #? Possibly write this to a JSON-fil
         dataset_dicts.append(record)
     
     #* For writing to JSON-file
-    #json_object = json.dumps(dataset_dicts,indent=200)
-    #with open(f"/cluster/home/helensem/Master/data/set1/damage_{subset}.json", "w") as f:
-     #   f.write(json_object)
+    if write_to_file:
+        json_object = json.dumps(dataset_dicts,indent=200)
+        json_name = f"damage_{subset}.json"
+        with open(os.path.join(dataset_dir, json_name), "w") as f:
+           f.write(json_object)
     return dataset_dicts
 
 
@@ -207,8 +209,8 @@ if __name__ == "__main__":
     #print(load_damage_dicts(r"/cluster/home/helensem/Master/data", "train"))
     #train_dict = load_damage_dicts(r"/cluster/home/helensem/Master/Labeled_pictures", "train")
     #val_dict = load_damage_dicts(r"/cluster/home/helensem/Master/Labeled_pictures", "val")
-    load_damage_dicts(r"/cluster/home/helensem/Master/data/set1", "train")
-    load_damage_dicts(r"/cluster/home/helensem/Master/data/set1", "val")
+    load_damage_dicts(r"/cluster/home/helensem/Master/data/set1", "train", True)
+    load_damage_dicts(r"/cluster/home/helensem/Master/data/set1", "val", True)
     #im = cv2.imread(r"/cluster/home/helensem/Master/data/train/IMG_3400/1.png")
     #print(im.shape)
     #mask = cv2.imread(r"/cluster/home/helensem/Master/data/train/IMG_3400/masks/grov_merking_1.png")
