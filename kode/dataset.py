@@ -22,7 +22,7 @@ def ga_train_sets():
     set2 = []
     set3 = []
 
-    for i in range(50): 
+    for i in range(200): 
         idx = random.randint(0,len(image_ids)-1)
         set1.append(image_ids[idx])
         del image_ids[idx]
@@ -210,7 +210,7 @@ if __name__ == "__main__":
     #train_dict = load_damage_dicts(r"/cluster/home/helensem/Master/Labeled_pictures", "train")
     #val_dict = load_damage_dicts(r"/cluster/home/helensem/Master/Labeled_pictures", "val")
     load_damage_dicts(r"/cluster/home/helensem/Master/data/set1", "train", True)
-    load_damage_dicts(r"/cluster/home/helensem/Master/data/set1", "val", True)
+    #load_damage_dicts(r"/cluster/home/helensem/Master/data/set1", "val", True)
     #im = cv2.imread(r"/cluster/home/helensem/Master/data/train/IMG_3400/1.png")
     #print(im.shape)
     #mask = cv2.imread(r"/cluster/home/helensem/Master/data/train/IMG_3400/masks/grov_merking_1.png")
