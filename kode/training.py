@@ -115,7 +115,7 @@ if __name__ == "__main__":
     elif mode == "predict":
 
         cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
-        cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.9
+        cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.7
 
         predictor = DefaultPredictor(cfg) 
         path = r"/cluster/home/helensem/Master/Labeled_pictures/test"
