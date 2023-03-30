@@ -79,7 +79,7 @@ def config():
 
 
 if __name__ == "__main__":
-    mode = "train"
+    mode = "predict"
     for d in ["train", "val"]:
         DatasetCatalog.register("damage_" + d, lambda d=d: load_damage_dicts(r"/cluster/home/helensem/Master/Labeled_pictures",d))
         MetadataCatalog.get("damage_" + d).set(thing_classes=["damage"])
@@ -118,21 +118,25 @@ if __name__ == "__main__":
         cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.9
 
         predictor = DefaultPredictor(cfg) 
+        path = r"/cluster/home/helensem/Master/Labeled_pictures/test"
+        image_ids = next(os.walk(path))[2]
 
-        dataset_dicts = load_damage_dicts(r"/cluster/home/helensem/Master/Labeled_pictures", "val")
-        os.makedirs(os.path.join(cfg.OUTPUT_DIR, "predictions"), exist_ok = True)
-        for d in random.sample(dataset_dicts, 1): 
-            im = cv2.imread(d["file_name"])
+        #dataset_dicts = load_damage_dicts(r"/cluster/home/helensem/Master/Labeled_pictures", "val")
+        os.makedirs(os.path.join(path, "predictions"), exist_ok = True)
+        
+        for d in image_ids:
+            image_path = os.path.join(path, d) 
+            im = cv2.imread(image_path)
             outputs = predictor(im)
             v = Visualizer(im[:, :, ::-1],
                             metadata = damage_metadata,
                             scale = 0.5,
                             instance_mode = ColorMode.IMAGE_BW)
             out = v.draw_instance_predictions(outputs["instances"].to("cpu"))
+            output_path = os.path.join(path, "predictions", d)
 
-            cv2.imshow("image",out.get_image()[:,:,::-1])
-            cv2.waitKey(0)
-            cv2.destroyAllWindows()
+            cv2.imwrite(output_path,out.get_image()[:,:,::-1])
+
     
     elif mode == "evaluate":
         val_dict = load_damage_dicts(r"/cluster/home/helensem/Master/Labeled_pictures", "val")
