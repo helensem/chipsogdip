@@ -134,7 +134,7 @@ def load_damage_dicts(dataset_dir, subset): #? Possibly write this to a JSON-fil
                 if mask.shape[0]!=height:
                     print("MISMATCH:", image_dir)
                 if not(255 in mask):
-                    pr#int("mask is empty: ", mask_path)
+                    #pr#int("mask is empty: ", mask_path)
                     continue
                 #if len(mask.shape) > 2: #* Some issues with certain train images 
                 #    mask = mask[:,:,0]
