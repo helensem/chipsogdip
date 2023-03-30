@@ -13,7 +13,7 @@ image = cv2.imread("/cluster/home/helensem/Master/Labeled_pictures/val/img6/img6
 #height, widht = image.shape[:2]
 results = model_pred.predict(source=image, save=True, save_txt=True)  # save predictions as labels
 
-masks = results.masks.masks.cpu().numpy()     # masks, (N, H, W)
+masks = results.masks.cpu().numpy()     # masks, (N, H, W)
 masks = np.moveaxis(masks, 0, -1) # masks, (H, W, N)
 # rescale masks to original image
 masks = scale_image(masks.shape[:2], masks, results.masks.orig_shape)
