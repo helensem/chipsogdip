@@ -130,8 +130,7 @@ if __name__ == "__main__":
             outputs = predictor(im)
             v = Visualizer(im[:, :, ::-1],
                             metadata = damage_metadata,
-                            scale = 0.5,
-                            instance_mode = ColorMode.IMAGE_BW)
+                            scale = 0.5)
             out = v.draw_instance_predictions(outputs["instances"].to("cpu"))
             output_path = os.path.join(path, "predictions", d)
 
