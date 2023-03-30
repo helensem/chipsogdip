@@ -20,7 +20,7 @@ for result in results:
     # rescale masks to original image
     masks = scale_image(masks.shape[:2], masks, result.masks.orig_shape)
     masks = np.moveaxis(masks, -1, 0) # masks, (N, H, W)
-
+    print(masks)
 
     for mask in masks:
         binary_mask = cv2.threshold(mask, 0.5, 1, cv2.THRESH_BINARY)[1]
