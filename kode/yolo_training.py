@@ -40,4 +40,4 @@ for result in results:
 # apply our mask -- notice how only the person in the image is
 # cropped out
 
-    cv2.imwrite(r"/cluster/home/helensem/output/sky/test.jpg", image)
+    cv2.imwrite(r"/cluster/home/helensem/Master/output/sky/test.jpg", image)
