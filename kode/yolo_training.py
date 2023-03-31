@@ -16,10 +16,10 @@ results = model_pred.predict(source=image, save=True, save_txt=True)  # save pre
 #print(results)
 for result in results: 
     masks = result.masks.masks.cpu().numpy()     # masks, (N, H, W)
-    #masks = np.moveaxis(masks, 0, -1) # masks, (H, W, N)
+    masks = np.moveaxis(masks, 0, -1) # masks, (H, W, N)
     # rescale masks to original image
-    #masks = scale_image(masks.shape[:2], masks, result.masks.orig_shape)
-    #masks = np.moveaxis(masks, -1, 0) # masks, (N, H, W)
+    masks = scale_image(masks.shape[:2], masks, result.masks.orig_shape)
+    masks = np.moveaxis(masks, -1, 0) # masks, (N, H, W)
     #cv2.imwrite(r"/cluster/home/helensem/Master/output/sky/test.jpg", (result.masks.masks[0].cpu().numpy()*255).astype("uint8"))
     #print(masks)
 
