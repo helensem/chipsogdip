@@ -347,7 +347,7 @@ if __name__ == "__main__":
     fitness_scores = [calculate_fitness(idx, individual, generations) for idx, individual in enumerate(population)]
     sorted_population = [x for _, x in sorted(zip(fitness_scores, population), reverse=True)]
     fittest_individual = sorted_population[0]
-    txt_file = r"/cluster/work/helensem/Master/output/ga_train/fittest_ind.txt"
+    txt_file = r"/cluster/work/helensem/Master/output/run_ga/fittest_ind.txt"
     with open(txt_file, "w") as f:
         f.write(fittest_individual)
     print("Best individual is: ", fittest_individual)
