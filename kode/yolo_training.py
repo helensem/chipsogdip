@@ -23,6 +23,8 @@ for result in results:
     print(masks)
 
     for mask in masks:
+        print(mask.shape)
+        print(mask)
         binary_mask = cv2.threshold(mask, 0.5, 1, cv2.THRESH_BINARY)[1]
         print(binary_mask)
         # Convert the binary mask to the same datatype as the image
