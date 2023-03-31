@@ -20,7 +20,7 @@ for result in results:
     # rescale masks to original image
     masks = scale_image(masks.shape[:2], masks, result.masks.orig_shape)
     masks = np.moveaxis(masks, -1, 0) # masks, (N, H, W)
-    cv2.imwrite(r"/cluster/home/helensem/Master/output/sky/test.jpg", (result.masks.masks[0].numpy()*255).astype("uint8"))
+    cv2.imwrite(r"/cluster/home/helensem/Master/output/sky/test.jpg", (result.masks.masks[0].cpu().numpy()*255).astype("uint8"))
     #print(masks)
 
     for mask in masks:
@@ -31,7 +31,7 @@ for result in results:
         #print(binary_mask)
         # Convert the binary mask to the same datatype as the image
         mask = mask.astype(np.uint8)
-        #mask = cv2.bitwise_not(binary_mask)
+        mask = cv2.bitwise_not(binary_mask)
         image = cv2.bitwise_and(image, image, mask=mask)
 
 # load the original input image and display it to our screen
