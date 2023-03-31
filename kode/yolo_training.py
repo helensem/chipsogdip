@@ -27,7 +27,7 @@ for result in results:
         mask = (mask*255).astype("uint8")
         print(mask.shape)
         print(image.shape)
-        print(mask)
+        #print(mask)
         #binary_mask = cv2.threshold(mask, 0.5, 1, cv2.THRESH_BINARY)[1]
         #print(binary_mask)
         # Convert the binary mask to the same datatype as the image
