@@ -11,7 +11,7 @@ model_pred = YOLO("/cluster/home/helensem/Master/runs/segment/train9/weights/bes
 
 image = cv2.imread("/cluster/home/helensem/Master/Labeled_pictures/val/img6/img6.jpg")
 #height, widht = image.shape[:2]
-results = model_pred.predict(source=image, save=True, save_txt=True)  # save predictions as labels
+results = model_pred.predict(source=image, save=False, save_txt=True)  # save predictions as labels
 
 #print(results)
 for result in results: 
