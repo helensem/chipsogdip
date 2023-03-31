@@ -25,17 +25,18 @@ def pred_with_sky_seg(predictor, metadata, data):
             #cv2.imwrite(r"/cluster/home/helensem/Master/output/sky/test.jpg", (result.masks.masks[0].cpu().numpy()*255).astype("uint8"))
             #print(masks)
 
-            for mask in masks:
-                mask = (mask*255).astype("uint8")
-                print(mask.shape)
-                print(image.shape)
-                #print(mask)
-                #binary_mask = cv2.threshold(mask, 0.5, 1, cv2.THRESH_BINARY)[1]
-                #print(binary_mask)
-                # Convert the binary mask to the same datatype as the image
-                #mask = mask.astype(np.uint8)
-                mask = cv2.bitwise_not(mask)
-                image = cv2.bitwise_and(image, image, mask=mask)
+            for idx, mask in enumerate(masks):
+                if result.boxes.conf[idx] > 0.6: #Only take predictions with high confidence scores 
+                    mask = (mask*255).astype("uint8")
+                    print(mask.shape)
+                    print(image.shape)
+                    #print(mask)
+                    #binary_mask = cv2.threshold(mask, 0.5, 1, cv2.THRESH_BINARY)[1]
+                    #print(binary_mask)
+                    # Convert the binary mask to the same datatype as the image
+                    #mask = mask.astype(np.uint8)
+                    mask = cv2.bitwise_not(mask)
+                    image = cv2.bitwise_and(image, image, mask=mask)
 
         # load the original input image and display it to our screen
         # a mask is the same size as our image, but has only two pixel
@@ -65,7 +66,7 @@ if __name__ == "__main__":
 
     elif mode == "predict":
         model_pred = YOLO("/cluster/home/helensem/Master/runs/segment/train9/weights/best.pt")
-        model_pred.overrides['conf'] = 0.6  # NMS confidence threshold
+        #model_pred.overrides['conf'] = 0.6  # NMS confidence threshold
 
 
         path = r"/cluster/home/helensem/Master/Labeled_pictures/test"
@@ -88,17 +89,18 @@ if __name__ == "__main__":
                 #cv2.imwrite(r"/cluster/home/helensem/Master/output/sky/test.jpg", (result.masks.masks[0].cpu().numpy()*255).astype("uint8"))
                 #print(masks)
 
-                for mask in masks:
-                    mask = (mask*255).astype("uint8")
-                    print(mask.shape)
-                    print(image.shape)
-                    #print(mask)
-                    #binary_mask = cv2.threshold(mask, 0.5, 1, cv2.THRESH_BINARY)[1]
-                    #print(binary_mask)
-                    # Convert the binary mask to the same datatype as the image
-                    #mask = mask.astype(np.uint8)
-                    mask = cv2.bitwise_not(mask)
-                    image = cv2.bitwise_and(image, image, mask=mask)
+                for idx, mask in enumerate(masks):
+                    if result.boxes.conf[idx] > 0.6: #Only take predictions with high confidence scores 
+                        mask = (mask*255).astype("uint8")
+                        print(mask.shape)
+                        print(image.shape)
+                        #print(mask)
+                        #binary_mask = cv2.threshold(mask, 0.5, 1, cv2.THRESH_BINARY)[1]
+                        #print(binary_mask)
+                        # Convert the binary mask to the same datatype as the image
+                        #mask = mask.astype(np.uint8)
+                        mask = cv2.bitwise_not(mask)
+                        image = cv2.bitwise_and(image, image, mask=mask)
 
             # load the original input image and display it to our screen
             # a mask is the same size as our image, but has only two pixel
