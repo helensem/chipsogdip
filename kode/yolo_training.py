@@ -24,11 +24,12 @@ for result in results:
 
     for mask in masks:
         print(mask.shape)
+        print(image.shape)
         print(mask)
         #binary_mask = cv2.threshold(mask, 0.5, 1, cv2.THRESH_BINARY)[1]
         #print(binary_mask)
         # Convert the binary mask to the same datatype as the image
-        #binary_mask = binary_mask.astype(np.uint8)
+        mask = mask.astype(np.uint8)
         #mask = cv2.bitwise_not(binary_mask)
         image = cv2.bitwise_and(image, image, mask=mask)
 
