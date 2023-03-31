@@ -14,7 +14,7 @@ path = r"/cluster/home/helensem/Master/Labeled_pictures/test"
 image_ids = next(os.walk(path))[2]
 
 for id in image_ids: 
-    image_path = os.path.join(path, d) 
+    image_path = os.path.join(path, id) 
 
     image = cv2.imread(image_path)
     #height, widht = image.shape[:2]
