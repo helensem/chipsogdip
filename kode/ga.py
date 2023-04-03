@@ -203,6 +203,7 @@ def ga_train(indv, generation, epochs, rpn_batch_size, roi_batch_size, rpn_nms_t
     cfg.DATASETS.TEST = ()
     cfg.SOLVER.IMS_PER_BATCH = 1
     cfg.SOLVER.BASE_LR = learning_rate
+    cfg.SOLVER.STEPS = []
     #cfg.SOLVER.GAMMA = 0.5
     cfg.SOLVER.MAX_ITER = 300*epochs #30*200 #1631 img* 30 epochs
     cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = roi_batch_size
