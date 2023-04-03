@@ -270,7 +270,7 @@ def calculate_fitness(indv, hyperparameters, generation):
     #TRAIN
 
     #EVALUATE 
-    val_dict = get_json_dict(r"/cluster/home/helensem/Master/data/set1","val")
+    val_dict = load_damage_dicts(r"/cluster/home/helensem/Master/data/set1", "val")#get_json_dict(r"/cluster/home/helensem/Master/data/set1","val")
     cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
     #cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.7
 
@@ -314,7 +314,7 @@ if __name__ == "__main__":
     path = r"/cluster/home/helensem/Master/data/set1"
 
     for d in ["train", "val"]:
-        DatasetCatalog.register("ga_damage_" + d, lambda d=d: get_json_dict(path, d))
+        DatasetCatalog.register("ga_damage_" + d, lambda d=d: load_damage_dicts(path, d))
         MetadataCatalog.get("ga_damage_" + d).set(thing_classes=["damage"])
 
     for generation in range(generations):
@@ -348,7 +348,7 @@ if __name__ == "__main__":
     fitness_scores = [calculate_fitness(idx, individual, generations) for idx, individual in enumerate(population)]
     sorted_population = [x for _, x in sorted(zip(fitness_scores, population), reverse=True)]
     fittest_individual = sorted_population[0]
-    txt_file = r"/cluster/work/helensem/Master/output/ga_train/fittest_ind.txt"
+    txt_file = r"/cluster/work/helensem/Master/output/run_ga/fittest_ind.txt"
     with open(txt_file, "w") as f:
         f.write(fittest_individual)
     print("Best individual is: ", fittest_individual)

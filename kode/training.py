@@ -58,7 +58,7 @@ def config():
     """
     Standard config """
     cfg = get_cfg() 
-    cfg.merge_from_file(model_zoo.get_config_file("COCO-InstanceSegmentation/mask_rcnn_X_101_32x8d_FPN_3x.yaml"))  #! MUST MATCH WITH TRAINING WEIGHTS
+    cfg.merge_from_file(model_zoo.get_config_file("COCO-InstanceSegmentation/mask_rcnn_R_101_FPN_3x.yaml"))#mask_rcnn_X_101_32x8d_FPN_3x.yaml"))  #! MUST MATCH WITH TRAINING WEIGHTS
     cfg.DATALOADER.NUM_WORKERS = 2
     cfg.DATASETS.TRAIN = ("damage_train",)
     cfg.DATASETS.TEST = ()
@@ -70,7 +70,7 @@ def config():
     cfg.SOLVER.STEPS = [16310, 32620] #Reduce lr by half per 10th epoch  
     cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 128 
     cfg.MODEL.ROI_HEADS.NUM_CLASSES = 1 
-    cfg.OUTPUT_DIR = "/cluster/work/helensem/Master/output/run3/resneXt101" #! MUST MATCH WITH CURRENT MODEL 
+    cfg.OUTPUT_DIR = "/cluster/work/helensem/Master/output/run2/resnet101" #! MUST MATCH WITH CURRENT MODEL 
 
     return cfg 
  
@@ -115,24 +115,27 @@ if __name__ == "__main__":
     elif mode == "predict":
 
         cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
-        cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.9
+        cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.7
 
         predictor = DefaultPredictor(cfg) 
+        path = r"/cluster/home/helensem/Master/output/sky"
+        image_ids = next(os.walk(path))[2]
 
-        dataset_dicts = load_damage_dicts(r"/cluster/home/helensem/Master/Labeled_pictures", "val")
-        os.makedirs(os.path.join(cfg.OUTPUT_DIR, "predictions"), exist_ok = True)
-        for d in random.sample(dataset_dicts, 1): 
-            im = cv2.imread(d["file_name"])
+        #dataset_dicts = load_damage_dicts(r"/cluster/home/helensem/Master/Labeled_pictures", "val")
+        os.makedirs(os.path.join(path, "predictions_sky"), exist_ok = True)
+        
+        for d in image_ids:
+            image_path = os.path.join(path, d) 
+            im = cv2.imread(image_path)
             outputs = predictor(im)
             v = Visualizer(im[:, :, ::-1],
                             metadata = damage_metadata,
-                            scale = 0.5,
-                            instance_mode = ColorMode.IMAGE_BW)
+                            scale = 0.5)
             out = v.draw_instance_predictions(outputs["instances"].to("cpu"))
+            output_path = os.path.join(path, "predictions_sky", d)
 
-            cv2.imshow("image",out.get_image()[:,:,::-1])
-            cv2.waitKey(0)
-            cv2.destroyAllWindows()
+            cv2.imwrite(output_path,out.get_image()[:,:,::-1])
+
     
     elif mode == "evaluate":
         val_dict = load_damage_dicts(r"/cluster/home/helensem/Master/Labeled_pictures", "val")

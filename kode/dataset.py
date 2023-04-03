@@ -14,8 +14,8 @@ import shutil
 
 def ga_train_sets():
     os.makedirs(r"/cluster/home/helensem/Master/data/set1/val", exist_ok=True)
-    os.makedirs(r"/cluster/home/helensem/Master/data/set2/val", exist_ok=True)
-    os.makedirs(r"/cluster/home/helensem/Master/data/set3/val", exist_ok=True)
+    #os.makedirs(r"/cluster/home/helensem/Master/data/set2/val", exist_ok=True)
+    #os.makedirs(r"/cluster/home/helensem/Master/data/set3/val", exist_ok=True)
     
     image_ids = next(os.walk(r"/cluster/home/helensem/Master/Labeled_pictures/val"))[1]
     set1 = []
@@ -44,19 +44,19 @@ def ga_train_sets():
         destination = os.path.join(r"/cluster/home/helensem/Master/data/set1/val", image_id)
         shutil.copytree(image_path, destination) 
     
-    for image_id in set2: 
-        image_path = os.path.join(r"/cluster/home/helensem/Master/Labeled_pictures/val", image_id)
-        image = next(os.walk(image_path))[2][0]
-        #(image_path) = os.path.join(image_path, image)
-        destination = os.path.join(r"/cluster/home/helensem/Master/data/set2/val", image_id)
-        shutil.copytree(image_path, destination)     
+    # for image_id in set2: 
+    #     image_path = os.path.join(r"/cluster/home/helensem/Master/Labeled_pictures/val", image_id)
+    #     image = next(os.walk(image_path))[2][0]
+    #     #(image_path) = os.path.join(image_path, image)
+    #     destination = os.path.join(r"/cluster/home/helensem/Master/data/set2/val", image_id)
+    #     shutil.copytree(image_path, destination)     
 
-    for image_id in set3: 
-        image_path = os.path.join(r"/cluster/home/helensem/Master/Labeled_pictures/val", image_id)
-        image = next(os.walk(image_path))[2][0]
-        #(image_path) = os.path.join(image_path, image)
-        destination = os.path.join(r"/cluster/home/helensem/Master/data/set3/val", image_id)
-        shutil.copytree(image_path, destination)  
+    # for image_id in set3: 
+    #     image_path = os.path.join(r"/cluster/home/helensem/Master/Labeled_pictures/val", image_id)
+    #     image = next(os.walk(image_path))[2][0]
+    #     #(image_path) = os.path.join(image_path, image)
+    #     destination = os.path.join(r"/cluster/home/helensem/Master/data/set3/val", image_id)
+    #     shutil.copytree(image_path, destination)  
 
 
 
@@ -99,7 +99,7 @@ def create_annotation_format(contour):
     }
 
 
-def load_damage_dicts(dataset_dir, subset, write_to_file = False): #? Possibly write this to a JSON-file? 
+def load_damage_dicts(dataset_dir, subset): #? Possibly write this to a JSON-file? 
     """
     Loads the images from a dataset with a dictionary of the annotations, to be loaded in detectron 
     """ 
@@ -112,7 +112,7 @@ def load_damage_dicts(dataset_dir, subset, write_to_file = False): #? Possibly w
     for image_id in image_ids:
 
         image_dir = os.path.join(dataset_dir, image_id)
-        print(image_dir)
+        #print(image_dir)
         (_, _, file_names) = next(os.walk(image_dir))
         file_name = file_names[0]
         
@@ -134,7 +134,7 @@ def load_damage_dicts(dataset_dir, subset, write_to_file = False): #? Possibly w
                 if mask.shape[0]!=height:
                     print("MISMATCH:", image_dir)
                 if not(255 in mask):
-                    print("mask is empty: ", mask_path)
+                    #pr#int("mask is empty: ", mask_path)
                     continue
                 #if len(mask.shape) > 2: #* Some issues with certain train images 
                 #    mask = mask[:,:,0]
@@ -148,11 +148,11 @@ def load_damage_dicts(dataset_dir, subset, write_to_file = False): #? Possibly w
         dataset_dicts.append(record)
     
     #* For writing to JSON-file
-    if write_to_file:
-        json_object = json.dumps(dataset_dicts,indent=200)
-        json_name = f"damage_{subset}.json"
-        with open(os.path.join(dataset_dir, json_name), "w") as f:
-           f.write(json_object)
+    # if write_to_file:
+    #     json_object = json.dumps(dataset_dicts)
+    #     json_name = f"damage_{subset}.json"
+    #     with open(os.path.join(dataset_dir, json_name), "w") as f:
+    #        f.write(json_object)
     return dataset_dicts
 
 
@@ -209,8 +209,8 @@ if __name__ == "__main__":
     #print(load_damage_dicts(r"/cluster/home/helensem/Master/data", "train"))
     #train_dict = load_damage_dicts(r"/cluster/home/helensem/Master/Labeled_pictures", "train")
     #val_dict = load_damage_dicts(r"/cluster/home/helensem/Master/Labeled_pictures", "val")
-    load_damage_dicts(r"/cluster/home/helensem/Master/data/set1", "train", True)
-    load_damage_dicts(r"/cluster/home/helensem/Master/data/set1", "val", True)
+    #load_damage_dicts(r"/cluster/home/helensem/Master/data/set1", "train")
+    #load_damage_dicts(r"/cluster/home/helensem/Master/data/set1", "val", True)
     #im = cv2.imread(r"/cluster/home/helensem/Master/data/train/IMG_3400/1.png")
     #print(im.shape)
     #mask = cv2.imread(r"/cluster/home/helensem/Master/data/train/IMG_3400/masks/grov_merking_1.png")
