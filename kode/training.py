@@ -79,7 +79,7 @@ def config():
 
 
 if __name__ == "__main__":
-    mode = "inference"
+    mode = "predict"
     for d in ["train", "val"]:
         DatasetCatalog.register("damage_" + d, lambda d=d: load_damage_dicts(r"/cluster/home/helensem/Master/Labeled_pictures",d))
         MetadataCatalog.get("damage_" + d).set(thing_classes=["damage"])
@@ -118,11 +118,11 @@ if __name__ == "__main__":
         cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.7
 
         predictor = DefaultPredictor(cfg) 
-        path = r"/cluster/home/helensem/Master/output/sky"
+        path = r"/cluster/home/helensem/Master/Labeled_pictures/test"
         image_ids = next(os.walk(path))[2]
 
         #dataset_dicts = load_damage_dicts(r"/cluster/home/helensem/Master/Labeled_pictures", "val")
-        os.makedirs(os.path.join(path, "predictions_sky"), exist_ok = True)
+        os.makedirs(os.path.join(path, "predictions_sky_resnext"), exist_ok = True)
         
         for d in image_ids:
             image_path = os.path.join(path, d) 
@@ -132,7 +132,7 @@ if __name__ == "__main__":
                             metadata = damage_metadata,
                             scale = 0.5)
             out = v.draw_instance_predictions(outputs["instances"].to("cpu"))
-            output_path = os.path.join(path, "predictions_sky", d)
+            output_path = os.path.join(path, "predictions_sky_resnext", d)
 
             cv2.imwrite(output_path,out.get_image()[:,:,::-1])
 
