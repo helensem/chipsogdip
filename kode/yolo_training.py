@@ -65,7 +65,7 @@ if __name__ == "__main__":
 
 
     elif mode == "predict":
-        model_pred = YOLO("/cluster/home/helensem/Master/runs/segment/train9/weights/best.pt")
+        model_pred = YOLO("/cluster/home/helensem/Master/runs/segment/train10/weights/best.pt")
         #model_pred.overrides['conf'] = 0.6  # NMS confidence threshold
 
 
