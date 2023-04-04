@@ -90,7 +90,7 @@ if __name__ == "__main__":
                 #print(masks)
 
                 for idx, mask in enumerate(masks):
-                    if result.boxes.conf[idx] > 0.6: #Only take predictions with high confidence scores 
+                    if result.boxes.conf[idx] > 0.7: #Only take predictions with high confidence scores 
                         mask = (mask*255).astype("uint8")
                         print(mask.shape)
                         print(image.shape)
