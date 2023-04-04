@@ -118,7 +118,7 @@ if __name__ == "__main__":
         cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.7
 
         predictor = DefaultPredictor(cfg) 
-        path = r"/cluster/home/helensem/Master/Labeled_pictures/test"
+        path = r"/cluster/home/helensem/Master/output/sky"
         image_ids = next(os.walk(path))[2]
 
         #dataset_dicts = load_damage_dicts(r"/cluster/home/helensem/Master/Labeled_pictures", "val")
