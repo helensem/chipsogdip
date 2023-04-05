@@ -13,7 +13,7 @@ local_class_colors = [(0, 0, 0), (0, 0, 255)]
 mask_rcnn_colors = local_class_colors
 def apply_inference(predictor, metadata, output_path, data, image_path=None): #*Saves all val images and compares to original image 
     # Load image
-    image = cv2.imread(image_path)
+    image = cv2.imread(data["file_name"])
     # Run detection
     results = predictor(image)
     # Visualize results
@@ -29,7 +29,7 @@ def apply_inference(predictor, metadata, output_path, data, image_path=None): #*
                     scale = 0.5,
                     instance_mode = ColorMode.IMAGE)
 
-    image_id = next(os.walk(os.path.dirname(image_path)))[2][0]
+    image_id = data["image_id"] + ".png"
     output = os.path.join(output_path, image_id)
 
 

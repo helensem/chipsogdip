@@ -69,7 +69,7 @@ if __name__ == "__main__":
         #model_pred.overrides['conf'] = 0.6  # NMS confidence threshold
 
 
-        path = r"/cluster/home/helensem/Master/Labeled_pictures/test"
+        path = r"/cluster/home/helensem/Master/damage_data"
         image_ids = next(os.walk(path))[2]
 
         for id in image_ids: 
@@ -77,7 +77,7 @@ if __name__ == "__main__":
 
             image = cv2.imread(image_path)
             #height, widht = image.shape[:2]
-            results = model_pred.predict(source=image, save=True, save_txt=True)  # save predictions as labels
+            results = model_pred.predict(source=image, save=False, save_txt=False)  # save predictions as labels
 
             #print(results)
             for result in results: 
