@@ -81,6 +81,9 @@ if __name__ == "__main__":
 
             #print(results)
             for result in results: 
+                if result is None: 
+                    print("no detections for: ", id)
+                    continue
                 masks = result.masks.masks.cpu().numpy()     # masks, (N, H, W)
                 masks = np.moveaxis(masks, 0, -1) # masks, (H, W, N)
                 # rescale masks to original image
