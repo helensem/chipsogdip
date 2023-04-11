@@ -94,17 +94,17 @@ if __name__ == "__main__":
                 #print(masks)
 
                 for idx, mask in enumerate(masks):
-                    if result.boxes.conf[idx] > 0.7: #Only take predictions with high confidence scores 
-                        mask = (mask*255).astype("uint8")
-                        print(mask.shape)
-                        print(image.shape)
-                        #print(mask)
-                        #binary_mask = cv2.threshold(mask, 0.5, 1, cv2.THRESH_BINARY)[1]
-                        #print(binary_mask)
-                        # Convert the binary mask to the same datatype as the image
-                        #mask = mask.astype(np.uint8)
-                        mask = cv2.bitwise_not(mask)
-                        image = cv2.bitwise_and(image, image, mask=mask)
+                    #if result.boxes.conf[idx] > 0.7: #Only take predictions with high confidence scores 
+                    mask = (mask*255).astype("uint8")
+                    print(mask.shape)
+                    print(image.shape)
+                    #print(mask)
+                    #binary_mask = cv2.threshold(mask, 0.5, 1, cv2.THRESH_BINARY)[1]
+                    #print(binary_mask)
+                    # Convert the binary mask to the same datatype as the image
+                    #mask = mask.astype(np.uint8)
+                    mask = cv2.bitwise_not(mask)
+                    image = cv2.bitwise_and(image, image, mask=mask)
 
             # load the original input image and display it to our screen
             # a mask is the same size as our image, but has only two pixel
