@@ -81,6 +81,7 @@ if __name__ == "__main__":
 
             #print(results)
             for result in results: 
+                print(result)
                 if result is None: 
                     print("no detections for: ", id)
                     continue
