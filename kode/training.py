@@ -13,7 +13,7 @@ from LossEvalHook import LossEvalHook
 
 from detectron2 import model_zoo
 from detectron2.engine import DefaultPredictor
-from detectron2.config import get_cfg, LazyConfig, merge_from_other_cfg 
+from detectron2.config import get_cfg, LazyConfig
 from detectron2.utils.visualizer import Visualizer
 from detectron2.data import MetadataCatalog, DatasetCatalog
 from detectron2.utils.visualizer import ColorMode 
