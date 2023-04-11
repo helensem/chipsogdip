@@ -81,8 +81,8 @@ if __name__ == "__main__":
 
             #print(results)
             for result in results: 
-                print(result)
-                if result is None: 
+                #print(result)
+                if result.masks is None: 
                     print("no detections for: ", id)
                     continue
                 masks = result.masks.masks.cpu().numpy()     # masks, (N, H, W)
