@@ -13,7 +13,7 @@ from LossEvalHook import LossEvalHook
 
 from detectron2 import model_zoo
 from detectron2.engine import DefaultPredictor
-from detectron2.config import get_cfg 
+from detectron2.config import get_cfg, LazyConfig 
 from detectron2.utils.visualizer import Visualizer
 from detectron2.data import MetadataCatalog, DatasetCatalog
 from detectron2.utils.visualizer import ColorMode 
@@ -57,8 +57,9 @@ class CustomTrainer(DefaultTrainer):
 def config():
     """
     Standard config """
-    cfg = get_cfg() 
-    cfg.merge_from_file(model_zoo.get_config_file("COCO-InstanceSegmentation/mask_rcnn_regnetx_4gf_dds_fpn_1x.py"))#mask_rcnn_X_101_32x8d_FPN_3x.yaml")) #mask_rcnn_R_101_FPN_3x.yaml"))#  #! MUST MATCH WITH TRAINING WEIGHTS
+    #cfg = get_cfg() 
+    cfg = LazyConfig.load("COCO-InstanceSegmentation/mask_rcnn_regnetx_4gf_dds_fpn_1x.py")
+    #cfg.merge_from_file(model_zoo.get_config_file("COCO-InstanceSegmentation/mask_rcnn_regnetx_4gf_dds_fpn_1x.py"))#mask_rcnn_X_101_32x8d_FPN_3x.yaml")) #mask_rcnn_R_101_FPN_3x.yaml"))#  #! MUST MATCH WITH TRAINING WEIGHTS
     cfg.DATALOADER.NUM_WORKERS = 2
     cfg.DATASETS.TRAIN = ("damage_train",)
     cfg.DATASETS.TEST = ()
