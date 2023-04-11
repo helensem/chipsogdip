@@ -247,6 +247,7 @@ def calculate_fitness(indv, hyperparameters, generation):
     
     #dataset = r"/cluster/home/helensem/Master/data/set1"
     #* Set hyperparameters
+    print(" generation: ", generation, "indv: ", indv, "\n", hyperparameters )
     
     epochs = int(hyperparameters["epochs"])
     rpn_batch_size = int(hyperparameters["rpn_batch_size"])
