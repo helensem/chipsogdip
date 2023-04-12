@@ -351,7 +351,7 @@ if __name__ == "__main__":
     fittest_individual = sorted_population[0]
     txt_file = r"/cluster/work/helensem/Master/output/run_ga/fittest_ind.txt"
     with open(txt_file, "w") as f:
-        f.write(fittest_individual)
+        f.write(str(fittest_individual))
     print("Best individual is: ", fittest_individual)
         
 
