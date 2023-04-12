@@ -205,7 +205,7 @@ def ga_train(indv, generation, epochs, rpn_batch_size, roi_batch_size, rpn_nms_t
     cfg.SOLVER.BASE_LR = learning_rate
     cfg.SOLVER.STEPS = []
     #cfg.SOLVER.GAMMA = 0.5
-    cfg.SOLVER.MAX_ITER = 300*epochs #30*200 #1631 img* 30 epochs
+    cfg.SOLVER.MAX_ITER = 200*epochs #30*200 #1631 img* 30 epochs
     cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = roi_batch_size
     cfg.MODEL.ROI_HEADS.NUM_CLASSES = 1 
     cfg.OUTPUT_DIR = f"/cluster/work/helensem/Master/output/run_ga2/gen_{generation}/{indv}" #! MUST MATCH WITH CURRENT MODEL 
