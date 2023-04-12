@@ -284,10 +284,10 @@ def calculate_fitness(indv, hyperparameters, generation):
 
 
 mutation_rate = 0.2
-generations = 3 
+generations = 15 
 #hyperparameters = {}
 hyperparameters = generate_hyperparameters()
-population_size = 4
+population_size = 20
 
 population = [dict(zip(hyperparameters.keys(), [random.choice(values) for values in hyperparameters.values()])) for _ in range(population_size)]
 
