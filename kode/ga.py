@@ -42,30 +42,30 @@ from detectron2 import model_zoo
 
 
 
-def generate_random_hyperparameters_full():
-    rpn_anchor_stride = random.randint(1,4)
-    rpn_nms_threshold = random.uniform(0.5,1)
-    rpn_train_anchors_per_image = np.random.choice([64, 128, 256, 512, 1024])
-    pre_nms_limit = random.uniform(1000,3000, dtype=int)
-    post_nms_rois_training = random.uniform(1000,3000, dtype=int)
-    post_nms_rois_inference = random.uniform(600,2000, dtype=int)
-    mean_pixel = np.array([random.uniform(115.0,130.0), 
-                                            random.uniform(110.0,125.0),
-                                            random.uniform(95.0,115.0)])
-    train_rois_per_image = random.uniform(150,500, dtype=int)
-    rois_positive_ratio = random.uniform(0.2,0.5)
-    max_gt_instances = random.uniform(70,400, dtype=int)
-    detection_max_instances = random.uniform(70,400, dtype=int)
-    detection_min_confidence = random.uniform(0.3,0.9)
-    detection_nms_threshold = random.uniform(0.2,0.7)
-    learning_momentum = random.uniform(0.75,0.95)
-    weight_decay = random.uniform(0.00007, 0.000125)
-    rpn_class_loss = random.uniform(1,10)
-    rpn_bbox_loss = random.uniform(1,10)
-    mrcnn_class_loss = random.uniform(1,10)
-    mrcnn_bbox_loss = random.uniform(1,10)
-    mrcnn_mask_loss = random.uniform(1,10)
-    return  rpn_anchor_stride, rpn_nms_threshold, rpn_anchor_stride, rpn_train_anchors_per_image, pre_nms_limit, post_nms_rois_training, post_nms_rois_inference, mean_pixel, train_rois_per_image, rois_positive_ratio, max_gt_instances, detection_max_instances, detection_min_confidence, detection_nms_threshold, learning_momentum, rpn_class_loss, rpn_bbox_loss, mrcnn_class_loss, mrcnn_bbox_loss, mrcnn_mask_loss 
+# def generate_random_hyperparameters_full():
+#     rpn_anchor_stride = random.randint(1,4)
+#     rpn_nms_threshold = random.uniform(0.5,1)
+#     rpn_train_anchors_per_image = np.random.choice([64, 128, 256, 512, 1024])
+#     pre_nms_limit = random.uniform(1000,3000, dtype=int)
+#     post_nms_rois_training = random.uniform(1000,3000, dtype=int)
+#     post_nms_rois_inference = random.uniform(600,2000, dtype=int)
+#     mean_pixel = np.array([random.uniform(115.0,130.0), 
+#                                             random.uniform(110.0,125.0),
+#                                             random.uniform(95.0,115.0)])
+#     train_rois_per_image = random.uniform(150,500, dtype=int)
+#     rois_positive_ratio = random.uniform(0.2,0.5)
+#     max_gt_instances = random.uniform(70,400, dtype=int)
+#     detection_max_instances = random.uniform(70,400, dtype=int)
+#     detection_min_confidence = random.uniform(0.3,0.9)
+#     detection_nms_threshold = random.uniform(0.2,0.7)
+#     learning_momentum = random.uniform(0.75,0.95)
+#     weight_decay = random.uniform(0.00007, 0.000125)
+#     rpn_class_loss = random.uniform(1,10)
+#     rpn_bbox_loss = random.uniform(1,10)
+#     mrcnn_class_loss = random.uniform(1,10)
+#     mrcnn_bbox_loss = random.uniform(1,10)
+#     mrcnn_mask_loss = random.uniform(1,10)
+#     return  rpn_anchor_stride, rpn_nms_threshold, rpn_anchor_stride, rpn_train_anchors_per_image, pre_nms_limit, post_nms_rois_training, post_nms_rois_inference, mean_pixel, train_rois_per_image, rois_positive_ratio, max_gt_instances, detection_max_instances, detection_min_confidence, detection_nms_threshold, learning_momentum, rpn_class_loss, rpn_bbox_loss, mrcnn_class_loss, mrcnn_bbox_loss, mrcnn_mask_loss 
 
 
 def generate_random_hyperparameters(): #* For testing
@@ -131,6 +131,7 @@ def mutate(key):
     elif key == "img_max_size": 
         mut_value = random.randint(900,1600)
     else: 
+        print("no key available")
         mut_value = 0
     return mut_value
 
@@ -206,7 +207,6 @@ def ga_train(indv, generation, epochs, rpn_batch_size, roi_batch_size, rpn_nms_t
     cfg.SOLVER.STEPS = []
     #cfg.SOLVER.GAMMA = 0.5
     cfg.SOLVER.MAX_ITER = 200*epochs #30*200 #1631 img* 30 epochs
-    cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = roi_batch_size
     cfg.MODEL.ROI_HEADS.NUM_CLASSES = 1 
     cfg.OUTPUT_DIR = f"/cluster/work/helensem/Master/output/run_ga2/gen_{generation}/{indv}" #! MUST MATCH WITH CURRENT MODEL 
     
@@ -222,9 +222,9 @@ def ga_train(indv, generation, epochs, rpn_batch_size, roi_batch_size, rpn_nms_t
     cfg.SOLVER.MOMENTUM = momentum
     cfg.SOLVER.WEIGHT_DECAY = weight_decay
     cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = det_thresh
-    cfg.MODEL.ROI_BOX_HEAD.BBOX_REG_LOSS_WEIGHT = roi_bbox_loss
+    #cfg.MODEL.ROI_BOX_HEAD.BBOX_REG_LOSS_WEIGHT = roi_bbox_loss
     
-    cfg.MODEL.RPN.BBOX_REG_LOSS_WEIGHT = rpn_bbox_loss
+    #cfg.MODEL.RPN.BBOX_REG_LOSS_WEIGHT = rpn_bbox_loss
 
     cfg.INPUT.MIN_SIZE_TRAIN = (img_min_size,) 
     if img_max_size < img_min_size: 
