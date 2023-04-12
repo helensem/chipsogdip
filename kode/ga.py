@@ -197,7 +197,7 @@ def ga_train(indv, generation, epochs, rpn_batch_size, roi_batch_size, rpn_nms_t
     
     
     cfg = get_cfg() 
-    cfg.merge_from_file(model_zoo.get_config_file("COCO-InstanceSegmentation/mask_rcnn_R_101_FPN_3x.yaml"))  #! MUST MATCH WITH TRAINING WEIGHTS
+    cfg.merge_from_file(model_zoo.get_config_file("COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml"))  #! MUST MATCH WITH TRAINING WEIGHTS
     cfg.DATALOADER.NUM_WORKERS = 1
     cfg.DATASETS.TRAIN = ("ga_damage_train",)
     cfg.DATASETS.TEST = ()
@@ -208,7 +208,7 @@ def ga_train(indv, generation, epochs, rpn_batch_size, roi_batch_size, rpn_nms_t
     cfg.SOLVER.MAX_ITER = 300*epochs #30*200 #1631 img* 30 epochs
     cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = roi_batch_size
     cfg.MODEL.ROI_HEADS.NUM_CLASSES = 1 
-    cfg.OUTPUT_DIR = f"/cluster/work/helensem/Master/output/run_ga/gen_{generation}/{indv}" #! MUST MATCH WITH CURRENT MODEL 
+    cfg.OUTPUT_DIR = f"/cluster/work/helensem/Master/output/run_ga2/gen_{generation}/{indv}" #! MUST MATCH WITH CURRENT MODEL 
     
     cfg.MODEL.RPN.BATCH_SIZE_PER_IMAGE = rpn_batch_size
     cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = roi_batch_size
@@ -235,7 +235,7 @@ def ga_train(indv, generation, epochs, rpn_batch_size, roi_batch_size, rpn_nms_t
     os.makedirs(cfg.OUTPUT_DIR, exist_ok=True)
     
     #TRAIN
-    cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("COCO-InstanceSegmentation/mask_rcnn_R_101_FPN_3x.yaml") #! MUST MATCH WITH CURRENT MODEL 
+    cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml") #! MUST MATCH WITH CURRENT MODEL 
 
     trainer = DefaultTrainer(cfg)
     trainer.resume_or_load(resume=False)
