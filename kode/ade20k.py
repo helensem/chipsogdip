@@ -83,7 +83,7 @@ def load_sky_yolo(root, subset,destination):
 if __name__ == '__main__':
     
     destination = r"/cluster/home/helensem/Master/ade_mask.png"
-    root = r"/cluster/home/helensem/Master/ade/ADEChallengeData2016/annotations/training/ADE_train_00004.png"
+    root = r"/cluster/home/helensem/Master/ade/ADEChallengeData2016/annotations/training/ADE_train_00000004.png"
 
     mask = cv2.imread(root, cv2.IMREAD_GRAYSCALE)
     #print(mask)
