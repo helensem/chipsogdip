@@ -193,6 +193,25 @@ def load_pictures(dataset_dir, subset): #? Possibly write this to a JSON-file?
         destination_path = os.path.join(destination, id )
         shutil.copy(image_path, destination_path)
 
+def add_masks_to_sky_data(path_to_images, path_to_labels, new_dir):
+    os.makedirs(new_dir, exist_ok=True)
+
+    images = next(os.walk(path_to_images))[2]
+
+    for image in images: 
+        image_id = os.path.splitext(image)[0]
+        image_dir = os.path.join(path_to_labels, image_id)
+        mask_dir = os.path.join(image_dir, next(os.walk(image_dir))[1])
+        new_image_dir = os.path.join(new_dir, image_id)
+        source = os.path.join(path_to_images, image)
+        destination = os.path.join(new_image_dir, image)
+        shutil.copy(source, destination)
+        shutil.copytree(mask_dir, new_image_dir)
+
+
+
+
+
 
 
 ####### MAIN ##################
@@ -204,7 +223,10 @@ if __name__ == "__main__":
    # for d in ['train', 'val']:
     #    load_damage_yolo(root, d, destination)
 
-    ga_train_sets()
+    #ga_train_sets()
+    image_dir = r"/cluster/home/helensem/Master/output/sky"
+    mask_dir = r"/cluster/home/helensem/Master/Labeled_pictures/val"
+    new_dir = r"/cluster/home/helensem/Master/Labeled_pictures_segmentated/val"
 
     #print(load_damage_dicts(r"/cluster/home/helensem/Master/data", "train"))
     #train_dict = load_damage_dicts(r"/cluster/home/helensem/Master/Labeled_pictures", "train")
