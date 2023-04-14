@@ -201,7 +201,7 @@ def add_masks_to_sky_data(path_to_images, path_to_labels, new_dir):
     for image in images: 
         image_id = os.path.splitext(image)[0]
         image_dir = os.path.join(path_to_labels, image_id)
-        mask_dir = os.path.join(image_dir, next(os.walk(image_dir))[1])
+        mask_dir = os.path.join(image_dir, next(os.walk(image_dir))[1][0])
         new_image_dir = os.path.join(new_dir, image_id)
         source = os.path.join(path_to_images, image)
         destination = os.path.join(new_image_dir, image)
