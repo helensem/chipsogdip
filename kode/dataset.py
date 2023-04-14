@@ -227,6 +227,7 @@ if __name__ == "__main__":
     image_dir = r"/cluster/home/helensem/Master/output/sky"
     mask_dir = r"/cluster/home/helensem/Master/Labeled_pictures/val"
     new_dir = r"/cluster/home/helensem/Master/Labeled_pictures_segmentated/val"
+    add_masks_to_sky_data(image_dir, mask_dir, new_dir)
 
     #print(load_damage_dicts(r"/cluster/home/helensem/Master/data", "train"))
     #train_dict = load_damage_dicts(r"/cluster/home/helensem/Master/Labeled_pictures", "train")
