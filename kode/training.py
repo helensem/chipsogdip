@@ -101,7 +101,7 @@ def config():
 
 
 
-    cfg.OUTPUT_DIR = "/cluster/home/helensem/Master/output/run4/resnet50" #! MUST MATCH WITH CURRENT MODEL 
+    cfg.OUTPUT_DIR = "/cluster/home/helensem/Master/output/run1/resnet50" #! MUST MATCH WITH CURRENT MODEL 
 
     return cfg 
  
