@@ -76,7 +76,7 @@ def evaluate_model(cfg, val_dict, write_to_file = False):
     print("Mean IoU =", (mean_corr_iou + mean_bg_iou) / 2)
     if write_to_file:
         iou_string += "Total mean values: \n" + " Corrosion IoU: " + str(mean_corr_iou) + "\n" + "BG IoU=" + str(mean_bg_iou) + "\n" + "Mean IoU =" + str((mean_corr_iou + mean_bg_iou) / 2)
-        with open(os.path.join(cfg.OUTPUT_DIR,"output.txt"), "w") as f: 
+        with open(os.path.join(cfg.OUTPUT_DIR,"output_seg.txt"), "w") as f: 
             f.write(iou_string)
     return mean_corr_iou, mean_bg_iou, (mean_corr_iou + mean_bg_iou) / 2
 
