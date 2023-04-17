@@ -49,6 +49,7 @@ def evaluate_model(cfg, val_dict, write_to_file = False):
     for d in val_dict: 
         image = cv2.imread(d["file_name"])
         image_dir = os.path.dirname(d["file_name"])
+        print(image_dir)
 
         mask_gt = load_mask(os.path.join(image_dir, "masks"))
         mask_gt = combine_masks_to_one(mask_gt)
