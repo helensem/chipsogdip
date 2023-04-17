@@ -111,7 +111,7 @@ def config():
 
 
 if __name__ == "__main__":
-    mode = "evaluate"
+    mode = "train"
     for d in ["train", "val"]:
         DatasetCatalog.register("damage_" + d, lambda d=d: load_damage_dicts(r"/cluster/home/helensem/Master/Labeled_pictures",d))
         MetadataCatalog.get("damage_" + d).set(thing_classes=["damage"])
@@ -124,7 +124,7 @@ if __name__ == "__main__":
 
     if mode == "train":
         #Set pretrained weights 
-        cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml")#mask_rcnn_X_101_32x8d_FPN_3x.yaml") #! MUST MATCH WITH CURRENT MODEL 
+        cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("COCO-InstanceSegmentation/mask_rcnn_X_101_32x8d_FPN_3x.yaml") #mask_rcnn_R_50_FPN_3x.yaml")# #! MUST MATCH WITH CURRENT MODEL 
 
         
         #TRAIN
