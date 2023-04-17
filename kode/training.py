@@ -70,11 +70,43 @@ def config():
     cfg.SOLVER.STEPS = [16310, 32620] #Reduce lr by half per 10th epoch  
     cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 128 
     cfg.MODEL.ROI_HEADS.NUM_CLASSES = 1 
-    cfg.OUTPUT_DIR = "/cluster/work/helensem/Master/output/run3/resneXt101" #! MUST MATCH WITH CURRENT MODEL 
+
+    ### FROM TUNING
+
+    cfg.SOLVER.BASE_LR = 0.00010860511441900859
+    cfg.SOLVER.STEPS = []
+    #cfg.SOLVER.GAMMA = 0.5
+    cfg.SOLVER.MAX_ITER = 1584*21 #30*200 #1631 img* 30 epochs
+    cfg.MODEL.ROI_HEADS.NUM_CLASSES = 1 
+    #cfg.OUTPUT_DIR = f"/cluster/work/helensem/Master/output/run_ga2/gen_{generation}/{indv}" #! MUST MATCH WITH CURRENT MODEL 
+    
+    cfg.MODEL.RPN.BATCH_SIZE_PER_IMAGE = 64
+    cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 1024
+
+    cfg.MODEL.RPN.PRE_NMS_TOPK_TRAIN = 1518
+    cfg.MODEL.RPN.NMS_THRESH = 0.5719887128477639
+    cfg.MODEL.RPN.POST_NMS_TOPK_TRAIN = 2682 
+    cfg.MODEL.RPN.POST_NMS_TOPK_TEST = 709
+    
+    cfg.MODEL.ROI_HEADS.POSITIVE_FRACTION = 0.2636980669816439
+    cfg.SOLVER.MOMENTUM = 0.792350687427757
+    cfg.SOLVER.WEIGHT_DECAY = 8.446622163969797e-05
+    cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.6155672540933761
+    #cfg.MODEL.ROI_BOX_HEAD.BBOX_REG_LOSS_WEIGHT = roi_bbox_loss
+    
+    #cfg.MODEL.RPN.BBOX_REG_LOSS_WEIGHT = rpn_bbox_loss
+
+    cfg.INPUT.MIN_SIZE_TRAIN = (591,)
+    cfg.INPUT.MAX_SIZE_TRAIN = 1124
+
+
+
+    cfg.OUTPUT_DIR = "/cluster/work/helensem/Master/output/run4/resneXt101" #! MUST MATCH WITH CURRENT MODEL 
 
     return cfg 
  
 
+#best = {'rpn_nms_threshold': 0.5719887128477639, 'rpn_batch_size': 64, 'pre_nms_limit': 1518, 'post_nms_rois_training': 2682, 'post_nms_rois_inference': 709, 'mean_pixel': array([128.48989834, 124.90907059, 107.96372133]), 'roi_batch_size': 1024, 'roi_positive_ratio': 0.2636980669816439, 'detection_min_confidence': 0.6155672540933761, 'learning_momentum': 0.792350687427757, 'weight_decay': 8.446622163969797e-05, 'rpn_bbox_loss': 8.437500394677944, 'roi_bbox_loss': 7.371256173459417, 'epochs': 21, 'learning_rate': 0.00010860511441900859, 'img_min_size': 591, 'img_max_size': 1124}
 
 
 
