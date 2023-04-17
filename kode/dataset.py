@@ -207,11 +207,12 @@ def add_masks_to_sky_data(path_to_images, path_to_labels, new_dir):
         new_image_dir = os.path.join(new_dir, image_id)
         os.makedirs(new_image_dir, exist_ok=True)
         source = os.path.join(path_to_images, image)
-        destination = os.path.join(new_image_dir, image, "masks")
+        destination = os.path.join(new_image_dir, image)
         print("source: ", source)
         print("destination: ", destination)
         shutil.copy(source, destination)
-        shutil.copytree(mask_dir, new_image_dir)
+        new_mask_dir = os.path.join(new_image_dir, "masks")
+        shutil.copytree(mask_dir, new_mask_dir)
 
 
 
