@@ -81,35 +81,35 @@ def config():
 
     ### FROM TUNING
 
-    # cfg.SOLVER.BASE_LR = 0.00010860511441900859
-    # cfg.SOLVER.STEPS = []
-    # #cfg.SOLVER.GAMMA = 0.5
-    # cfg.SOLVER.MAX_ITER = 1584*21 #30*200 #1631 img* 30 epochs
-    # cfg.MODEL.ROI_HEADS.NUM_CLASSES = 1 
-    # #cfg.OUTPUT_DIR = f"/cluster/work/helensem/Master/output/run_ga2/gen_{generation}/{indv}" #! MUST MATCH WITH CURRENT MODEL 
+    cfg.SOLVER.BASE_LR = 0.00010860511441900859
+    cfg.SOLVER.STEPS = []
+    #cfg.SOLVER.GAMMA = 0.5
+    cfg.SOLVER.MAX_ITER = 1584*21 #30*200 #1631 img* 30 epochs
+    cfg.MODEL.ROI_HEADS.NUM_CLASSES = 1 
+    #cfg.OUTPUT_DIR = f"/cluster/work/helensem/Master/output/run_ga2/gen_{generation}/{indv}" #! MUST MATCH WITH CURRENT MODEL 
     
-    # cfg.MODEL.RPN.BATCH_SIZE_PER_IMAGE = 64
-    # cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 1024
+    cfg.MODEL.RPN.BATCH_SIZE_PER_IMAGE = 64
+    cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 1024
 
-    # cfg.MODEL.RPN.PRE_NMS_TOPK_TRAIN = 1518
-    # cfg.MODEL.RPN.NMS_THRESH = 0.5719887128477639
-    # cfg.MODEL.RPN.POST_NMS_TOPK_TRAIN = 2682 
-    # cfg.MODEL.RPN.POST_NMS_TOPK_TEST = 709
+    cfg.MODEL.RPN.PRE_NMS_TOPK_TRAIN = 1518
+    cfg.MODEL.RPN.NMS_THRESH = 0.5719887128477639
+    cfg.MODEL.RPN.POST_NMS_TOPK_TRAIN = 2682 
+    cfg.MODEL.RPN.POST_NMS_TOPK_TEST = 709
     
-    # cfg.MODEL.ROI_HEADS.POSITIVE_FRACTION = 0.2636980669816439
-    # cfg.SOLVER.MOMENTUM = 0.792350687427757
-    # cfg.SOLVER.WEIGHT_DECAY = 8.446622163969797e-05
-    # cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.6155672540933761
-    # #cfg.MODEL.ROI_BOX_HEAD.BBOX_REG_LOSS_WEIGHT = roi_bbox_loss
+    cfg.MODEL.ROI_HEADS.POSITIVE_FRACTION = 0.2636980669816439
+    cfg.SOLVER.MOMENTUM = 0.792350687427757
+    cfg.SOLVER.WEIGHT_DECAY = 8.446622163969797e-05
+    cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.6155672540933761
+    #cfg.MODEL.ROI_BOX_HEAD.BBOX_REG_LOSS_WEIGHT = roi_bbox_loss
     
-    # #cfg.MODEL.RPN.BBOX_REG_LOSS_WEIGHT = rpn_bbox_loss
+    #cfg.MODEL.RPN.BBOX_REG_LOSS_WEIGHT = rpn_bbox_loss
 
-    # cfg.INPUT.MIN_SIZE_TRAIN = (591,)
-    # cfg.INPUT.MAX_SIZE_TRAIN = 1124
+    cfg.INPUT.MIN_SIZE_TRAIN = (591,)
+    cfg.INPUT.MAX_SIZE_TRAIN = 1124
 
 
 
-    cfg.OUTPUT_DIR = "/cluster/home/helensem/Master/output/run1/resnet50" #! MUST MATCH WITH CURRENT MODEL 
+    cfg.OUTPUT_DIR = "/cluster/work/helensem/Master/output/run4/resnet50" #! MUST MATCH WITH CURRENT MODEL 
 
     return cfg 
  
@@ -179,9 +179,9 @@ if __name__ == "__main__":
 
     
     elif mode == "evaluate":
-        val_dict = load_damage_dicts(r"/cluster/home/helensem/Master/Labeled_pictures_segmentated", "val")
+        val_dict = load_damage_dicts(r"/cluster/home/helensem/Master/Labeled_pictures", "val")
         cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
-        cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.8
+        #cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.8
 
         evaluate_model(cfg, val_dict, True) 
 
