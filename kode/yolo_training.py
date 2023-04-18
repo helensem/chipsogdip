@@ -7,6 +7,14 @@ import os
 
 
 def remove_sky(image): 
+    """Removes pixels from an image where a pre-trained YOLO network has detected sky
+
+    Args:
+        image (numpy array): cv2 image
+
+    Returns:
+        numpy array: processed image 
+    """
     model = YOLO("/cluster/home/helensem/Master/runs/segment/train10/weights/best.pt")
     results = model.predict(source=image, save=False, save_txt=False, conf=0.6)  # save predictions as labels
 
@@ -34,18 +42,6 @@ def remove_sky(image):
             #mask = mask.astype(np.uint8)
             mask = cv2.bitwise_not(mask)
             image = cv2.bitwise_and(image, image, mask=mask)
-
-        # load the original input image and display it to our screen
-        # a mask is the same size as our image, but has only two pixel
-        # values, 0 and 255 -- pixels with a value of 0 (background) are
-        # ignored in the original image while mask pixels with a value of
-        # 255 (foreground) are allowed to be kept
-        #mask = np.zeros(image.shape[:2], dtype="uint8")
-        #cv2.rectangle(mask, (0, 90), (290, 450), 255, -1)
-        #cv2.imshow("Rectangular Mask", masks)
-        # apply our mask -- notice how only the person in the image is
-        # cropped out
-
 
             #destination = os.path.join(r"/cluster/home/helensem/Master/output/sky", id)
             #cv2.imwrite(destination, image)
