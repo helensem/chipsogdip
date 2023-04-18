@@ -119,7 +119,7 @@ def config():
 #experiment.log_parameters(hyper_params)
 
 if __name__ == "__main__":
-    mode = "inference"
+    mode = "evaluate"
     for d in ["train", "val"]:
         DatasetCatalog.register("damage_" + d, lambda d=d: load_damage_dicts(r"/cluster/home/helensem/Master/Labeled_pictures",d))
         MetadataCatalog.get("damage_" + d).set(thing_classes=["damage"])
@@ -149,7 +149,7 @@ if __name__ == "__main__":
         output_dir = os.path.join(cfg.OUTPUT_DIR, "images")
         os.makedirs(output_dir, exist_ok=True)
 
-        val_dict = load_damage_dicts(r"/cluster/home/helensem/Master/Labeled_pictures_segmentated", "val")
+        val_dict = load_damage_dicts(r"/cluster/home/helensem/Master/Labeled_pictures", "val")
         for d in val_dict:
             apply_inference(predictor, damage_metadata, output_dir, d, d["file_name"])
 
@@ -179,11 +179,11 @@ if __name__ == "__main__":
 
     
     elif mode == "evaluate":
-        val_dict = load_damage_dicts(r"/cluster/home/helensem/Master/Labeled_pictures_segmentated", "val")
+        val_dict = load_damage_dicts(r"/cluster/home/helensem/Master/Labeled_pictures", "val")
         cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
         cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.8
 
-        evaluate_model(cfg, val_dict, True) 
+        evaluate_model(cfg, val_dict, True, True) 
 
     else: 
         print("No mode chosen")
