@@ -50,12 +50,12 @@ def remove_sky(image):
 
 
 if __name__ == "__main__": 
-    mode = "predict"
+    mode = "train"
 
     if mode == "train":
 
         yolo_model = YOLO("yolov8n-seg.pt")
-        yolo_model.train(data = "/cluster/home/helensem/Master/sky_data/data.yaml")
+        yolo_model.train(data = "/cluster/home/helensem/Master/sky_data/data.yaml", project = "skyseg", name="new data", optimizer = "Adam")
 
     elif mode == "predict":
         model_pred = YOLO("/cluster/home/helensem/Master/runs/segment/train10/weights/best.pt")
