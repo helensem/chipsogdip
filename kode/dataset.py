@@ -77,7 +77,7 @@ def find_contours(sub_mask):
     ret, thresh = cv2.threshold(imgray, 127, 255, 0)
     contours, hierarchy = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     assert len(contours)!= 0, print(contours)
-    return contours[0]
+    return contours
 
 
 def create_image_annotation(file_name, width, height, image_id):
@@ -117,7 +117,7 @@ def load_damage_dicts(dataset_dir, subset): #? Possibly write this to a JSON-fil
         file_name = file_names[0]
         
         image_path = os.path.join(image_dir, file_name)
-        #print(image_path)
+        print(image_path)
         height, width = cv2.imread(image_path).shape[:2]
         record = create_image_annotation(image_path, width, height, image_id)
         #idx +=1
@@ -138,12 +138,13 @@ def load_damage_dicts(dataset_dir, subset): #? Possibly write this to a JSON-fil
                     continue
                 #if len(mask.shape) > 2: #* Some issues with certain train images 
                 #    mask = mask[:,:,0]
-                contour = find_contours(mask)
-                if len(contour)<3: # Cant create polygons from too few coordinates
-                    print("Contour too small: ", mask_path)
-                    continue
-                obj = create_annotation_format(contour)
-                objs.append(obj)
+                contours = find_contours(mask)
+                for contour in contours:
+                    if len(contour) < 3:
+                        #print("Contour too small: ", mask_path)
+                        continue 
+                    obj = create_annotation_format(contour)
+                    objs.append(obj)
         record["annotations"] = objs
         dataset_dicts.append(record)
     
