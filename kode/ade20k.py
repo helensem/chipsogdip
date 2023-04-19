@@ -28,7 +28,7 @@ def find_contours(sub_mask):
 
 def load_sky_yolo(root, subset,destination): 
     """
-    Transforms the ADE20K dataset  
+    Transforms the ADE20K dataset to a binary mask   
     """ 
     assert subset in ['train', 'val']
     if subset == 'train': 
@@ -44,6 +44,7 @@ def load_sky_yolo(root, subset,destination):
     for id in mask_ids:
         mask_path = os.path.join(mask_dir, id)
         mask = cv2.imread(mask_path, cv2.IMREAD_GRAYSCALE)
+        height, width = mask.shape
         #print(mask)
         #print(mask.dtype)
         string = ""
@@ -52,7 +53,7 @@ def load_sky_yolo(root, subset,destination):
             continue
         mask = mask.astype('uint8')
         #print(mask)
-        height, width = mask.shape
+
         contours = find_contours(mask)
         for contour in contours:
             contour_list = contour.flatten().tolist()

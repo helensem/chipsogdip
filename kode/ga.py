@@ -208,7 +208,7 @@ def ga_train(indv, generation, epochs, rpn_batch_size, roi_batch_size, rpn_nms_t
     #cfg.SOLVER.GAMMA = 0.5
     cfg.SOLVER.MAX_ITER = 200*epochs #30*200 #1631 img* 30 epochs
     cfg.MODEL.ROI_HEADS.NUM_CLASSES = 1 
-    cfg.OUTPUT_DIR = f"/cluster/work/helensem/Master/output/run_ga2/gen_{generation}/{indv}" #! MUST MATCH WITH CURRENT MODEL 
+    cfg.OUTPUT_DIR = f"/cluster/work/helensem/Master/output/run_ga3/gen_{generation}/{indv}" #! MUST MATCH WITH CURRENT MODEL 
     
     cfg.MODEL.RPN.BATCH_SIZE_PER_IMAGE = rpn_batch_size
     cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = roi_batch_size
@@ -323,7 +323,7 @@ if __name__ == "__main__":
         fitness_scores = [calculate_fitness(idx, individual, generation) for idx, individual in enumerate(population)]
         
         # select the fittest individuals to breed the next generation
-        sorted_population = [x for _, x in sorted(zip(fitness_scores, population), reverse=True)]
+        sorted_population = [x for _, x in sorted(zip(fitness_scores, population))]
         fittest_individuals = sorted_population[:int(population_size/2)]
         # create the next generation by breeding the fittest individuals
         new_population = []
@@ -347,7 +347,7 @@ if __name__ == "__main__":
 
     # select the fittest individual from the final population
     fitness_scores = [calculate_fitness(idx, individual, generations) for idx, individual in enumerate(population)]
-    sorted_population = [x for _, x in sorted(zip(fitness_scores, population), reverse=True)]
+    sorted_population = [x for _, x in sorted(zip(fitness_scores, population))]
     fittest_individual = sorted_population[0]
     txt_file = r"/cluster/work/helensem/Master/output/run_ga/fittest_ind.txt"
     with open(txt_file, "w") as f:

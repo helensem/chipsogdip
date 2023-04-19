@@ -7,13 +7,16 @@ import sys
 
 sys.path.append("cluster/home/helensem/Master/chipsogdip/kode")
 from dataset import load_mask
+from yolo_training import remove_sky
 
 
 local_class_colors = [(0, 0, 0), (0, 0, 255)]
 mask_rcnn_colors = local_class_colors
-def apply_inference(predictor, metadata, output_path, data, image_path=None): #*Saves all val images and compares to original image 
+def apply_inference(predictor, metadata, output_path, data, segment_sky = False): #*Saves all val images and compares to original image 
     # Load image
     image = cv2.imread(data["file_name"])
+    if segment_sky: 
+        image = remove_sky(image)
     # Run detection
     results = predictor(image)
     # Visualize results
@@ -40,7 +43,7 @@ def apply_inference(predictor, metadata, output_path, data, image_path=None): #*
     cv2.imwrite(output, vis)
 
    
-def evaluate_model(cfg, val_dict, write_to_file = False):
+def evaluate_model(cfg, val_dict, write_to_file = False, segment_sky=False):
     predictor = DefaultPredictor(cfg)
     #image_ids = dataset_val.image_ids
     iou_corr_list = []
@@ -49,7 +52,9 @@ def evaluate_model(cfg, val_dict, write_to_file = False):
     for d in val_dict: 
         image = cv2.imread(d["file_name"])
         image_dir = os.path.dirname(d["file_name"])
-
+        #print(image_dir)
+        if segment_sky:
+            image = remove_sky(image)
         mask_gt = load_mask(os.path.join(image_dir, "masks"))
         mask_gt = combine_masks_to_one(mask_gt)
 
@@ -76,7 +81,7 @@ def evaluate_model(cfg, val_dict, write_to_file = False):
     print("Mean IoU =", (mean_corr_iou + mean_bg_iou) / 2)
     if write_to_file:
         iou_string += "Total mean values: \n" + " Corrosion IoU: " + str(mean_corr_iou) + "\n" + "BG IoU=" + str(mean_bg_iou) + "\n" + "Mean IoU =" + str((mean_corr_iou + mean_bg_iou) / 2)
-        with open(os.path.join(cfg.OUTPUT_DIR,"output.txt"), "w") as f: 
+        with open(os.path.join(cfg.OUTPUT_DIR,"output_seg.txt"), "w") as f: 
             f.write(iou_string)
     return mean_corr_iou, mean_bg_iou, (mean_corr_iou + mean_bg_iou) / 2
 

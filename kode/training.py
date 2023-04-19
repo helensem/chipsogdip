@@ -13,10 +13,9 @@ from LossEvalHook import LossEvalHook
 
 from detectron2 import model_zoo
 from detectron2.engine import DefaultPredictor
-from detectron2.config import get_cfg, LazyConfig
+from detectron2.config import get_cfg
 from detectron2.utils.visualizer import Visualizer
 from detectron2.data import MetadataCatalog, DatasetCatalog
-from detectron2.utils.visualizer import ColorMode 
 from detectron2.evaluation import COCOEvaluator, inference_on_dataset 
 from detectron2.data import build_detection_test_loader 
 
@@ -24,6 +23,15 @@ from detectron2.engine import DefaultTrainer
 from detectron2.data import DatasetMapper, build_detection_test_loader
 from detectron2.engine import DefaultTrainer
 
+
+from comet_ml import Experiment
+from comet_ml.integration.pytorch import log_model
+
+experiment = Experiment(
+  api_key = "52npHX7BlppxxDp6baH9WbQ7M",
+  project_name = "corrosion",
+  workspace="helensem"
+)
 
 class CustomTrainer(DefaultTrainer):
     """
@@ -58,7 +66,7 @@ def config():
     """
     Standard config """
     cfg = get_cfg() 
-    cfg.merge_from_file(model_zoo.get_config_file("COCO-InstanceSegmentation/mask_rcnn_X_101_32x8d_FPN_3x.yaml")) #mask_rcnn_R_101_FPN_3x.yaml"))#  #! MUST MATCH WITH TRAINING WEIGHTS
+    cfg.merge_from_file(model_zoo.get_config_file("COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml"))#mask_rcnn_X_101_32x8d_FPN_3x.yaml")) #  #! MUST MATCH WITH TRAINING WEIGHTS
     cfg.DATALOADER.NUM_WORKERS = 2
     cfg.DATASETS.TRAIN = ("damage_train",)
     cfg.DATASETS.TEST = ()
@@ -70,16 +78,48 @@ def config():
     cfg.SOLVER.STEPS = [16310, 32620] #Reduce lr by half per 10th epoch  
     cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 128 
     cfg.MODEL.ROI_HEADS.NUM_CLASSES = 1 
-    cfg.OUTPUT_DIR = "/cluster/work/helensem/Master/output/run3/resneXt101" #! MUST MATCH WITH CURRENT MODEL 
+
+    ### FROM TUNING
+
+    # cfg.SOLVER.BASE_LR = 0.00010860511441900859
+    # cfg.SOLVER.STEPS = []
+    # #cfg.SOLVER.GAMMA = 0.5
+    # cfg.SOLVER.MAX_ITER = 1584*21 #30*200 #1631 img* 30 epochs
+    # cfg.MODEL.ROI_HEADS.NUM_CLASSES = 1 
+    # #cfg.OUTPUT_DIR = f"/cluster/work/helensem/Master/output/run_ga2/gen_{generation}/{indv}" #! MUST MATCH WITH CURRENT MODEL 
+    
+    # cfg.MODEL.RPN.BATCH_SIZE_PER_IMAGE = 64
+    # cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 1024
+
+    # cfg.MODEL.RPN.PRE_NMS_TOPK_TRAIN = 1518
+    # cfg.MODEL.RPN.NMS_THRESH = 0.5719887128477639
+    # cfg.MODEL.RPN.POST_NMS_TOPK_TRAIN = 2682 
+    # cfg.MODEL.RPN.POST_NMS_TOPK_TEST = 709
+    
+    # cfg.MODEL.ROI_HEADS.POSITIVE_FRACTION = 0.2636980669816439
+    # cfg.SOLVER.MOMENTUM = 0.792350687427757
+    # cfg.SOLVER.WEIGHT_DECAY = 8.446622163969797e-05
+    # cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.6155672540933761
+    # #cfg.MODEL.ROI_BOX_HEAD.BBOX_REG_LOSS_WEIGHT = roi_bbox_loss
+    
+    # #cfg.MODEL.RPN.BBOX_REG_LOSS_WEIGHT = rpn_bbox_loss
+
+    # cfg.INPUT.MIN_SIZE_TRAIN = (591,)
+    # cfg.INPUT.MAX_SIZE_TRAIN = 1124
+
+
+
+    cfg.OUTPUT_DIR = "/cluster/home/helensem/Master/output/run1/resnet50" #! MUST MATCH WITH CURRENT MODEL 
 
     return cfg 
  
 
+#hyper_params = {'rpn_nms_threshold': 0.5719887128477639, 'rpn_batch_size': 64, 'pre_nms_limit': 1518, 'post_nms_rois_training': 2682, 'post_nms_rois_inference': 709, 'roi_batch_size': 1024, 'roi_positive_ratio': 0.2636980669816439, 'detection_min_confidence': 0.6155672540933761, 'learning_momentum': 0.792350687427757, 'weight_decay': 8.446622163969797e-05, 'rpn_bbox_loss': 8.437500394677944, 'roi_bbox_loss': 7.371256173459417, 'epochs': 21, 'learning_rate': 0.00010860511441900859, 'img_min_size': 591, 'img_max_size': 1124}
 
-
+#experiment.log_parameters(hyper_params)
 
 if __name__ == "__main__":
-    mode = "evaluate"
+    mode = "inference"
     for d in ["train", "val"]:
         DatasetCatalog.register("damage_" + d, lambda d=d: load_damage_dicts(r"/cluster/home/helensem/Master/Labeled_pictures",d))
         MetadataCatalog.get("damage_" + d).set(thing_classes=["damage"])
@@ -92,13 +132,14 @@ if __name__ == "__main__":
 
     if mode == "train":
         #Set pretrained weights 
-        cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml")#mask_rcnn_X_101_32x8d_FPN_3x.yaml") #! MUST MATCH WITH CURRENT MODEL 
+        cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml")#mask_rcnn_X_101_32x8d_FPN_3x.yaml") #)# #! MUST MATCH WITH CURRENT MODEL 
 
         
         #TRAIN
         trainer = DefaultTrainer(cfg)
         trainer.resume_or_load(resume=False)
         trainer.train() 
+        log_model(experiment, trainer, model_name="resnet-50-ga")
     
     elif mode == "inference": 
         cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
@@ -110,7 +151,7 @@ if __name__ == "__main__":
 
         val_dict = load_damage_dicts(r"/cluster/home/helensem/Master/Labeled_pictures", "val")
         for d in val_dict:
-            apply_inference(predictor, damage_metadata, output_dir, d, d["file_name"])
+            apply_inference(predictor, damage_metadata, output_dir, d, segment_sky = True)
 
     elif mode == "predict":
 
@@ -142,7 +183,7 @@ if __name__ == "__main__":
         cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
         cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.8
 
-        evaluate_model(cfg, val_dict, True) 
+        evaluate_model(cfg, val_dict, True, True) 
 
     else: 
         print("No mode chosen")
