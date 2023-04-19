@@ -70,7 +70,7 @@ def config():
     cfg.DATALOADER.NUM_WORKERS = 2
     cfg.DATASETS.TRAIN = ("damage_train",)
     cfg.DATASETS.TEST = ()
-    #cfg.TEST.EVAL_PERIOD = 1630
+    #cfg.TEST.EVAL_PERIOD = 1
     cfg.SOLVER.IMS_PER_BATCH = 1
     cfg.SOLVER.BASE_LR = 0.0005
     cfg.SOLVER.GAMMA = 0.5
@@ -84,7 +84,7 @@ def config():
     # cfg.SOLVER.BASE_LR = 0.00010860511441900859
     # cfg.SOLVER.STEPS = []
     # #cfg.SOLVER.GAMMA = 0.5
-    # cfg.SOLVER.MAX_ITER = 1584*21 #30*200 #1631 img* 30 epochs
+    cfg.SOLVER.MAX_ITER = 1584*25 #30*200 #1631 img* 30 epochs
     # cfg.MODEL.ROI_HEADS.NUM_CLASSES = 1 
     # #cfg.OUTPUT_DIR = f"/cluster/work/helensem/Master/output/run_ga2/gen_{generation}/{indv}" #! MUST MATCH WITH CURRENT MODEL 
     
@@ -109,7 +109,7 @@ def config():
 
 
 
-    cfg.OUTPUT_DIR = "/cluster/home/helensem/Master/output/run1/resnet50" #! MUST MATCH WITH CURRENT MODEL 
+    cfg.OUTPUT_DIR = "/cluster/work/helensem/Master/output/run1/resnet50" #! MUST MATCH WITH CURRENT MODEL 
 
     return cfg 
  
@@ -119,7 +119,7 @@ def config():
 #experiment.log_parameters(hyper_params)
 
 if __name__ == "__main__":
-    mode = "inference"
+    mode = "train"
     for d in ["train", "val"]:
         DatasetCatalog.register("damage_" + d, lambda d=d: load_damage_dicts(r"/cluster/home/helensem/Master/Labeled_pictures",d))
         MetadataCatalog.get("damage_" + d).set(thing_classes=["damage"])
@@ -139,7 +139,7 @@ if __name__ == "__main__":
         trainer = DefaultTrainer(cfg)
         trainer.resume_or_load(resume=False)
         trainer.train() 
-        log_model(experiment, trainer, model_name="resnet-50-ga")
+        log_model(experiment, trainer, model_name="resnet-50")
     
     elif mode == "inference": 
         cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
