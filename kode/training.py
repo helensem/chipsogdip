@@ -33,40 +33,11 @@ experiment = Experiment(
   workspace="helensem"
 )
 
-class CustomTrainer(DefaultTrainer):
-    """
-    Custom Trainer deriving from the "DefaultTrainer"
-
-    Overloads build_hooks to add a hook to calculate loss on the test set during training.
-    """
-    @classmethod
-    def build_evaluator(cls, cfg, dataset_name, output_folder=None):
-        if output_folder is None:
-            output_folder = os.path.join(cfg.OUTPUT_DIR, "inference")
-        
-        return COCOEvaluator(dataset_name, cfg, True, output_folder)
-
-    def build_hooks(self):
-        hooks = super().build_hooks()
-        hooks.insert(-1, LossEvalHook(
-            100, # Frequency of calculation - every 100 iterations here
-            self.model,
-            build_detection_test_loader(
-                self.cfg,
-                self.cfg.DATASETS.TEST[0],
-                DatasetMapper(self.cfg, True)
-            )
-        ))
-
-        return hooks
-
-
-
 def config():
     """
     Standard config """
     cfg = get_cfg() 
-    cfg.merge_from_file(model_zoo.get_config_file("COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml"))#mask_rcnn_X_101_32x8d_FPN_3x.yaml")) #  #! MUST MATCH WITH TRAINING WEIGHTS
+    cfg.merge_from_file(model_zoo.get_config_file("COCO-InstanceSegmentation/mask_rcnn_101_FPN_3x.yaml"))#mask_rcnn_X_101_32x8d_FPN_3x.yaml")) #  #! MUST MATCH WITH TRAINING WEIGHTS
     cfg.DATALOADER.NUM_WORKERS = 2
     cfg.DATASETS.TRAIN = ("damage_train",)
     cfg.DATASETS.TEST = ()
@@ -109,7 +80,7 @@ def config():
 
 
 
-    cfg.OUTPUT_DIR = "/cluster/work/helensem/Master/output/run1/resnet50" #! MUST MATCH WITH CURRENT MODEL 
+    cfg.OUTPUT_DIR = "/cluster/work/helensem/Master/output/run1/resnet101" #! MUST MATCH WITH CURRENT MODEL 
 
     return cfg 
  
@@ -119,7 +90,7 @@ def config():
 #experiment.log_parameters(hyper_params)
 
 if __name__ == "__main__":
-    mode = "inference"
+    mode = "train"
     for d in ["train", "val"]:
         DatasetCatalog.register("damage_" + d, lambda d=d: load_damage_dicts(r"/cluster/home/helensem/Master/Labeled_pictures",d))
         MetadataCatalog.get("damage_" + d).set(thing_classes=["damage"])
@@ -132,14 +103,14 @@ if __name__ == "__main__":
 
     if mode == "train":
         #Set pretrained weights 
-        cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml")#mask_rcnn_X_101_32x8d_FPN_3x.yaml") #)# #! MUST MATCH WITH CURRENT MODEL 
+        cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("COCO-InstanceSegmentation/mask_rcnn_R_101_FPN_3x.yaml")#mask_rcnn_X_101_32x8d_FPN_3x.yaml") #)# #! MUST MATCH WITH CURRENT MODEL 
 
         
         #TRAIN
         trainer = DefaultTrainer(cfg)
         trainer.resume_or_load(resume=False)
         trainer.train() 
-        log_model(experiment, trainer, model_name="resnet-50")
+        log_model(experiment, trainer, model_name="resnet-101")
     
     elif mode == "inference": 
         cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
