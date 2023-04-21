@@ -10,6 +10,7 @@ sys.path.append(r"/cluster/home/helensem/Master/chipsogdip/kode")
 from dataset import * 
 from eval import * 
 from LossEvalHook import LossEvalHook 
+from augmentation import custom_mapper
 
 from detectron2 import model_zoo
 from detectron2.engine import DefaultPredictor
@@ -17,11 +18,10 @@ from detectron2.config import get_cfg
 from detectron2.utils.visualizer import Visualizer
 from detectron2.data import MetadataCatalog, DatasetCatalog
 from detectron2.evaluation import COCOEvaluator, inference_on_dataset 
-from detectron2.data import build_detection_test_loader 
+from detectron2.data import build_detection_test_loader, build_detection_train_loader
 
 from detectron2.engine import DefaultTrainer
-from detectron2.data import DatasetMapper, build_detection_test_loader
-from detectron2.engine import DefaultTrainer
+
 
 
 from comet_ml import Experiment
@@ -32,6 +32,11 @@ experiment = Experiment(
   project_name = "corrosion",
   workspace="helensem"
 )
+
+class CustomTrainer(DefaultTrainer):
+    @classmethod
+    def build_train_loader(cls, cfg):
+        return build_detection_train_loader(cfg, mapper=custom_mapper)
 
 def config():
     """
@@ -90,7 +95,7 @@ def config():
 #experiment.log_parameters(hyper_params)
 
 if __name__ == "__main__":
-    mode = "evaluate"
+    mode = "train"
     for d in ["train", "val"]:
         DatasetCatalog.register("damage_" + d, lambda d=d: load_damage_dicts(r"/cluster/home/helensem/Master/Labeled_pictures",d))
         MetadataCatalog.get("damage_" + d).set(thing_classes=["damage"])
@@ -107,7 +112,7 @@ if __name__ == "__main__":
 
         
         #TRAIN
-        trainer = DefaultTrainer(cfg)
+        trainer = CustomTrainer(cfg)
         trainer.resume_or_load(resume=False)
         trainer.train() 
         #log_model(experiment, trainer, model_name="resnet-101")
@@ -117,12 +122,12 @@ if __name__ == "__main__":
         cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.8
 
         predictor = DefaultPredictor(cfg)
-        output_dir = os.path.join(cfg.OUTPUT_DIR, "images")
+        output_dir = os.path.join(cfg.OUTPUT_DIR, "images_seg")
         os.makedirs(output_dir, exist_ok=True)
 
         val_dict = load_damage_dicts(r"/cluster/home/helensem/Master/Labeled_pictures", "val")
         for d in val_dict:
-            apply_inference(predictor, damage_metadata, output_dir, d, segment_sky = False)
+            apply_inference(predictor, damage_metadata, output_dir, d, segment_sky = True)
 
     elif mode == "predict":
 
