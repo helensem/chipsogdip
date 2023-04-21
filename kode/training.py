@@ -85,7 +85,7 @@ def config():
 
 
 
-    cfg.OUTPUT_DIR = "/cluster/work/helensem/Master/output/run1/resnext" #! MUST MATCH WITH CURRENT MODEL 
+    cfg.OUTPUT_DIR = "/cluster/work/helensem/Master/output/run_aug/resnext" #! MUST MATCH WITH CURRENT MODEL 
 
     return cfg 
  
