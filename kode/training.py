@@ -20,6 +20,8 @@ from detectron2.data import MetadataCatalog, DatasetCatalog
 from detectron2.evaluation import COCOEvaluator, inference_on_dataset 
 from detectron2.data import build_detection_test_loader, build_detection_train_loader
 
+from detectron2.data import transforms as T
+from detectron2.data.dataset_mapper import DatasetMapper
 from detectron2.engine import DefaultTrainer
 
 
@@ -36,7 +38,15 @@ experiment = Experiment(
 class CustomTrainer(DefaultTrainer):
     @classmethod
     def build_train_loader(cls, cfg):
-        return build_detection_train_loader(cfg, mapper=custom_mapper)
+        mapper = DatasetMapper(cfg, is_train=True, augmentations=[T.Resize((800, 800)), T.RandomBrightness(0.8, 1.8),
+        T.RandomContrast(0.6, 1.3),
+        T.RandomSaturation(0.8, 1.4),
+        T.RandomFlip(prob=0.5, horizontal=True, vertical=False),
+        T.RandomFlip(prob=0.5, horizontal=False, vertical=True),])
+        return build_detection_train_loader(cfg, mapper=mapper)
+    
+    # def build_train_loader(cls, cfg):
+    #     return build_detection_train_loader(cfg, mapper=custom_mapper)
 
 def config():
     """
