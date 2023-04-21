@@ -103,6 +103,8 @@ if __name__ == "__main__":
     damage_metadata = MetadataCatalog.get("damage_train")
 
     cfg = config() 
+    print(cfg.INPUT.MIN_SIZE_TRAIN)
+    print(cfg.INPUT.MAX_SIZE_TRAIN)
     os.makedirs(cfg.OUTPUT_DIR, exist_ok=True)
     
 
