@@ -51,7 +51,7 @@ def load_sky_yolo(root, subset,destination):
         for label in [3, 5, 10, 22]:
             mask = cv2.imread(mask_path, cv2.IMREAD_GRAYSCALE)
             height, width = mask.shape
-            mask = np.where(mask==3, 255,0) #3 for sky
+            mask = np.where(mask==label, 255,0) #3 for sky
             if 255 not in mask: 
                 continue
             mask = mask.astype('uint8')
