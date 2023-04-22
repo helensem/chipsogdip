@@ -52,7 +52,7 @@ def config():
     """
     Standard config """
     cfg = get_cfg() 
-    cfg.merge_from_file(model_zoo.get_config_file("COCO-InstanceSegmentation/mask_rcnn_X_101_32x8d_FPN_3x.yaml")) # mask_rcnn_R_50_FPN_3x.yaml"))##! MUST MATCH WITH TRAINING WEIGHTS
+    cfg.merge_from_file(model_zoo.get_config_file("COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml"))#mask_rcnn_X_101_32x8d_FPN_3x.yaml")) # #! MUST MATCH WITH TRAINING WEIGHTS
     cfg.DATALOADER.NUM_WORKERS = 2
     cfg.DATASETS.TRAIN = ("damage_train",)
     cfg.DATASETS.TEST = ()
@@ -95,7 +95,7 @@ def config():
 
 
 
-    cfg.OUTPUT_DIR = "/cluster/work/helensem/Master/output/run_aug/resnext" #! MUST MATCH WITH CURRENT MODEL 
+    cfg.OUTPUT_DIR = "/cluster/work/helensem/Master/output/run_aug/resnet50" #! MUST MATCH WITH CURRENT MODEL 
 
     return cfg 
  
@@ -138,31 +138,6 @@ if __name__ == "__main__":
         val_dict = load_damage_dicts(r"/cluster/home/helensem/Master/Labeled_pictures", "val")
         for d in val_dict:
             apply_inference(predictor, damage_metadata, output_dir, d, segment_sky = True)
-
-    elif mode == "predict":
-
-        cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
-        cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.8
-
-        predictor = DefaultPredictor(cfg) 
-        path = r"/cluster/home/helensem/Master/output/sky"
-        image_ids = next(os.walk(path))[2]
-
-        #dataset_dicts = load_damage_dicts(r"/cluster/home/helensem/Master/Labeled_pictures", "val")
-        os.makedirs(os.path.join(path, "predictions_sky_resnext"), exist_ok = True)
-        
-        for d in image_ids:
-            image_path = os.path.join(path, d) 
-            im = cv2.imread(image_path)
-            outputs = predictor(im)
-            v = Visualizer(im[:, :, ::-1],
-                            metadata = damage_metadata,
-                            scale = 0.5)
-            out = v.draw_instance_predictions(outputs["instances"].to("cpu"))
-            output_path = os.path.join(path, "predictions_sky_resnext", d)
-
-            cv2.imwrite(output_path,out.get_image()[:,:,::-1])
-
     
     elif mode == "evaluate":
         val_dict = load_damage_dicts(r"/cluster/home/helensem/Master/Labeled_pictures", "val")
@@ -171,6 +146,31 @@ if __name__ == "__main__":
 
         evaluate_model(cfg, val_dict, write_to_file = True, segment_sky=True) 
 
+    # elif mode == "predict":
+
+    #     cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
+    #     cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.8
+
+    #     predictor = DefaultPredictor(cfg) 
+    #     path = r"/cluster/home/helensem/Master/output/sky"
+    #     image_ids = next(os.walk(path))[2]
+
+    #     #dataset_dicts = load_damage_dicts(r"/cluster/home/helensem/Master/Labeled_pictures", "val")
+    #     os.makedirs(os.path.join(path, "predictions_sky_resnext"), exist_ok = True)
+        
+    #     for d in image_ids:
+    #         image_path = os.path.join(path, d) 
+    #         im = cv2.imread(image_path)
+    #         outputs = predictor(im)
+    #         v = Visualizer(im[:, :, ::-1],
+    #                         metadata = damage_metadata,
+    #                         scale = 0.5)
+    #         out = v.draw_instance_predictions(outputs["instances"].to("cpu"))
+    #         output_path = os.path.join(path, "predictions_sky_resnext", d)
+
+    #         cv2.imwrite(output_path,out.get_image()[:,:,::-1])
+
+    
     else: 
         print("No mode chosen")
 
