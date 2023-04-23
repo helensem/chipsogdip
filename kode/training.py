@@ -132,7 +132,7 @@ if __name__ == "__main__":
         cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.8
 
         predictor = DefaultPredictor(cfg)
-        output_dir = os.path.join(cfg.OUTPUT_DIR, "images")
+        output_dir = os.path.join(cfg.OUTPUT_DIR, "images_seg_multi")
         os.makedirs(output_dir, exist_ok=True)
 
         val_dict = load_damage_dicts(r"/cluster/home/helensem/Master/Labeled_pictures", "val")
@@ -144,7 +144,7 @@ if __name__ == "__main__":
         cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
         cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.8
 
-        evaluate_model(cfg, val_dict, write_to_file = True, segment_sky=False) 
+        evaluate_model(cfg, val_dict, write_to_file = True, segment_sky=True) 
 
     # elif mode == "predict":
 
