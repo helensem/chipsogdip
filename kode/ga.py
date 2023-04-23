@@ -202,14 +202,14 @@ def ga_train(indv, generation, epochs, rpn_batch_size, roi_batch_size, rpn_nms_t
     
     cfg = get_cfg() 
     cfg.merge_from_file(model_zoo.get_config_file("COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml"))  #! MUST MATCH WITH TRAINING WEIGHTS
-    cfg.DATALOADER.NUM_WORKERS = 1
+    cfg.DATALOADER.NUM_WORKERS = 4
     cfg.DATASETS.TRAIN = ("ga_damage_train",)
     cfg.DATASETS.TEST = ()
-    cfg.SOLVER.IMS_PER_BATCH = 1
+    cfg.SOLVER.IMS_PER_BATCH = 2
     cfg.SOLVER.BASE_LR = learning_rate
     cfg.SOLVER.STEPS = []
     #cfg.SOLVER.GAMMA = 0.5
-    cfg.SOLVER.MAX_ITER = 200*epochs #30*200 #1631 img* 30 epochs
+    cfg.SOLVER.MAX_ITER = 100*epochs #30*200 #1631 img* 30 epochs
     cfg.MODEL.ROI_HEADS.NUM_CLASSES = 1 
     cfg.OUTPUT_DIR = f"/cluster/work/helensem/Master/output/run_ga4/gen_{generation}/{indv}" #! MUST MATCH WITH CURRENT MODEL 
     
@@ -252,8 +252,7 @@ def calculate_fitness(indv, hyperparameters, generation):
     #dataset = r"/cluster/home/helensem/Master/data/set1"
     #* Set hyperparameters
     print(" generation: ", generation, "indv: ", indv, "\n", hyperparameters)
-    with open(f"/cluster/work/helensem/Master/output/run_ga4/gen_{generation}/{indv}/hyperparameters.txt", "w") as f: 
-        f.write(str(hyperparameters))
+
     epochs = int(hyperparameters["epochs"])
     rpn_batch_size = int(hyperparameters["rpn_batch_size"])
     roi_batch_size = int(hyperparameters["roi_batch_size"])
@@ -280,8 +279,8 @@ def calculate_fitness(indv, hyperparameters, generation):
     val_dict = MetadataCatalog.get("ga_damage_val")#load_damage_dicts(r"/cluster/home/helensem/Master/data/set1", "val")#get_json_dict(r"/cluster/home/helensem/Master/data/set1","val")
     cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
     #cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.7
-
-
+    with open(f"/cluster/work/helensem/Master/output/run_ga4/gen_{generation}/{indv}/hyperparameters.txt", "w") as f: 
+        f.write(str(hyperparameters))
     corr_iou, bg_iou, mean_iou = evaluate_model(cfg, val_dict) 
     score = 1 - mean_iou 
 
