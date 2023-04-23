@@ -130,6 +130,8 @@ def mutate(key):
         mut_value = random.randint(500,1000)
     elif key == "img_max_size": 
         mut_value = random.randint(900,1600)
+    elif key == "roi_iou_threshold":
+        mut_value = random.uniform(0.3,0.8)
     else: 
         print("no key available")
         mut_value = 0
@@ -190,9 +192,10 @@ def generate_hyperparameters():
     init_values["learning_rate"] = np.linspace(0.0001, 0.001)
     init_values["img_min_size"] = np.linspace(500,1000, dtype=int)
     init_values["img_max_size"] = init_values["img_min_size"] + 200
+    init_values["roi_iou_threshold"] = np.linspace(0.3,0.8)
     return init_values
 
-def ga_train(indv, generation, epochs, rpn_batch_size, roi_batch_size, rpn_nms_thresh, learning_rate, pre_nms_limit, post_nms_train, post_nms_val, roi_pos_ratio, momentum, weight_decay, det_thresh, rpn_bbox_loss, roi_bbox_loss, img_min_size, img_max_size):
+def ga_train(indv, generation, epochs, rpn_batch_size, roi_batch_size, rpn_nms_thresh, learning_rate, pre_nms_limit, post_nms_train, post_nms_val, roi_pos_ratio, momentum, weight_decay, det_thresh, roi_iou_thresh, img_min_size, img_max_size):
     """ For training with the genetic algorithm, changing the hyperparameters
     """
     
@@ -208,7 +211,7 @@ def ga_train(indv, generation, epochs, rpn_batch_size, roi_batch_size, rpn_nms_t
     #cfg.SOLVER.GAMMA = 0.5
     cfg.SOLVER.MAX_ITER = 200*epochs #30*200 #1631 img* 30 epochs
     cfg.MODEL.ROI_HEADS.NUM_CLASSES = 1 
-    cfg.OUTPUT_DIR = f"/cluster/work/helensem/Master/output/run_ga3/gen_{generation}/{indv}" #! MUST MATCH WITH CURRENT MODEL 
+    cfg.OUTPUT_DIR = f"/cluster/work/helensem/Master/output/run_ga4/gen_{generation}/{indv}" #! MUST MATCH WITH CURRENT MODEL 
     
     cfg.MODEL.RPN.BATCH_SIZE_PER_IMAGE = rpn_batch_size
     cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = roi_batch_size
@@ -217,6 +220,7 @@ def ga_train(indv, generation, epochs, rpn_batch_size, roi_batch_size, rpn_nms_t
     cfg.MODEL.RPN.NMS_THRESH = rpn_nms_thresh
     cfg.MODEL.RPN.POST_NMS_TOPK_TRAIN = post_nms_train 
     cfg.MODEL.RPN.POST_NMS_TOPK_TEST = post_nms_val
+    cfg.MODEL.ROI_HEADS.IOU_THRESHOLDS = [roi_iou_thresh]
     
     cfg.MODEL.ROI_HEADS.POSITIVE_FRACTION = roi_pos_ratio 
     cfg.SOLVER.MOMENTUM = momentum
@@ -247,8 +251,9 @@ def calculate_fitness(indv, hyperparameters, generation):
     
     #dataset = r"/cluster/home/helensem/Master/data/set1"
     #* Set hyperparameters
-    print(" generation: ", generation, "indv: ", indv, "\n", hyperparameters )
-    
+    print(" generation: ", generation, "indv: ", indv, "\n", hyperparameters)
+    with open(f"/cluster/work/helensem/Master/output/run_ga4/gen_{generation}/{indv}/hyperparameters.txt", "w") as f: 
+        f.write(str(hyperparameters))
     epochs = int(hyperparameters["epochs"])
     rpn_batch_size = int(hyperparameters["rpn_batch_size"])
     roi_batch_size = int(hyperparameters["roi_batch_size"])
@@ -261,17 +266,18 @@ def calculate_fitness(indv, hyperparameters, generation):
     momentum = float(hyperparameters["learning_momentum"])
     weight_decay = float(hyperparameters["weight_decay"])
     det_thresh = float(hyperparameters["detection_min_confidence"])
-    rpn_bbox_loss = float(hyperparameters["rpn_bbox_loss"])
-    roi_bbox_loss = float(hyperparameters["roi_bbox_loss"])
+    #rpn_bbox_loss = float(hyperparameters["rpn_bbox_loss"])
+    #roi_bbox_loss = float(hyperparameters["roi_bbox_loss"])
     img_min_size = int(hyperparameters["img_min_size"])
     img_max_size = int(hyperparameters["img_max_size"])
+    roi_iou_thresh = float(hyperparameters["roi_iou_threshold"])
 
-    cfg = ga_train(indv, generation, epochs, rpn_batch_size, roi_batch_size, rpn_nms_thresh, learning_rate, pre_nms_limit, post_nms_train, post_nms_val, roi_pos_ratio, momentum, weight_decay, det_thresh, rpn_bbox_loss, roi_bbox_loss, img_min_size, img_max_size)
+    cfg = ga_train(indv, generation, epochs, rpn_batch_size, roi_batch_size, rpn_nms_thresh, learning_rate, pre_nms_limit, post_nms_train, post_nms_val, roi_pos_ratio, momentum, weight_decay, det_thresh, roi_iou_thresh, img_min_size, img_max_size)
 
     #TRAIN
 
     #EVALUATE 
-    val_dict = load_damage_dicts(r"/cluster/home/helensem/Master/data/set1", "val")#get_json_dict(r"/cluster/home/helensem/Master/data/set1","val")
+    val_dict = MetadataCatalog.get("ga_damage_val")#load_damage_dicts(r"/cluster/home/helensem/Master/data/set1", "val")#get_json_dict(r"/cluster/home/helensem/Master/data/set1","val")
     cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
     #cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.7
 
@@ -315,7 +321,7 @@ if __name__ == "__main__":
     path = r"/cluster/home/helensem/Master/data/set1"
 
     for d in ["train", "val"]:
-        DatasetCatalog.register("ga_damage_" + d, lambda d=d: load_damage_dicts(path, d))
+        DatasetCatalog.register("ga_damage_" + d, lambda d=d: get_json_dict(path, d))
         MetadataCatalog.get("ga_damage_" + d).set(thing_classes=["damage"])
 
     for generation in range(generations):

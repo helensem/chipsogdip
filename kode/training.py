@@ -105,7 +105,7 @@ def config():
 #experiment.log_parameters(hyper_params)
 
 if __name__ == "__main__":
-    mode = "inference"
+    mode = "evaluate"
     for d in ["train", "val"]:
         DatasetCatalog.register("damage_" + d, lambda d=d: load_damage_dicts(r"/cluster/home/helensem/Master/Labeled_pictures",d))
         MetadataCatalog.get("damage_" + d).set(thing_classes=["damage"])
