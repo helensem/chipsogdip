@@ -15,7 +15,7 @@ def remove_sky(image):
     Returns:
         numpy array: processed image 
     """
-    model = YOLO("/cluster/home/helensem/Master/skyseg/new_data2/weights/best.pt")
+    model = YOLO("/cluster/home/helensem/Master/skyseg_multi/new_data/weights/best.pt")
     results = model.predict(source=image, save=False, save_txt=False, conf=0.6)  # save predictions as labels
 
         #print(results)
