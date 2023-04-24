@@ -319,7 +319,7 @@ def load_damage_yolo(root, subset,destination):
 
 def get_json_dict(path, subset="train"):
     file = "damage_" + subset + ".json"
-    file_path = os.path.join(path, file)
+    file_path = os.path.join(path, subset, file)
     with open(file_path, "r") as f:
         data = json.load(f)
     return data
