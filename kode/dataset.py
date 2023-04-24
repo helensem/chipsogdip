@@ -224,6 +224,7 @@ def add_masks_to_sky_data(path_to_images, path_to_labels, new_dir):
 
 ####### MAIN ##################
 if __name__ == "__main__": 
+    print("hei")
     #load_pictures(r"/cluster/home/helensem/Master/Labeled_pictures", "val")
  #   root = r"/cluster/home/helensem/Master/Labeled_pictures"
   #  destination = r"/cluster/home/helensem/Master/damage_data"
@@ -236,8 +237,8 @@ if __name__ == "__main__":
     #print(load_damage_dicts(r"/cluster/home/helensem/Master/data", "train"))
     #train_dict = load_damage_dicts(r"/cluster/home/helensem/Master/Labeled_pictures", "train")
     #val_dict = load_damage_dicts(r"/cluster/home/helensem/Master/Labeled_pictures", "val")
-    load_damage_dicts(r"/cluster/home/helensem/Master/data/set1", "train", True)
-    load_damage_dicts(r"/cluster/home/helensem/Master/data/set1", "val", True)
+    #load_damage_dicts(r"/cluster/home/helensem/Master/data/set1", "train", True)
+    #load_damage_dicts(r"/cluster/home/helensem/Master/data/set1", "val", True)
     #im = cv2.imread(r"/cluster/home/helensem/Master/data/train/IMG_3400/1.png")
     #print(im.shape)
     #mask = cv2.imread(r"/cluster/home/helensem/Master/data/train/IMG_3400/masks/grov_merking_1.png")
