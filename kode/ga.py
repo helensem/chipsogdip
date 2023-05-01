@@ -192,7 +192,7 @@ def generate_hyperparameters():
     init_values["learning_rate"] = np.linspace(0.0001, 0.001)
     init_values["img_min_size"] = np.linspace(500,1000, dtype=int)
     init_values["img_max_size"] = init_values["img_min_size"] + 200
-    init_values["roi_iou_threshold"] = np.linspace(0.3,0.8)
+    init_values["roi_iou_threshold"] = np.linspace(0.3,0.7)
     return init_values
 
 def ga_train(indv, generation, epochs, rpn_batch_size, roi_batch_size, rpn_nms_thresh, learning_rate, pre_nms_limit, post_nms_train, post_nms_val, roi_pos_ratio, momentum, weight_decay, det_thresh, roi_iou_thresh, img_min_size, img_max_size):

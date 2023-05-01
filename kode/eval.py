@@ -65,7 +65,7 @@ def evaluate_model(cfg, val_dict, write_to_file = False, segment_sky=False):
         if predicted_masks.shape[-1] == 0:
             continue
         mask_pred = combine_masks_to_one(predicted_masks)
-
+    
         iou_corr = compute_overlaps_masks(mask_gt, mask_pred)[0][0]
         iou_bg = compute_overlaps_masks(mask_gt, mask_pred, BG=True)[0][0]
         print(d["image_id"], "IoU =", (iou_corr, iou_bg))
@@ -73,6 +73,8 @@ def evaluate_model(cfg, val_dict, write_to_file = False, segment_sky=False):
         iou_string+= string
         iou_corr_list.append(iou_corr)
         iou_bg_list.append(iou_bg)
+    if len(iou_corr_list) == 0: 
+        return 0,0,0 
     mean_corr_iou = sum(iou_corr_list) / len(iou_corr_list)
     mean_bg_iou = sum(iou_bg_list) / len(iou_bg_list)
     print("Total mean values ")
@@ -82,7 +84,7 @@ def evaluate_model(cfg, val_dict, write_to_file = False, segment_sky=False):
     if write_to_file:
         iou_string += "Total mean values: \n" + " Corrosion IoU: " + str(mean_corr_iou) + "\n" + "BG IoU=" + str(mean_bg_iou) + "\n" + "Mean IoU =" + str((mean_corr_iou + mean_bg_iou) / 2)
         if segment_sky: 
-            file_name = "output_seg1.txt" 
+            file_name = "output_seg.txt" 
         else: 
             file_name = "output.txt"
         with open(os.path.join(cfg.OUTPUT_DIR, file_name), "w") as f: 
