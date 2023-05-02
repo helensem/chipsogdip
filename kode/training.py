@@ -142,7 +142,7 @@ if __name__ == "__main__":
         cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
         cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.8
 
-        evaluate_model(cfg, val_dict, write_to_file = True, segment_sky=True) 
+        evaluate_model(cfg, val_dict, write_to_file = True, segment_sky=False) 
 
     # elif mode == "predict":
 
