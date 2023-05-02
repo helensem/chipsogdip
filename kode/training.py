@@ -50,7 +50,7 @@ def config():
     """
     Standard config """
     cfg = get_cfg() 
-    cfg.merge_from_file(model_zoo.get_config_file("COCO-InstanceSegmentation/mask_rcnn_X_101_32x8d_FPN_3x.yaml")) #mask_rcnn_R_101_FPN_3x.yaml"))# #! MUST MATCH WITH TRAINING WEIGHTS
+    cfg.merge_from_file(model_zoo.get_config_file("LVISv1-InstanceSegmentation/mask_rcnn_R_50_FPN_1x.yaml"))#("COCO-InstanceSegmentation/mask_rcnn_X_101_32x8d_FPN_3x.yaml")) #mask_rcnn_R_101_FPN_3x.yaml"))# #! MUST MATCH WITH TRAINING WEIGHTS
     cfg.DATALOADER.NUM_WORKERS = 2
     cfg.DATASETS.TRAIN = ("damage_train",)
     cfg.DATASETS.TEST = ()
@@ -68,7 +68,7 @@ def config():
     # cfg.SOLVER.BASE_LR = 0.00010860511441900859
     # cfg.SOLVER.STEPS = []
     # #cfg.SOLVER.GAMMA = 0.5
-    cfg.SOLVER.MAX_ITER = int(1584*25) #30*200 #1631 img* 30 epochs
+    cfg.SOLVER.MAX_ITER = int(1584*25/2) #30*200 #1631 img* 30 epochs
     # cfg.MODEL.ROI_HEADS.NUM_CLASSES = 1 
     # #cfg.OUTPUT_DIR = f"/cluster/work/helensem/Master/output/run_ga2/gen_{generation}/{indv}" #! MUST MATCH WITH CURRENT MODEL 
     
@@ -93,7 +93,7 @@ def config():
 
 
 
-    cfg.OUTPUT_DIR = "/cluster/work/helensem/Master/output/run_aug_2/resnext" #! MUST MATCH WITH CURRENT MODEL 
+    cfg.OUTPUT_DIR = "/cluster/work/helensem/Master/output/run_lvis/resnet50" #! MUST MATCH WITH CURRENT MODEL 
 
     return cfg 
  
@@ -116,7 +116,7 @@ if __name__ == "__main__":
 
     if mode == "train":
         #Set pretrained weights 
-        cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("COCO-InstanceSegmentation/mask_rcnn_X_101_32x8d_FPN_3x.yaml")#mask_rcnn_R_101_FPN_3x.yaml")# ##! MUST MATCH WITH CURRENT MODEL 
+        cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("LVISv1-InstanceSegmentation/mask_rcnn_R_50_FPN_1x.yaml")#("COCO-InstanceSegmentation/mask_rcnn_X_101_32x8d_FPN_3x.yaml")#mask_rcnn_R_101_FPN_3x.yaml")# ##! MUST MATCH WITH CURRENT MODEL 
 
         
         #TRAIN
