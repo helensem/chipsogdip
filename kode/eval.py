@@ -113,6 +113,9 @@ def evaluate_over_iterations(cfg, val_dict, output_dir, plot=False, segment_sky=
             mean_ious.append(mean_iou)
             bg_ious.append(mean_bg)
             model_names.append(model_number)
+    
+    model_names, bg_ious, corr_ious, mean_ious = (list(t) for t in zip(*sorted(zip(model_names, bg_ious, corr_ious, mean_ious))))
+
     if plot: 
         plt.plot(model_names, mean_ious, color = 'r'
                 ,label = "Mean", marker="o")
