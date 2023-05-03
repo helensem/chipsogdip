@@ -129,7 +129,7 @@ def evaluate_over_iterations(cfg, val_dict, output_dir, plot=False, segment_sky=
         #plt.title('Total loss', fontsize = 20)
         plt.grid()
         plt.legend()
-        plt.savefig(os.path.join(output_dir, "iou_per_model.png"))
+        plt.savefig(os.path.join(output_dir, "iou_per_model.svg"), format="svg")
 
 
     
