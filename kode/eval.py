@@ -103,21 +103,26 @@ def evaluate_over_iterations(cfg, val_dict, output_dir, plot=False, segment_sky=
         if model.endswith(".pth"):
             cfg.MODEL.WEIGHTS = os.path.join(output_dir, model)
             model_name = os.path.splitext(model)[0]
+            model_number = model_name[6:]
+            if model_number == "final": 
+                model_number = 39600
+            else: 
+                model_number = int(model_number)+1
             mean_corr, mean_bg, mean_iou = evaluate_model(cfg, val_dict, False, segment_sky)
             corr_ious.append(mean_corr)
             mean_ious.append(mean_iou)
             bg_ious.append(mean_bg)
-            model_names.append(model_name)
+            model_names.append(model_number)
     if plot: 
         plt.plot(model_names, mean_ious, color = 'r'
-                ,label = "Mean IoU")
-        plt.plot(model_names, corr_ious, label="Corrosion IoU", color = "c")
-        plt.plot(model_names, bg_ious, label="Background IoU", color="m")
+                ,label = "Mean", marker="o")
+        plt.plot(model_names, corr_ious, label="Corrosion", color = "c", marker="o")
+        plt.plot(model_names, bg_ious, label="Background", color="m", marker="o")
         #plt.plot(data["epoch"], data["val/cls_loss"] , color = 'b',label = "val")
         
         plt.xticks(rotation = 25)
-        plt.xlabel('Model')
-        #plt.ylabel('Loss')
+        plt.xlabel('Step')
+        plt.ylabel('IoU')
         #plt.title('Total loss', fontsize = 20)
         plt.grid()
         plt.legend()
