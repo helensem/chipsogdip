@@ -4,6 +4,7 @@ from detectron2.utils.visualizer import Visualizer, ColorMode
 from detectron2.engine import DefaultPredictor
 import os 
 import sys 
+from matplotlib import pyplot as plt 
 
 sys.path.append("cluster/home/helensem/Master/chipsogdip/kode")
 from dataset import load_mask
@@ -92,25 +93,47 @@ def evaluate_model(cfg, val_dict, write_to_file = False, segment_sky=False):
     return mean_corr_iou, mean_bg_iou, (mean_corr_iou + mean_bg_iou) / 2
 
 
+def evaluate_over_iterations(cfg, val_dict, output_dir, plot=False, segment_sky=False):
+    models = next(os.walk(output_dir))[2]
+    mean_ious = []
+    corr_ious = []
+    bg_ious = []
+    model_names = []
+    for model in models:
+        if model.endswith(".pth"):
+            cfg.MODEL.WEIGHTS = os.path.join(output_dir, model)
+            model_name = os.path.splitext(model)[0]
+            mean_corr, mean_bg, mean_iou = evaluate_model(cfg, val_dict, False, segment_sky)
+            corr_ious.append(mean_corr)
+            mean_ious.append(mean_iou)
+            bg_ious.append(mean_bg)
+            model_names.append(model_name)
+    if plot: 
+        plt.plot(model_names, mean_ious, color = 'r'
+                ,label = "Mean IoU")
+        plt.plot(model_names, corr_ious, label="Corrosion IoU", color = "c")
+        plt.plot(model_names, bg_ious, label="Background IoU", color="m")
+        #plt.plot(data["epoch"], data["val/cls_loss"] , color = 'b',label = "val")
+        
+        plt.xticks(rotation = 25)
+        plt.xlabel('Model')
+        #plt.ylabel('Loss')
+        #plt.title('Total loss', fontsize = 20)
+        plt.grid()
+        plt.legend()
+        plt.savefig(os.path.join(output_dir, "iou_per_model.png"))
+
+
+    
+
+
+
 def combine_masks_to_one(masks):
     combined_mask = masks[:, :, 0]
     for i in range(masks.shape[-1]):
         combined_mask += masks[:, :, i]
     return np.expand_dims(combined_mask, 2)
 
-
-
-def iou_numpy(outputs: np.array, labels: np.array):
-    SMOOTH = 1e-6
-
-    outputs = outputs.squeeze(axis=-1)
-    
-    intersection = (outputs & labels).sum((1, 2))
-    union = (outputs | labels).sum((1, 2))
-    
-    iou = (intersection + SMOOTH) / (union + SMOOTH)
-
-    return iou
 
 
 def compute_overlaps_masks(masks1, masks2, BG=False):
