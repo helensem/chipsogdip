@@ -44,7 +44,7 @@ def apply_inference(predictor, metadata, output_path, data, segment_sky = False)
     cv2.imwrite(output, vis)
 
    
-def evaluate_model(cfg, val_dict, write_to_file = False, segment_sky=False):
+def evaluate_model(cfg, val_dict, write_to_file = False, plot=False, segment_sky=False):
     predictor = DefaultPredictor(cfg)
     #image_ids = dataset_val.image_ids
     iou_corr_list = []
@@ -76,20 +76,26 @@ def evaluate_model(cfg, val_dict, write_to_file = False, segment_sky=False):
         iou_bg_list.append(iou_bg)
     if len(iou_corr_list) == 0: 
         return 0,0,0 
-    mean_corr_iou = sum(iou_corr_list) / len(iou_corr_list)
-    mean_bg_iou = sum(iou_bg_list) / len(iou_bg_list)
+    mean_corr_iou = np.mean(iou_corr_list)
+    mean_bg_iou = np.mean(iou_bg_list)
     print("Total mean values ")
     print(" Corrosion IoU =", mean_corr_iou)
     print("BG IoU=", mean_bg_iou)
     print("Mean IoU =", (mean_corr_iou + mean_bg_iou) / 2)
     if write_to_file:
-        iou_string += "Total mean values: \n" + " Corrosion IoU: " + str(mean_corr_iou) + "\n" + "BG IoU=" + str(mean_bg_iou) + "\n" + "Mean IoU =" + str((mean_corr_iou + mean_bg_iou) / 2)
+        iou_string += "Total mean values: \n" + "Corrosion IoU: " + str(mean_corr_iou) + "\n" + "BG IoU=" + str(mean_bg_iou) + "\n" + "Mean IoU =" + str((mean_corr_iou + mean_bg_iou) / 2)
         if segment_sky: 
             file_name = "output_seg.txt" 
         else: 
             file_name = "output.txt"
         with open(os.path.join(cfg.OUTPUT_DIR, file_name), "w") as f: 
             f.write(iou_string)
+    if plot: 
+        x = np.arange(1, len(iou_corr_list)+1)
+        corr_iou = np.sort(iou_corr_list)
+        plt.bar(x, corr_iou)
+        plt.axhline(y=np.mean(iou_corr_list))
+        plt.savefig(os.path.join(cfg.OUTPUT_DIR, "corrosion_iou.svg"), format="svg") 
     return mean_corr_iou, mean_bg_iou, (mean_corr_iou + mean_bg_iou) / 2
 
 
