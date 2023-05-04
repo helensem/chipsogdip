@@ -29,11 +29,11 @@ from detectron2.engine import DefaultTrainer
 from comet_ml import Experiment
 from comet_ml.integration.pytorch import log_model
 
-experiment = Experiment(
-  api_key = "52npHX7BlppxxDp6baH9WbQ7M",
-  project_name = "corrosion",
-  workspace="helensem"
-)
+# experiment = Experiment(
+#   api_key = "52npHX7BlppxxDp6baH9WbQ7M",
+#   project_name = "corrosion",
+#   workspace="helensem"
+# )
 
 class CustomTrainer(DefaultTrainer):
     @classmethod
