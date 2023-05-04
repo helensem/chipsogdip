@@ -55,8 +55,8 @@ def config():
     cfg.DATASETS.TRAIN = ("damage_train",)
     cfg.DATASETS.TEST = ()
     #cfg.TEST.EVAL_PERIOD = 1
-    cfg.SOLVER.IMS_PER_BATCH = 2
-    cfg.SOLVER.BASE_LR = 0.0005
+    cfg.SOLVER.IMS_PER_BATCH = 1
+    cfg.SOLVER.BASE_LR = 0.001
     cfg.SOLVER.GAMMA = 0.5
     #cfg.SOLVER.MAX_ITER = 48930 #1631 img* 30 epochs
     cfg.SOLVER.STEPS = [16310, 32620] #Reduce lr by half per 10th epoch  
@@ -68,7 +68,7 @@ def config():
     # cfg.SOLVER.BASE_LR = 0.00010860511441900859
     # cfg.SOLVER.STEPS = []
     # #cfg.SOLVER.GAMMA = 0.5
-    cfg.SOLVER.MAX_ITER = int(1584*25/2) #30*200 #1631 img* 30 epochs
+    cfg.SOLVER.MAX_ITER = 1584*25 #30*200 #1631 img* 30 epochs
     # cfg.MODEL.ROI_HEADS.NUM_CLASSES = 1 
     # #cfg.OUTPUT_DIR = f"/cluster/work/helensem/Master/output/run_ga2/gen_{generation}/{indv}" #! MUST MATCH WITH CURRENT MODEL 
     
@@ -93,7 +93,7 @@ def config():
 
 
 
-    cfg.OUTPUT_DIR = "/cluster/work/helensem/Master/output/run_aug/resnet101" #! MUST MATCH WITH CURRENT MODEL 
+    cfg.OUTPUT_DIR = "/cluster/work/helensem/Master/output/run_lr/resnet101" #! MUST MATCH WITH CURRENT MODEL 
 
     return cfg 
  
@@ -103,7 +103,7 @@ def config():
 #experiment.log_parameters(hyper_params)
 
 if __name__ == "__main__":
-    mode = "evaluate"
+    mode = "train"
     for d in ["train", "val"]:
         DatasetCatalog.register("damage_" + d, lambda d=d: load_damage_dicts(r"/cluster/home/helensem/Master/Labeled_pictures",d))
         MetadataCatalog.get("damage_" + d).set(thing_classes=["damage"])
@@ -116,7 +116,7 @@ if __name__ == "__main__":
 
     if mode == "train":
         #Set pretrained weights 
-        cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("COCO-InstanceSegmentation/mask_rcnn_X_101_32x8d_FPN_3x.yaml")#mask_rcnn_R_101_FPN_3x.yaml")#("LVISv0.5-InstanceSegmentation/mask_rcnn_R_50_FPN_1x.yaml")# ##! MUST MATCH WITH CURRENT MODEL 
+        cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("COCO-InstanceSegmentation/mask_rcnn_R_101_FPN_3x.yaml")#("LVISv0.5-InstanceSegmentation/mask_rcnn_R_50_FPN_1x.yaml")# ##! MUST MATCH WITH CURRENT MODEL 
 
         
         #TRAIN
