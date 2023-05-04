@@ -140,7 +140,7 @@ if __name__ == "__main__":
     elif mode == "evaluate":
         val_dict = load_damage_dicts(r"/cluster/home/helensem/Master/Labeled_pictures", "val")
         cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
-        cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.9
+        cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.8
 
         evaluate_model(cfg, val_dict, write_to_file = False, plot=True, segment_sky=False) 
 

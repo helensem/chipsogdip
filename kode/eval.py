@@ -76,10 +76,10 @@ def evaluate_model(cfg, val_dict, write_to_file = False, plot=False, segment_sky
         iou_bg_list.append(iou_bg)
     if len(iou_corr_list) == 0: 
         return 0,0,0 
-    mean_corr_iou = np.mean(iou_corr_list)
+    mean_corr_iou = sum(iou_corr_list)/len(iou_corr_list)
     mean_bg_iou = np.mean(iou_bg_list)
     print("Total mean values ")
-    print(" Corrosion IoU =", mean_corr_iou)
+    print(" Corrosion IoU =", mean_corr_iou, "vs mean: ", np.mean(iou_corr_list))
     print("BG IoU=", mean_bg_iou)
     print("Mean IoU =", (mean_corr_iou + mean_bg_iou) / 2)
     if write_to_file:
@@ -94,7 +94,7 @@ def evaluate_model(cfg, val_dict, write_to_file = False, plot=False, segment_sky
         x = np.arange(1, len(iou_corr_list)+1)
         corr_iou = np.sort(iou_corr_list)
         plt.bar(x, corr_iou)
-        plt.axhline(y=np.mean(iou_corr_list))
+        plt.axhline(y=np.mean(iou_corr_list), color="g")
         plt.savefig(os.path.join(cfg.OUTPUT_DIR, "corrosion_iou.svg"), format="svg") 
     return mean_corr_iou, mean_bg_iou, (mean_corr_iou + mean_bg_iou) / 2
 
