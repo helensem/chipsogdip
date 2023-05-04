@@ -105,7 +105,7 @@ def config():
 if __name__ == "__main__":
     mode = "train"
     for d in ["train", "val"]:
-        DatasetCatalog.register("damage_" + d, lambda d=d: load_damage_dicts(r"/cluster/home/helensem/Master/Labeled_pictures",d))
+        DatasetCatalog.register("damage_" + d, lambda d=d: load_damage_dicts(r"/cluster/home/helensem/Master/Labeled_pictures",d, segment_sky=True))
         MetadataCatalog.get("damage_" + d).set(thing_classes=["damage"])
 
     damage_metadata = MetadataCatalog.get("damage_train")

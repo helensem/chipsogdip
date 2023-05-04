@@ -15,7 +15,7 @@ def remove_sky(image):
     Returns:
         numpy array: processed image 
     """
-    model = YOLO("/cluster/home/helensem/Master/skyseg_multi/new_data/weights/best.pt")
+    model = YOLO("/cluster/home/helensem/Master/skyseg/new_data2/weights/best.pt")
     results = model.predict(source=image, save=False, save_txt=False, conf=0.5)  # save predictions as labels
 
         #print(results)
@@ -33,8 +33,8 @@ def remove_sky(image):
 
         for mask in masks:
             mask = (mask*255).astype("uint8")
-            print(mask.shape)
-            print(image.shape)
+            #print(mask.shape)
+            #print(image.shape)
             #print(mask)
             #binary_mask = cv2.threshold(mask, 0.5, 1, cv2.THRESH_BINARY)[1]
             #print(binary_mask)

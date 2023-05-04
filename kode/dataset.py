@@ -8,6 +8,9 @@ from detectron2.structures import BoxMode
 from PIL import ImageFile
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 import shutil
+import sys
+sys.path.append(r"/cluster/home/helensem/Master/chipsogdip/kode")
+from yolo_training import remove_sky
 
 
 ##### Creating training images for GA ######### 
@@ -99,7 +102,7 @@ def create_annotation_format(contour):
     }
 
 
-def load_damage_dicts(dataset_dir, subset, write_to_file=False): #? Possibly write this to a JSON-file? 
+def load_damage_dicts(dataset_dir, subset, write_to_file=False, segment_sky = False): #? Possibly write this to a JSON-file? 
     """
     Loads the images from a dataset with a dictionary of the annotations, to be loaded in detectron 
     """ 
@@ -119,6 +122,11 @@ def load_damage_dicts(dataset_dir, subset, write_to_file=False): #? Possibly wri
         image_path = os.path.join(image_dir, file_name)
         #print(image_path)
         height, width = cv2.imread(image_path).shape[:2]
+        if segment_sky: 
+            im = cv2.imread(image_path)
+            im = remove_sky(im)
+            image_path = os.path.join(r"cluster/home/helensem/Master/Labeled_pictures_segmentated/train", file_name)
+            cv2.imwrite(image_path, im)
         record = create_image_annotation(image_path, width, height, image_id)
         #idx +=1
         mask_dir = os.path.join(image_dir, 'masks')
