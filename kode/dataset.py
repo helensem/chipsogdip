@@ -125,7 +125,7 @@ def load_damage_dicts(dataset_dir, subset, write_to_file=False, segment_sky = Fa
         if segment_sky: 
             im = cv2.imread(image_path)
             im = remove_sky(im)
-            image_path = os.path.join(r"cluster/home/helensem/Master/Labeled_pictures_segmentated/train", file_name)
+            image_path = os.path.join(r"cluster/home/helensem/Master/Labeled_pictures_segmentated",subset, file_name)
             cv2.imwrite(image_path, im)
         record = create_image_annotation(image_path, width, height, image_id)
         #idx +=1
