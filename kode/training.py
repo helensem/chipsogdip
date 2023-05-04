@@ -56,7 +56,7 @@ def config():
     cfg.DATASETS.TEST = ()
     #cfg.TEST.EVAL_PERIOD = 1
     cfg.SOLVER.IMS_PER_BATCH = 1
-    cfg.SOLVER.BASE_LR = 0.001
+    cfg.SOLVER.BASE_LR = 0.0005
     cfg.SOLVER.GAMMA = 0.5
     #cfg.SOLVER.MAX_ITER = 48930 #1631 img* 30 epochs
     cfg.SOLVER.STEPS = [16310, 32620] #Reduce lr by half per 10th epoch  
@@ -93,7 +93,7 @@ def config():
 
 
 
-    cfg.OUTPUT_DIR = "/cluster/work/helensem/Master/output/run_lr/resnet101" #! MUST MATCH WITH CURRENT MODEL 
+    cfg.OUTPUT_DIR = "/cluster/work/helensem/Master/output/run_sky/resnet101" #! MUST MATCH WITH CURRENT MODEL 
 
     return cfg 
  
@@ -105,7 +105,7 @@ def config():
 if __name__ == "__main__":
     mode = "evaluate"
     for d in ["train", "val"]:
-        DatasetCatalog.register("damage_" + d, lambda d=d: load_damage_dicts(r"/cluster/home/helensem/Master/Labeled_pictures",d))
+        DatasetCatalog.register("damage_" + d, lambda d=d: load_damage_dicts(r"/cluster/home/helensem/Master/Labeled_pictures",d, segment_sky=True))
         MetadataCatalog.get("damage_" + d).set(thing_classes=["damage"])
 
     damage_metadata = MetadataCatalog.get("damage_train")
