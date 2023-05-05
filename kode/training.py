@@ -93,7 +93,7 @@ def config():
 
 
 
-    cfg.OUTPUT_DIR = "/cluster/work/helensem/Master/output/run_sky/resnet101" #! MUST MATCH WITH CURRENT MODEL 
+    cfg.OUTPUT_DIR = "/cluster/work/helensem/Master/output/reduced_data/resnet101" #! MUST MATCH WITH CURRENT MODEL 
 
     return cfg 
  
@@ -105,8 +105,8 @@ def config():
 if __name__ == "__main__":
     mode = "train"
     for d in ["train", "val"]:
-        DatasetCatalog.register("damage_" + d, lambda d=d: load_damage_dicts(r"/cluster/home/helensem/Master/Labeled_pictures",d, segment_sky=True))
-        MetadataCatalog.get("damage_" + d).set(thing_classes=["damage"])
+        DatasetCatalog.register("damage_" + d, lambda d=d: load_damage_dicts(r"/cluster/home/helensem/Master/damage_data",d, segment_sky=False))
+        MetadataCatalog.get("damage_" + d).set(thing_classes=["red corrosion"])
 
     damage_metadata = MetadataCatalog.get("damage_train")
 
@@ -133,19 +133,19 @@ if __name__ == "__main__":
         output_dir = os.path.join(cfg.OUTPUT_DIR, "images")
         os.makedirs(output_dir, exist_ok=True)
 
-        val_dict = load_damage_dicts(r"/cluster/home/helensem/Master/Labeled_pictures", "val")
+        val_dict = load_damage_dicts(r"/cluster/home/helensem/Master/damage_data", "val")
         for d in val_dict:
             apply_inference(predictor, damage_metadata, output_dir, d, segment_sky = False)
     
     elif mode == "evaluate":
-        val_dict = load_damage_dicts(r"/cluster/home/helensem/Master/Labeled_pictures", "val")
+        val_dict = load_damage_dicts(r"/cluster/home/helensem/Master/damage_data", "val")
         cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
         cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.8
 
         evaluate_model(cfg, val_dict, write_to_file = True, plot=False, segment_sky=False) 
 
     elif mode == "inference": 
-        val_dict = load_damage_dicts(r"/cluster/home/helensem/Master/Labeled_pictures", "val")
+        val_dict = load_damage_dicts(r"/cluster/home/helensem/Master/damage_data", "val")
         cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.8
         evaluate_over_iterations(cfg,val_dict,cfg.OUTPUT_DIR, plot=True)
 
