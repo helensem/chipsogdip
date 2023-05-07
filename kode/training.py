@@ -56,44 +56,36 @@ def config():
     cfg.DATASETS.TEST = ()
     #cfg.TEST.EVAL_PERIOD = 1
     cfg.SOLVER.IMS_PER_BATCH = 1
-    cfg.SOLVER.BASE_LR = 0.0005
-    cfg.SOLVER.GAMMA = 0.5
+    cfg.SOLVER.BASE_LR = 0.0009062383073017816
+    #cfg.SOLVER.GAMMA = 0.5
     #cfg.SOLVER.MAX_ITER = 48930 #1631 img* 30 epochs
-    cfg.SOLVER.STEPS = [16310, 32620] #Reduce lr by half per 10th epoch  
+    #cfg.SOLVER.STEPS = [16310, 32620] #Reduce lr by half per 10th epoch  
     cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 128 
     cfg.MODEL.ROI_HEADS.NUM_CLASSES = 1 
 
     ### FROM TUNING
-
-    # cfg.SOLVER.BASE_LR = 0.00010860511441900859
-    # cfg.SOLVER.STEPS = []
-    # #cfg.SOLVER.GAMMA = 0.5
-    cfg.SOLVER.MAX_ITER = 1584*25 #30*200 #1631 img* 30 epochs
-    # cfg.MODEL.ROI_HEADS.NUM_CLASSES = 1 
-    # #cfg.OUTPUT_DIR = f"/cluster/work/helensem/Master/output/run_ga2/gen_{generation}/{indv}" #! MUST MATCH WITH CURRENT MODEL 
+    cfg.SOLVER.MAX_ITER = 1500*22 #30*200 #1631 img* 30 epochs
+    cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.8012575271123081
     
-    # cfg.MODEL.RPN.BATCH_SIZE_PER_IMAGE = 64
-    # cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 1024
+    cfg.MODEL.RPN.BATCH_SIZE_PER_IMAGE = 256
+    cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 128
 
-    # cfg.MODEL.RPN.PRE_NMS_TOPK_TRAIN = 1518
-    # cfg.MODEL.RPN.NMS_THRESH = 0.5719887128477639
-    # cfg.MODEL.RPN.POST_NMS_TOPK_TRAIN = 2682 
-    # cfg.MODEL.RPN.POST_NMS_TOPK_TEST = 709
+    cfg.MODEL.RPN.PRE_NMS_TOPK_TRAIN = 2757
+    cfg.MODEL.RPN.NMS_THRESH =  0.8001330702641066
+    cfg.MODEL.RPN.POST_NMS_TOPK_TRAIN = 1533
+    cfg.MODEL.RPN.POST_NMS_TOPK_TEST = 1370
     
-    # cfg.MODEL.ROI_HEADS.POSITIVE_FRACTION = 0.2636980669816439
-    # cfg.SOLVER.MOMENTUM = 0.792350687427757
-    # cfg.SOLVER.WEIGHT_DECAY = 8.446622163969797e-05
-    # cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.6155672540933761
-    # #cfg.MODEL.ROI_BOX_HEAD.BBOX_REG_LOSS_WEIGHT = roi_bbox_loss
-    
-    # #cfg.MODEL.RPN.BBOX_REG_LOSS_WEIGHT = rpn_bbox_loss
+    cfg.MODEL.ROI_HEADS.POSITIVE_FRACTION = 0.33132132259563285
+    cfg.SOLVER.MOMENTUM = 0.9254784359878887
+    cfg.SOLVER.WEIGHT_DECAY = 9.990238960067115e-05
+    cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.6155672540933761
 
-    # cfg.INPUT.MIN_SIZE_TRAIN = (591,)
-    # cfg.INPUT.MAX_SIZE_TRAIN = 1124
+    cfg.INPUT.MIN_SIZE_TRAIN = (836,)
+    cfg.INPUT.MAX_SIZE_TRAIN = 1077
+    cfg.MODEL.ROI_HEADS.IOU_THRESHOLDS = [0.3133287563236277]
+#{'rpn_nms_threshold': 0.8001330702641066, 'rpn_batch_size': 256, 'pre_nms_limit': 2757, 'post_nms_rois_training': 1533, 'post_nms_rois_inference': 1370, 'mean_pixel': array([      115.9,      117.93,      97.548]), 'roi_batch_size': 128, 'roi_positive_ratio': 0.33132132259563285, 'detection_min_confidence': 0.8012575271123081, 'learning_momentum': 0.9254784359878887, 'weight_decay': 9.990238960067115e-05, 'rpn_bbox_loss': 3.90191755967507, 'roi_bbox_loss': 6.078694180418836, 'epochs': 22, 'learning_rate': 0.0009062383073017816, 'img_min_size': 836, 'img_max_size': 1077, 'roi_iou_threshold': 0.3133287563236277}
 
-
-
-    cfg.OUTPUT_DIR = "/cluster/work/helensem/Master/output/reduced_data/resnet101" #! MUST MATCH WITH CURRENT MODEL 
+    cfg.OUTPUT_DIR = "/cluster/work/helensem/Master/output/run_tuned/resnet101" #! MUST MATCH WITH CURRENT MODEL 
 
     return cfg 
  
@@ -127,7 +119,7 @@ if __name__ == "__main__":
     
     elif mode == "predict": 
         cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
-        cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.8
+        cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.8012575271123081
 
         predictor = DefaultPredictor(cfg)
         output_dir = os.path.join(cfg.OUTPUT_DIR, "images")
