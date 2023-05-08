@@ -50,7 +50,7 @@ def config():
     """
     Standard config """
     cfg = get_cfg() 
-    cfg.merge_from_file(model_zoo.get_config_file("COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml"))#mask_rcnn_X_101_32x8d_FPN_3x.yaml")) #("LVISv0.5-InstanceSegmentation/mask_rcnn_R_50_FPN_1x.yaml"))# #! MUST MATCH WITH TRAINING WEIGHTS
+    cfg.merge_from_file(model_zoo.get_config_file("COCO-InstanceSegmentation/mask_rcnn_R_101_FPN_3x.yaml"))#mask_rcnn_X_101_32x8d_FPN_3x.yaml")) #("LVISv0.5-InstanceSegmentation/mask_rcnn_R_50_FPN_1x.yaml"))# #! MUST MATCH WITH TRAINING WEIGHTS
     cfg.DATALOADER.NUM_WORKERS = 2
     cfg.DATASETS.TRAIN = ("damage_train",)
     cfg.DATASETS.TEST = ()
@@ -64,28 +64,28 @@ def config():
     cfg.MODEL.ROI_HEADS.NUM_CLASSES = 1 
 
     ### FROM TUNING
-    cfg.SOLVER.MAX_ITER = 1500*22 #30*200 #1631 img* 30 epochs
-    cfg.MODEL.RPN.BATCH_SIZE_PER_IMAGE = 256
-    cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 128
+    # cfg.SOLVER.MAX_ITER = 1500*22 #30*200 #1631 img* 30 epochs
+    # cfg.MODEL.RPN.BATCH_SIZE_PER_IMAGE = 256
+    # cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 128
 
-    cfg.MODEL.RPN.PRE_NMS_TOPK_TRAIN = 2757
-    cfg.MODEL.RPN.NMS_THRESH =  0.800
-    #cfg.MODEL.RPN.POST_NMS_TOPK_TRAIN = 1533
-    #cfg.MODEL.RPN.POST_NMS_TOPK_TEST = 1370
+    # cfg.MODEL.RPN.PRE_NMS_TOPK_TRAIN = 2757
+    # cfg.MODEL.RPN.NMS_THRESH =  0.800
+    # #cfg.MODEL.RPN.POST_NMS_TOPK_TRAIN = 1533
+    # #cfg.MODEL.RPN.POST_NMS_TOPK_TEST = 1370
     
-    cfg.MODEL.ROI_HEADS.POSITIVE_FRACTION = 0.33
-    cfg.SOLVER.MOMENTUM = 0.925
-    #cfg.SOLVER.WEIGHT_DECAY = 9.990238960067115e-05
+    # cfg.MODEL.ROI_HEADS.POSITIVE_FRACTION = 0.33
+    # cfg.SOLVER.MOMENTUM = 0.925
+    # #cfg.SOLVER.WEIGHT_DECAY = 9.990238960067115e-05
     cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.8012575271123081#0.6155672540933761
-    #cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.8012575271123081
-    #cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.6
+    # #cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.8012575271123081
+    # #cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.6
 
-    cfg.INPUT.MIN_SIZE_TRAIN = (836,)
-    cfg.INPUT.MAX_SIZE_TRAIN = 1077
-    #cfg.MODEL.ROI_HEADS.IOU_THRESHOLDS = [0.3133287563236277]
+    # cfg.INPUT.MIN_SIZE_TRAIN = (836,)
+    # cfg.INPUT.MAX_SIZE_TRAIN = 1077
+    # #cfg.MODEL.ROI_HEADS.IOU_THRESHOLDS = [0.3133287563236277]
 #{'rpn_nms_threshold': 0.8001330702641066, 'rpn_batch_size': 256, 'pre_nms_limit': 2757, 'post_nms_rois_training': 1533, 'post_nms_rois_inference': 1370, 'mean_pixel': array([      115.9,      117.93,      97.548]), 'roi_batch_size': 128, 'roi_positive_ratio': 0.33132132259563285, 'detection_min_confidence': 0.8012575271123081, 'learning_momentum': 0.9254784359878887, 'weight_decay': 9.990238960067115e-05, 'rpn_bbox_loss': 3.90191755967507, 'roi_bbox_loss': 6.078694180418836, 'epochs': 22, 'learning_rate': 0.0009062383073017816, 'img_min_size': 836, 'img_max_size': 1077, 'roi_iou_threshold': 0.3133287563236277}
 
-    cfg.OUTPUT_DIR = "/cluster/work/helensem/Master/output/run_tuned/resnet50" #! MUST MATCH WITH CURRENT MODEL 
+    cfg.OUTPUT_DIR = "/cluster/work/helensem/Master/output/reduced_data/resnet101" #! MUST MATCH WITH CURRENT MODEL 
 
     return cfg 
  
