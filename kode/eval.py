@@ -79,7 +79,7 @@ def evaluate_model(cfg, val_dict, write_to_file = False, plot=False, segment_sky
     mean_corr_iou = np.mean(iou_corr_list)
     mean_bg_iou = np.mean(iou_bg_list)
     print("Total mean values ")
-    print(" Corrosion IoU =", mean_corr_iou)
+    print("Corrosion IoU =", mean_corr_iou)
     print("BG IoU=", mean_bg_iou)
     print("Mean IoU =", (mean_corr_iou + mean_bg_iou) / 2)
     if write_to_file:
