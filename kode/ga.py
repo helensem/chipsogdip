@@ -318,6 +318,7 @@ population = [dict(zip(hyperparameters.keys(), [random.choice(values) for values
 
 def evaluate_indvs(num_gen, num_indv):
     best_performing = []
+    ious = []
     for gen in range(num_gen):
         best_iou = 0.0
         best_per_gen = 0 
@@ -334,10 +335,11 @@ def evaluate_indvs(num_gen, num_indv):
                 best_per_gen = indv
                 best_iou = mean_iou
         best_performing.append(best_per_gen)
-    return best_performing
+        ious.append(best_iou)
+    return best_performing, ious
 
-def plot_hyperparameters(list_of_indvs, key, num_gen):
-    x = np.arange(1,num_gen+1)
+def plot_hyperparameters(list_of_indvs, key):
+    x = np.arange(1,len(list_of_indvs)+1)
     values = []
     for gen, indv in enumerate(list_of_indvs):
         path = f"/cluster/work/helensem/Master/output/run_ga4/gen_{gen}/{indv}/hyperparameters.txt"
@@ -364,7 +366,13 @@ if __name__ == "__main__":
         DatasetCatalog.register("ga_damage_" + d, lambda d=d: get_json_dict(path, d))
         MetadataCatalog.get("ga_damage_" + d).set(thing_classes=["damage"])
     
-    best_indvs = evaluate_indvs(generations, population_size)
+    best_indvs, ious = evaluate_indvs(generations, population_size)
+
+    x = np.arange(1,generations+1)
+    plt.plot(x, ious, color = "b", marker = "o")
+    plt.xlabel("Generations")
+    plt.ylabel("IoU")
+    plt.savefig(f"cluster/work/helensem/Master/output/run_ga4/ious")
     for key in hyperparameters.keys(): 
         plot_hyperparameters(best_indvs, key, generations)
 
