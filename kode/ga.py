@@ -10,6 +10,7 @@ import pandas as pd
 
 import numpy as np
 import random
+import json
 
 import sys 
 sys.path.append("cluster/home/helensem/Master/chipsogdip/kode")
@@ -287,7 +288,6 @@ def calculate_fitness(indv, hyperparameters, generation):
     return score
 
 
-
 mutation_rate = 0.2
 generations = 15 
 #hyperparameters = {}
@@ -314,6 +314,34 @@ population = [dict(zip(hyperparameters.keys(), [random.choice(values) for values
 
 
 # run the genetic algorithm
+
+def evaluate_indvs(num_gen, num_indv, val_dict, cfg):
+    best_performing = []
+    for gen in range(num_gen):
+        best_iou = 0.0
+        best_per_gen = 0 
+        for indv in range(num_indv):
+            path = f"/cluster/work/helensem/Master/output/run_ga4/gen_{gen}/{indv}"
+            cfg.MODEL.WEIGHTS = os.path.join(path, "model_final.pth")
+            iou_corr, iou_bg, mean_iou = evaluate_model(cfg, val_dict)
+            if mean_iou > best_iou: 
+                best_per_gen = indv
+                best_iou = mean_iou
+        best_performing.append(best_per_gen)
+    return best_performing
+
+def plot_hyperparameters(list_of_indvs, key, num_gen):
+    x = np.arange(1,num_gen+1)
+    values = []
+    for gen, indv in enumerate(list_of_indvs):
+        path = f"/cluster/work/helensem/Master/output/run_ga4/gen_{gen}/{indv}/hyperparameters.txt"
+        with open(path, "r") as f: 
+            data = f.read()
+        hyperparameters = json.loads(data)
+        point = hyperparameters[key]
+        values.append(point) 
+
+
 
 
 if __name__ == "__main__":
