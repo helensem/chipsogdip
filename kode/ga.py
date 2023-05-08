@@ -169,10 +169,10 @@ def generate_hyperparameters():
     init_values["pre_nms_limit"] = np.linspace(4000,8000,dtype=int)
     init_values["post_nms_rois_training"] = np.linspace(1000,3000,dtype=int)
     init_values["post_nms_rois_inference"] = np.linspace(600,2000,dtype=int)
-    pixels = np.array([random.shuffle(np.linspace(115.0,130.0)), 
-                                            random.shuffle(np.linspace(110.0,125.0)),
-                                            random.shuffle(np.linspace(100.0,115.0))])
-    init_values["mean_pixel"] = pixels.T
+    #pixels = np.array([random.shuffle(np.linspace(115.0,130.0)), 
+                                           # random.shuffle(np.linspace(110.0,125.0)),
+                                            #random.shuffle(np.linspace(100.0,115.0))])
+    #init_values["mean_pixel"] = pixels.T
 
     #init_values["MEAN_PIXEL"] = np.array([np.linspace(115.0,130.0,), 
                                           #  np.linspace(110.0,125.0),
@@ -325,6 +325,7 @@ def evaluate_indvs(num_gen, num_indv):
             path = f"/cluster/work/helensem/Master/output/run_ga4/gen_{gen}/{indv}"
             with open(os.path.join(path,"hyperparameters.txt"), "r") as f: 
                 data = f.read()
+            data = data.replace("\'", "\"")
             hyperparameters = json.loads(data)
             mean_iou = calculate_fitness(indv, hyperparameters, gen)#evaluate_model(cfg, val_dict)
             if mean_iou > best_iou: 
@@ -340,6 +341,7 @@ def plot_hyperparameters(list_of_indvs, key, num_gen):
         path = f"/cluster/work/helensem/Master/output/run_ga4/gen_{gen}/{indv}/hyperparameters.txt"
         with open(path, "r") as f: 
             data = f.read()
+        data = data.replace("\'", "\"")
         hyperparameters = json.loads(data)
         point = hyperparameters[key]
         values.append(point) 
