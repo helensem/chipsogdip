@@ -76,7 +76,9 @@ def config():
     cfg.MODEL.ROI_HEADS.POSITIVE_FRACTION = 0.33132132259563285
     cfg.SOLVER.MOMENTUM = 0.9254784359878887
     cfg.SOLVER.WEIGHT_DECAY = 9.990238960067115e-05
-    #cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.6155672540933761
+    cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.6155672540933761
+    #cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.8012575271123081
+    #cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.6
 
     cfg.INPUT.MIN_SIZE_TRAIN = (836,)
     cfg.INPUT.MAX_SIZE_TRAIN = 1077
@@ -128,7 +130,7 @@ if __name__ == "__main__":
             apply_inference(predictor, damage_metadata, output_dir, d, segment_sky = False)
     
     elif mode == "evaluate":
-        cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.6
+        #cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.6
         val_dict = load_damage_dicts(r"/cluster/home/helensem/Master/damage_data", "val")
         cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
         #cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.8
