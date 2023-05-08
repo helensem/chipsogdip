@@ -82,7 +82,7 @@ def config():
 
     cfg.INPUT.MIN_SIZE_TRAIN = (836,)
     cfg.INPUT.MAX_SIZE_TRAIN = 1077
-    cfg.MODEL.ROI_HEADS.IOU_THRESHOLDS = [0.3133287563236277]
+    #cfg.MODEL.ROI_HEADS.IOU_THRESHOLDS = [0.3133287563236277]
 #{'rpn_nms_threshold': 0.8001330702641066, 'rpn_batch_size': 256, 'pre_nms_limit': 2757, 'post_nms_rois_training': 1533, 'post_nms_rois_inference': 1370, 'mean_pixel': array([      115.9,      117.93,      97.548]), 'roi_batch_size': 128, 'roi_positive_ratio': 0.33132132259563285, 'detection_min_confidence': 0.8012575271123081, 'learning_momentum': 0.9254784359878887, 'weight_decay': 9.990238960067115e-05, 'rpn_bbox_loss': 3.90191755967507, 'roi_bbox_loss': 6.078694180418836, 'epochs': 22, 'learning_rate': 0.0009062383073017816, 'img_min_size': 836, 'img_max_size': 1077, 'roi_iou_threshold': 0.3133287563236277}
 
     cfg.OUTPUT_DIR = "/cluster/work/helensem/Master/output/run_tuned/resnet50" #! MUST MATCH WITH CURRENT MODEL 
