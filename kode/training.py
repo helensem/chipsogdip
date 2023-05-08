@@ -78,7 +78,7 @@ def config():
     cfg.MODEL.ROI_HEADS.POSITIVE_FRACTION = 0.33132132259563285
     cfg.SOLVER.MOMENTUM = 0.9254784359878887
     cfg.SOLVER.WEIGHT_DECAY = 9.990238960067115e-05
-    cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.6155672540933761
+
 
     cfg.INPUT.MIN_SIZE_TRAIN = (836,)
     cfg.INPUT.MAX_SIZE_TRAIN = 1077
@@ -89,13 +89,10 @@ def config():
 
     return cfg 
  
-
-#hyper_params = {'rpn_nms_threshold': 0.5719887128477639, 'rpn_batch_size': 64, 'pre_nms_limit': 1518, 'post_nms_rois_training': 2682, 'post_nms_rois_inference': 709, 'roi_batch_size': 1024, 'roi_positive_ratio': 0.2636980669816439, 'detection_min_confidence': 0.6155672540933761, 'learning_momentum': 0.792350687427757, 'weight_decay': 8.446622163969797e-05, 'rpn_bbox_loss': 8.437500394677944, 'roi_bbox_loss': 7.371256173459417, 'epochs': 21, 'learning_rate': 0.00010860511441900859, 'img_min_size': 591, 'img_max_size': 1124}
-
 #experiment.log_parameters(hyper_params)
 
 if __name__ == "__main__":
-    mode = "predict"
+    mode = "evaluate"
     for d in ["train", "val"]:
         DatasetCatalog.register("damage_" + d, lambda d=d: load_damage_dicts(r"/cluster/home/helensem/Master/damage_data",d, segment_sky=False))
         MetadataCatalog.get("damage_" + d).set(thing_classes=["red corrosion"])
