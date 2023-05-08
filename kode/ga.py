@@ -325,6 +325,7 @@ def evaluate_indvs(num_gen, num_indv):
             path = f"/cluster/work/helensem/Master/output/run_ga4/gen_{gen}/{indv}"
             with open(os.path.join(path,"hyperparameters.txt"), "r") as f: 
                 data = f.read()
+            data.replace(" 'mean_pixel': None,", '')   
             data = data.replace("\'", "\"")
             hyperparameters = json.loads(data)
             mean_iou = calculate_fitness(indv, hyperparameters, gen)#evaluate_model(cfg, val_dict)
@@ -341,6 +342,7 @@ def plot_hyperparameters(list_of_indvs, key, num_gen):
         path = f"/cluster/work/helensem/Master/output/run_ga4/gen_{gen}/{indv}/hyperparameters.txt"
         with open(path, "r") as f: 
             data = f.read()
+        data.replace(" 'mean_pixel': None,", '')   
         data = data.replace("\'", "\"")
         hyperparameters = json.loads(data)
         point = hyperparameters[key]
