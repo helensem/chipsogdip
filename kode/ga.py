@@ -325,8 +325,9 @@ def evaluate_indvs(num_gen, num_indv):
             path = f"/cluster/work/helensem/Master/output/run_ga4/gen_{gen}/{indv}"
             with open(os.path.join(path,"hyperparameters.txt"), "r") as f: 
                 data = f.read()
-            data.replace(" 'mean_pixel': None,", '')   
+            data = data.replace(" 'mean_pixel': None,", '')   
             data = data.replace("\'", "\"")
+            print(data)
             hyperparameters = json.loads(data)
             mean_iou = calculate_fitness(indv, hyperparameters, gen)#evaluate_model(cfg, val_dict)
             if mean_iou > best_iou: 
