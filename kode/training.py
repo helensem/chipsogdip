@@ -95,7 +95,7 @@ def config():
 #experiment.log_parameters(hyper_params)
 
 if __name__ == "__main__":
-    mode = "train"
+    mode = "evaluate"
     for d in ["train", "val"]:
         DatasetCatalog.register("damage_" + d, lambda d=d: load_damage_dicts(r"/cluster/home/helensem/Master/damage_data",d, segment_sky=False))
         MetadataCatalog.get("damage_" + d).set(thing_classes=["red corrosion"])
@@ -132,13 +132,13 @@ if __name__ == "__main__":
     elif mode == "evaluate":
         val_dict = load_damage_dicts(r"/cluster/home/helensem/Master/damage_data", "val")
         cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
-        cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.8
+        #cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.8
 
         evaluate_model(cfg, val_dict, write_to_file = True, plot=True, segment_sky=False) 
 
     elif mode == "inference": 
         val_dict = load_damage_dicts(r"/cluster/home/helensem/Master/damage_data", "val")
-        cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.8
+        #cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.8
         evaluate_over_iterations(cfg,val_dict,cfg.OUTPUT_DIR, plot=True)
 
     # elif mode == "predict":
