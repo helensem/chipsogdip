@@ -128,7 +128,7 @@ if __name__ == "__main__":
             apply_inference(predictor, damage_metadata, output_dir, d, segment_sky = False)
     
     elif mode == "evaluate":
-        cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.7
+        cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.6
         val_dict = load_damage_dicts(r"/cluster/home/helensem/Master/damage_data", "val")
         cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
         #cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.8
