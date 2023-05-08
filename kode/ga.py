@@ -18,6 +18,7 @@ from eval import evaluate_model
 from training import config
 from dataset import load_damage_dicts, get_json_dict
 import os
+from matplotlib import pyplot as plt
 
 from detectron2.engine import DefaultTrainer
 from detectron2.data import MetadataCatalog, DatasetCatalog
@@ -340,6 +341,11 @@ def plot_hyperparameters(list_of_indvs, key, num_gen):
         hyperparameters = json.loads(data)
         point = hyperparameters[key]
         values.append(point) 
+
+    plt.plot(x, values, color = "b", marker = "o")
+    plt.xlabel("Generations")
+    plt.ylabel(key)
+    plt.savefig(f"cluster/work/helensem/Master/output/run_ga4/{key}")
 
 
 
