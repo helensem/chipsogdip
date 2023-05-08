@@ -347,7 +347,9 @@ def plot_hyperparameters(list_of_indvs, key):
         path = f"/cluster/work/helensem/Master/output/run_ga4/gen_{gen}/{indv}/hyperparameters.txt"
         with open(path, "r") as f: 
             data = f.read()
-        data.replace(" 'mean_pixel': None,", '')   
+        data = data.split(",")
+        del data[5]
+        data = ",".join(data)
         data = data.replace("\'", "\"")
         hyperparameters = json.loads(data)
         point = hyperparameters[key]
