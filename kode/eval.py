@@ -157,8 +157,9 @@ def ious_from_file(path):
 def compare_ious(dict1, dict2): 
     iou_1 = []
     iou_2 = []
-    for key in dict2.keys(): 
-
+    for key in dict1.keys(): 
+        if key not in dict2:
+            continue
         if dict1[key][0] > dict2[key][0]: 
             iou_1.append(key)
         else: 
