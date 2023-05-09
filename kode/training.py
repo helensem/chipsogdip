@@ -60,7 +60,7 @@ def config():
     cfg.SOLVER.GAMMA = 0.5
     #cfg.SOLVER.MAX_ITER = 48930 #1631 img* 30 epochs
     cfg.SOLVER.STEPS = [15000, 30000] #Reduce lr by half per 10th epoch  
-    cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 256
+    cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE =  256
     cfg.MODEL.ROI_HEADS.NUM_CLASSES = 1 
 
     ### FROM TUNING
@@ -76,7 +76,7 @@ def config():
     # cfg.MODEL.ROI_HEADS.POSITIVE_FRACTION = 0.33
     # cfg.SOLVER.MOMENTUM = 0.925
     # #cfg.SOLVER.WEIGHT_DECAY = 9.990238960067115e-05
-    cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.8012575271123081#0.6155672540933761
+    cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.8#012575271123081#0.6155672540933761
     # #cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.8012575271123081
     # #cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.6
 
@@ -112,7 +112,7 @@ if __name__ == "__main__":
 
         
         #TRAIN
-        trainer = CustomTrainer(cfg)
+        trainer = DefaultTrainer(cfg)
         trainer.resume_or_load(resume=False)
         trainer.train() 
         #log_model(experiment, trainer, model_name="resnet-101")
