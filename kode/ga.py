@@ -327,7 +327,10 @@ def evaluate_indvs(num_gen, num_indv):
             with open(os.path.join(path,"hyperparameters.txt"), "r") as f: 
                 data = f.read()
             data = data.split(",")
-            del data[5]
+            if len(data) == 20:
+                del data[5:8]
+            else:
+                del data[5]
             data = ",".join(data)
             data = data.replace("\'", "\"")
             print(data)
@@ -348,7 +351,10 @@ def plot_hyperparameters(list_of_indvs, key):
         with open(path, "r") as f: 
             data = f.read()
         data = data.split(",")
-        del data[5]
+        if len(data) == 20:
+            del data[5:8]
+        else:
+            del data[5]
         data = ",".join(data)
         data = data.replace("\'", "\"")
         hyperparameters = json.loads(data)
