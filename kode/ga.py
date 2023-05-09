@@ -364,7 +364,7 @@ def plot_hyperparameters(list_of_indvs, key):
     plt.plot(x, values, color = "b", marker = "o")
     plt.xlabel("Generations")
     plt.ylabel(key)
-    plt.savefig(f"cluster/work/helensem/Master/output/run_ga4/{key}")
+    plt.savefig(f"/cluster/work/helensem/Master/output/run_ga4/{key}")
 
 
 
@@ -377,12 +377,13 @@ if __name__ == "__main__":
         MetadataCatalog.get("ga_damage_" + d).set(thing_classes=["damage"])
     
     best_indvs, ious = evaluate_indvs(generations, population_size)
-
+    print(best_indvs)
+    print(ious)
     x = np.arange(1,generations+1)
     plt.plot(x, ious, color = "b", marker = "o")
     plt.xlabel("Generations")
     plt.ylabel("IoU")
-    plt.savefig(f"cluster/work/helensem/Master/output/run_ga4/ious")
+    plt.savefig(f"/cluster/work/helensem/Master/output/run_ga4/ious")
     for key in hyperparameters.keys(): 
         plot_hyperparameters(best_indvs, key, generations)
 
