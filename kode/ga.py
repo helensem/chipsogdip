@@ -364,7 +364,7 @@ def plot_hyperparameters(list_of_indvs, key):
     plt.plot(x, values, color = "b", marker = "o")
     plt.xlabel("Generations")
     plt.ylabel(key)
-    plt.savefig(f"/cluster/work/helensem/Master/output/run_ga4/{key}")
+    plt.savefig(f"/cluster/work/helensem/Master/output/run_ga4/{key}.svg", format = "svg")
 
 
 
