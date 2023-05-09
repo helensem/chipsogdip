@@ -360,7 +360,7 @@ def plot_hyperparameters(list_of_indvs, key):
         hyperparameters = json.loads(data)
         point = hyperparameters[key]
         values.append(point) 
-
+    plt.clf()
     plt.plot(x, values, color = "b", marker = "o")
     plt.xlabel("Generations")
     plt.ylabel(key)
