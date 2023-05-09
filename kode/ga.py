@@ -26,24 +26,6 @@ from detectron2.config import get_cfg
 from detectron2 import model_zoo
 
 
-
-
-
-# def windowed_dataset(series, window_size=G.WINDOW_SIZE, batch_size=G.BATCH_SIZE, shuffle_buffer=G.SHUFFLE_BUFFER_SIZE):
-#    """
-#    We create time windows to create X and y features.
-#    For example, if we choose a window of 30, we will create a dataset formed by 30 points as X
-#    """
-#    dataset = tf.data.Dataset.from_tensor_slices(series)
-#    dataset = dataset.window(window_size + 1, shift=1, drop_remainder=True)
-#    dataset = dataset.flat_map(lambda window: window.batch(window_size + 1))
-#    dataset = dataset.shuffle(shuffle_buffer)
-#    dataset = dataset.map(lambda window: (window[:-1], window[-1]))
-#    dataset = dataset.batch(batch_size).prefetch(1)
-#    return dataset
-
-
-
 # def generate_random_hyperparameters_full():
 #     rpn_anchor_stride = random.randint(1,4)
 #     rpn_nms_threshold = random.uniform(0.5,1)
@@ -68,12 +50,6 @@ from detectron2 import model_zoo
 #     mrcnn_bbox_loss = random.uniform(1,10)
 #     mrcnn_mask_loss = random.uniform(1,10)
 #     return  rpn_anchor_stride, rpn_nms_threshold, rpn_anchor_stride, rpn_train_anchors_per_image, pre_nms_limit, post_nms_rois_training, post_nms_rois_inference, mean_pixel, train_rois_per_image, rois_positive_ratio, max_gt_instances, detection_max_instances, detection_min_confidence, detection_nms_threshold, learning_momentum, rpn_class_loss, rpn_bbox_loss, mrcnn_class_loss, mrcnn_bbox_loss, mrcnn_mask_loss 
-
-
-def generate_random_hyperparameters(): #* For testing
-    learning_rate = random.uniform(0.001, 0.1)
-    return learning_rate
-
 
 def mutate_hyperparameters(hyperparameters):
   mutation_probability = 0.05
@@ -196,7 +172,7 @@ def ga_train(indv, generation, epochs, rpn_batch_size, roi_batch_size, rpn_nms_t
     #cfg.SOLVER.GAMMA = 0.5
     cfg.SOLVER.MAX_ITER = 100*epochs #30*200 #1631 img* 30 epochs
     cfg.MODEL.ROI_HEADS.NUM_CLASSES = 1 
-    cfg.OUTPUT_DIR = f"/cluster/work/helensem/Master/output/run_ga4/gen_{generation}/{indv}" #! MUST MATCH WITH CURRENT MODEL 
+    cfg.OUTPUT_DIR = f"/cluster/work/helensem/Master/output/run_ga/gen_{generation}/{indv}" #! MUST MATCH WITH CURRENT MODEL 
     
     cfg.MODEL.RPN.BATCH_SIZE_PER_IMAGE = rpn_batch_size
     cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = roi_batch_size
@@ -270,13 +246,6 @@ def calculate_fitness(indv, hyperparameters, generation):
     return score
 
 
-mutation_rate = 0.2
-generations = 20
-#hyperparameters = {}
-hyperparameters = generate_hyperparameters()
-population_size = 10
-
-population = [dict(zip(hyperparameters.keys(), [random.choice(values) for values in hyperparameters.values()])) for _ in range(population_size)]
 
 def evaluate_indvs(num_gen, num_indv):
     best_performing = []
@@ -332,6 +301,14 @@ def plot_hyperparameters(list_of_indvs, key):
 
 
 if __name__ == "__main__":
+    mutation_rate = 0.2
+    generations = 20
+    #hyperparameters = {}
+    hyperparameters = generate_hyperparameters()
+    population_size = 10
+
+    population = [dict(zip(hyperparameters.keys(), [random.choice(values) for values in hyperparameters.values()])) for _ in range(population_size)]
+
     path = f"/cluster/home/helensem/Master/data/set1"
 
     for d in ["train", "val"]:
