@@ -34,14 +34,17 @@ def apply_inference(predictor, metadata, output_path, data, segment_sky = False)
                     instance_mode = ColorMode.IMAGE)
 
     image_id = data["image_id"] + ".png"
+    image_truth_id = data["image_id"] + "_truth.png"
     output = os.path.join(output_path, image_id)
-
+    output_truth = os.path.join(output_path, image_truth_id)
 
     out_truth = v2.draw_dataset_dict(data)
     #cv2.imshow("imageout", out_truth.get_image()[:,:,::-1])
 
-    vis = np.concatenate((out.get_image()[:,:,::-1], out_truth.get_image()[:,:,::-1]))
-    cv2.imwrite(output, vis)
+    #vis = np.concatenate((out.get_image()[:,:,::-1], out_truth.get_image()[:,:,::-1]))
+    cv2.imwrite(output, out.get_image()[:,:,::-1])
+    cv2.imwrite(output_truth, out_truth.get_image()[:,:,::-1])
+
 
    
 def evaluate_model(cfg, val_dict, write_to_file = False, plot=False, segment_sky=False):

@@ -163,33 +163,16 @@ def mutate(key):
 
 def generate_hyperparameters(): 
     init_values = {} 
-    #init_values["rpn_anchor_stride"] = np.array([1,2,3,4])
     init_values["rpn_nms_threshold"] = np.linspace(0.5, 1)
     init_values["rpn_batch_size"] = np.array([64, 128, 256, 512, 1024])
     init_values["pre_nms_limit"] = np.linspace(4000,8000,dtype=int)
     init_values["post_nms_rois_training"] = np.linspace(1000,3000,dtype=int)
     init_values["post_nms_rois_inference"] = np.linspace(600,2000,dtype=int)
-    #pixels = np.array([random.shuffle(np.linspace(115.0,130.0)), 
-                                           # random.shuffle(np.linspace(110.0,125.0)),
-                                            #random.shuffle(np.linspace(100.0,115.0))])
-    #init_values["mean_pixel"] = pixels.T
-
-    #init_values["MEAN_PIXEL"] = np.array([np.linspace(115.0,130.0,), 
-                                          #  np.linspace(110.0,125.0),
-                                           # np.linspace(95.0,115.0)])
     init_values["roi_batch_size"] = np.array([64, 128, 256, 512, 1024])#np.linspace(150,500,dtype=int)
     init_values["roi_positive_ratio"] = np.linspace(0.2, 0.5)
-    #init_values["max_gt_instances"] = np.linspace(70,400,dtype=int)
-    #init_values["detection_max_instances"] = np.linspace(70,400,dtype=int)
     init_values["detection_min_confidence"] = np.linspace(0.3,0.9)
-    #init_values["detection_nms_threshold"] = np.linspace(0.2,0.7)
     init_values["learning_momentum"] = np.linspace(0.75,0.95)
     init_values["weight_decay"] = np.linspace(0.00007, 0.000125)
-    #init_values["rpn_class_loss"] = np.linspace(1,10)
-    init_values["rpn_bbox_loss"] = np.linspace(1,10)
-    #init_values["mrcnn_class_loss"] = np.linspace(1,10)
-    init_values["roi_bbox_loss"] = np.linspace(1,10)
-    #init_values["mrcnn_mask_loss"] = np.linspace(1,10)
     init_values["epochs"] = np.linspace(20,40, dtype=int)
     init_values["learning_rate"] = np.linspace(0.0001, 0.001)
     init_values["img_min_size"] = np.linspace(500,1000, dtype=int)
@@ -267,8 +250,6 @@ def calculate_fitness(indv, hyperparameters, generation):
     momentum = float(hyperparameters["learning_momentum"])
     weight_decay = float(hyperparameters["weight_decay"])
     det_thresh = float(hyperparameters["detection_min_confidence"])
-    #rpn_bbox_loss = float(hyperparameters["rpn_bbox_loss"])
-    #roi_bbox_loss = float(hyperparameters["roi_bbox_loss"])
     img_min_size = int(hyperparameters["img_min_size"])
     img_max_size = int(hyperparameters["img_max_size"])
     roi_iou_thresh = float(hyperparameters["roi_iou_threshold"])
@@ -283,38 +264,19 @@ def calculate_fitness(indv, hyperparameters, generation):
     #cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.7
     #with open(f"/cluster/work/helensem/Master/output/run_ga4/gen_{generation}/{indv}/hyperparameters.txt", "w") as f: 
      #   f.write(str(hyperparameters))
-    corr_iou, bg_iou, mean_iou = evaluate_model(cfg, val_dict) 
-    score = 1 - mean_iou 
+    corr_iou, bg_iou, mean_iou = evaluate_model(cfg, val_dict, True) 
+    score = 1 - corr_iou
 
-    return mean_iou
+    return score
 
 
 mutation_rate = 0.2
-generations = 15 
+generations = 20
 #hyperparameters = {}
 hyperparameters = generate_hyperparameters()
-population_size = 20
+population_size = 10
 
 population = [dict(zip(hyperparameters.keys(), [random.choice(values) for values in hyperparameters.values()])) for _ in range(population_size)]
-
-# for _ in range(generations):
-# 	# select two chromosomes for crossover
-# 	parent1, parent2 = select_chromosomes(population)
-
-# 	# perform crossover to generate two new chromosomes
-# 	child1, child2 = crossover(parent1, parent2)
-
-# 	# perform mutation on the two new chromosomes
-# 	if key == "rpn_anchor_stride":
-# 		child1 = mutate(child1)
-# 	if key == "rpn_anchor_stride":
-# 		child2 = mutate(child2)
-
-# 	# replace the old population with the new population
-# 	population = [child1, child2] + population[2:]
-
-
-# run the genetic algorithm
 
 def evaluate_indvs(num_gen, num_indv):
     best_performing = []
@@ -370,11 +332,11 @@ def plot_hyperparameters(list_of_indvs, key):
 
 
 if __name__ == "__main__":
-    path = r"/cluster/home/helensem/Master/data/set1"
+    path = f"/cluster/home/helensem/Master/data/set1"
 
-    # for d in ["train", "val"]:
-    #     DatasetCatalog.register("ga_damage_" + d, lambda d=d: get_json_dict(path, d))
-    #     MetadataCatalog.get("ga_damage_" + d).set(thing_classes=["damage"])
+    for d in ["train", "val"]:
+        DatasetCatalog.register("ga_damage_" + d, lambda d=d: get_json_dict(path, d))
+        MetadataCatalog.get("ga_damage_" + d).set(thing_classes=["damage"])
     
     #best_indvs, ious = evaluate_indvs(generations, population_size)
     # print(best_indvs)
@@ -384,116 +346,48 @@ if __name__ == "__main__":
     # plt.xlabel("Generations")
     # plt.ylabel("IoU")
     # plt.savefig(f"/cluster/work/helensem/Master/output/run_ga4/ious")
-    best_indvs = [15, 9, 0, 2, 10, 9, 1, 7, 1, 10, 11, 6, 18, 1, 12]
+    # best_indvs = [15, 9, 0, 2, 10, 9, 1, 7, 1, 10, 11, 6, 18, 1, 12]
 
-    for key in hyperparameters.keys(): 
-        plot_hyperparameters(best_indvs, key)
+    # for key in hyperparameters.keys(): 
+    #     plot_hyperparameters(best_indvs, key)
 
 
-
-    # for generation in range(generations):
-    #     # evaluate the fitness of each individual in the population
-    #     fitness_scores = [calculate_fitness(idx, individual, generation) for idx, individual in enumerate(population)]
+    fittest_per_gen = []
+    for generation in range(generations):
         
-    #     # select the fittest individuals to breed the next generation
-    #     sorted_population = [x for _, x in sorted(zip(fitness_scores, population))]
-    #     fittest_individuals = sorted_population[:int(population_size/2)]
-    #     # create the next generation by breeding the fittest individuals
-    #     new_population = []
-    #     while len(new_population) < population_size:
-    #         # randomly select two parents from the fittest individuals
-    #         parent1, parent2 = random.sample(fittest_individuals, k=2)
+        # evaluate the fitness of each individual in the population
+        fitness_scores = [calculate_fitness(idx, individual, generation) for idx, individual in enumerate(population)]
+        
+        # select the fittest individuals to breed the next generation
+        sorted_population = [x for _, x in sorted(zip(fitness_scores, population))]
+        fittest_individuals = sorted_population[:int(population_size/2)]
+        fittest_per_gen.append(sorted_population[0])
+        # create the next generation by breeding the fittest individuals
+        new_population = []
+        while len(new_population) < population_size:
+            # randomly select two parents from the fittest individuals
+            parent1, parent2 = random.sample(fittest_individuals, k=2)
             
-    #         # create a new individual by randomly selecting hyperparameters from the parents
-    #         new_individual = {}
-    #         for key in hyperparameters.keys():
-    #             if random.random() < mutation_rate:
-    #                 # randomly mutate the hyperparameter with a small random value
-    #                 new_individual[key] = mutate(key)
-    #             else:
-    #                 # randomly select the hyperparameter from one of the parents
-    #                 new_individual[key] = random.choice([parent1[key], parent2[key]])
-    #         new_population.append(new_individual)
+            # create a new individual by randomly selecting hyperparameters from the parents
+            new_individual = {}
+            for key in hyperparameters.keys():
+                if random.random() < mutation_rate:
+                    # randomly mutate the hyperparameter with a small random value
+                    new_individual[key] = mutate(key)
+                else:
+                    # randomly select the hyperparameter from one of the parents
+                    new_individual[key] = random.choice([parent1[key], parent2[key]])
+            new_population.append(new_individual)
         
-    #     # update the population with the new generation
-    #     population = new_population
+        # update the population with the new generation
+        population = new_population
 
-    # # select the fittest individual from the final population
-    # fitness_scores = [calculate_fitness(idx, individual, generations) for idx, individual in enumerate(population)]
-    # sorted_population = [x for _, x in sorted(zip(fitness_scores, population))]
-    # fittest_individual = sorted_population[0]
-    # txt_file = r"/cluster/work/helensem/Master/output/run_ga/fittest_ind.txt"
-    # with open(txt_file, "w") as f:
-    #     f.write(str(fittest_individual))
-    # print("Best individual is: ", fittest_individual)
+    # select the fittest individual from the final population
+    fitness_scores = [calculate_fitness(idx, individual, generations) for idx, individual in enumerate(population)]
+    sorted_population = [x for _, x in sorted(zip(fitness_scores, population))]
+    fittest_individual = sorted_population[0]
+    txt_file = r"/cluster/work/helensem/Master/output/run_ga/fittest_ind.txt"
+    with open(txt_file, "w") as f:
+        f.write(str(fittest_individual))
+    print("Best individual is: ", fittest_individual)
         
-
-
-
-def select_chromosomes(population):
-	fitness_values = []
-	for chromosome in population:
-		fitness_values.append(calculate_fitness(chromosome))
-	
-	fitness_values = [float(i)/sum(fitness_values) for i in fitness_values]
-	
-	parent1 = random.choices(population, hyperparameters=fitness_values, k=1)[0]
-	parent2 = random.choices(population, hyperparameters=fitness_values, k=1)[0]
-	
-	print("Selected two chromosomes for crossover")
-	return parent1, parent2
-
-def crossover(parent1, parent2):
-	crossover_point = random.randint(0, len(parent1)-1)
-	child1 = parent1[0:crossover_point] + parent2[crossover_point:]
-	child2 = parent2[0:crossover_point] + parent1[crossover_point:]
-	
-	print("Performed crossover between two chromosomes")
-	return child1, child2
-
-
-
-# creator.create("FitnessMin", base.Fitness, weights=(-1.0,))
-# creator.create("Individual", list, fitness=creator.FitnessMin)
-
-# toolbox = base.Toolbox()
-# toolbox.register("hyperparameters", generate_random_hyperparameters)
-# toolbox.register("individual", tools.initIterate, creator.Individual, toolbox.hyperparameters)
-# toolbox.register("population", tools.initRepeat, list, toolbox.individual)
-# toolbox.register("evaluate", evaluate)
-
-# toolbox.register("mate", tools.cxTwoPoint)
-# toolbox.register("mutate", tools.mutShuffleIndexes, indpb=0.05)
-# toolbox.register("select", tools.selTournament, tournsize=3)
-# """
-# NGEN = 50
-# MU = 10
-# LAMBDA = 50
-# CXPB = 0.5
-# MUTPB = 0.1"""
-
-
-# NGEN = 2
-# MU = 2
-# LAMBDA = 5
-# CXPB = 0.5
-# MUTPB = 0.1
-
-# print(toolbox.population)
-
-# pop = toolbox.population(n=MU)
-# hof = tools.HallOfFame(1)
-# stats = tools.Statistics(lambda ind: ind.fitness.values)
-# stats.register("avg", np.mean)
-# stats.register("std", np.std)
-# stats.register("min", np.min)
-# stats.register("max", np.max)
-
-# pop, log = deap.algorithms.eaMuPlusLambda(pop, toolbox, MU, LAMBDA, CXPB, MUTPB, NGEN, stats=stats, halloffame=hof, verbose=True)
-
-# best_hyperparameters = hof[0]
-
-# best_inds = [ind for ind in hof.items]
-# best_inds_df = pd.DataFrame(best_inds)
-# best_inds_df.to_csv(r"", index=False)
-# print("Best hyperparameters: ", best_hyperparameters)
