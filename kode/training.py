@@ -112,7 +112,7 @@ if __name__ == "__main__":
 
         
         #TRAIN
-        trainer = CustomTrainer(cfg)
+        trainer = DefaultTrainer(cfg)
         trainer.resume_or_load(resume=False)
         trainer.train() 
         #log_model(experiment, trainer, model_name="resnet-101")
