@@ -200,11 +200,11 @@ def ga_train(indv, generation, epochs, rpn_batch_size, roi_batch_size, rpn_nms_t
     os.makedirs(cfg.OUTPUT_DIR, exist_ok=True)
     
     #TRAIN
-    #cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml") #! MUST MATCH WITH CURRENT MODEL 
+    cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml") #! MUST MATCH WITH CURRENT MODEL 
 
-    #trainer = DefaultTrainer(cfg)
-    #trainer.resume_or_load(resume=False)
-    #trainer.train()
+    trainer = DefaultTrainer(cfg)
+    trainer.resume_or_load(resume=False)
+    trainer.train()
     return cfg
 
 
@@ -238,8 +238,8 @@ def calculate_fitness(indv, hyperparameters, generation):
     val_dict = DatasetCatalog.get("ga_damage_val")#load_damage_dicts(r"/cluster/home/helensem/Master/data/set1", "val")#get_json_dict(r"/cluster/home/helensem/Master/data/set1","val")
     cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
     #cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.7
-    #with open(f"/cluster/work/helensem/Master/output/run_ga4/gen_{generation}/{indv}/hyperparameters.txt", "w") as f: 
-     #   f.write(str(hyperparameters))
+    with open(f"/cluster/work/helensem/Master/output/run_ga4/gen_{generation}/{indv}/hyperparameters.txt", "w") as f: 
+       f.write(str(hyperparameters))
     corr_iou, bg_iou, mean_iou = evaluate_model(cfg, val_dict, True) 
     score = 1 - corr_iou
 
