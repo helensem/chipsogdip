@@ -60,7 +60,7 @@ def config():
     cfg.SOLVER.GAMMA = 0.5
     #cfg.SOLVER.MAX_ITER = 48930 #1631 img* 30 epochs
     cfg.SOLVER.STEPS = [15000, 30000] #Reduce lr by half per 10th epoch  
-    cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 128 
+    cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 256
     cfg.MODEL.ROI_HEADS.NUM_CLASSES = 1 
 
     ### FROM TUNING
