@@ -139,7 +139,7 @@ def evaluate_over_iterations(cfg, val_dict, output_dir, plot=False, segment_sky=
 
 
 def ious_from_file(path): 
-    with open("/content/gdrive/MyDrive/mask_rcnn/run_aug/output.txt", "r") as f: 
+    with open(path, "r") as f: 
         data = f.read()
 
     data = data.split("\n")
