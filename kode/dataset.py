@@ -20,12 +20,12 @@ def ga_train_sets():
     #os.makedirs(r"/cluster/home/helensem/Master/data/set2/val", exist_ok=True)
     #os.makedirs(r"/cluster/home/helensem/Master/data/set3/val", exist_ok=True)
     
-    image_ids = next(os.walk(r"/cluster/home/helensem/Master/damage_data/train"))[1]
+    image_ids = next(os.walk(r"/cluster/home/helensem/Master/damage_data/val"))[1]
     set1 = []
     set2 = []
     set3 = []
 
-    for i in range(200): 
+    for i in range(30): 
         idx = random.randint(0,len(image_ids)-1)
         set1.append(image_ids[idx])
         del image_ids[idx]
@@ -37,10 +37,10 @@ def ga_train_sets():
         del image_ids[idx]
 
     for image_id in set1: 
-        image_path = os.path.join(r"/cluster/home/helensem/Master/damage_data/train", image_id)
+        image_path = os.path.join(r"/cluster/home/helensem/Master/damage_data/val", image_id)
         #image = next(os.walk(image_path))[2][0]
         #(image_path) = os.path.join(image_path, image)
-        destination = os.path.join(r"/cluster/home/helensem/Master/data/set1/train", image_id)
+        destination = os.path.join(r"/cluster/home/helensem/Master/data/set1/val", image_id)
         shutil.copytree(image_path, destination) 
     
     # for image_id in set2: 
@@ -56,7 +56,7 @@ def ga_train_sets():
     #     #(image_path) = os.path.join(image_path, image)
     #     destination = os.path.join(r"/cluster/home/helensem/Master/data/set3/val", image_id)
     #     shutil.copytree(image_path, destination)  
-    load_damage_dicts(r"/cluster/home/helensem/Master/data/set1", "train", True)
+    load_damage_dicts(r"/cluster/home/helensem/Master/data/set1", "val", True)
 
 
 
