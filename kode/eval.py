@@ -210,10 +210,9 @@ if __name__ == "__main__":
 
     results_normal = ious_from_file(path_1)
     results_reduced = ious_from_file(path_2)
-    print(results_normal)
-    print(results_reduced)
 
     iou_normal, iou_reduced =compare_ious(results_normal, results_reduced)
+    print(len(iou_normal), len(iou_reduced))
     print("images where the normal is better: ", iou_normal, "\n", "Images where reduced data is better: ", iou_reduced)
 
 
