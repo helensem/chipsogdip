@@ -138,8 +138,32 @@ def evaluate_over_iterations(cfg, val_dict, output_dir, plot=False, segment_sky=
         plt.savefig(os.path.join(output_dir, "iou_per_model.svg"), format="svg")
 
 
-    
+def ious_from_file(path): 
+    with open("/content/gdrive/MyDrive/mask_rcnn/run_aug/output.txt", "r") as f: 
+        data = f.read()
 
+    data = data.split("\n")
+    del data [-4:]
+    results = {}
+    for d in data: 
+        d = d.replace(" IoU = ", ":")
+        d = d.split(":")
+        tup = d[1].replace("(", "")
+        tup = tup.replace(")", "")
+        res = tuple(map(float, tup.split(', ')))
+        results[d[0]] = res
+    return results
+ 
+def compare_ious(dict1, dict2): 
+    iou_1 = []
+    iou_2 = []
+    for key in dict1.keys(): 
+
+        if dict1[key][0] > dict2[key][0]: 
+            iou_1.append(key)
+        else: 
+            iou_2.append(key)
+    return iou_1, iou_2
 
 
 def combine_masks_to_one(masks):
@@ -177,6 +201,18 @@ def compute_overlaps_masks(masks1, masks2, BG=False):
     overlaps = intersections / union
 
     return overlaps
+
+
+if __name__ == "__main__":
+    path_1 = r"/cluster/work/helensem/Master/output/run_aug/resnet101/output.txt"
+    path_2 = r"/cluster/work/helensem/Master/output/reduced_data/resnet101/output.txt"
+
+    results_normal = ious_from_file(path_1)
+    results_reduced = ious_from_file(path_2)
+
+    iou_normal, iou_reduced =compare_ious(results_normal, results_reduced)
+    print("images where the normal is better: ", iou_normal, "\n", "Images where reduced data is better: ", iou_reduced)
+
 
 # def overlay_prediction_single_maskrcnn(pr=None, inp=None,
 #                                        out_dir=None, overlay_img=True, colors=mask_rcnn_colors):
