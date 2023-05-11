@@ -50,6 +50,16 @@ from detectron2 import model_zoo
 #     mrcnn_bbox_loss = random.uniform(1,10)
 #     mrcnn_mask_loss = random.uniform(1,10)
 #     return  rpn_anchor_stride, rpn_nms_threshold, rpn_anchor_stride, rpn_train_anchors_per_image, pre_nms_limit, post_nms_rois_training, post_nms_rois_inference, mean_pixel, train_rois_per_image, rois_positive_ratio, max_gt_instances, detection_max_instances, detection_min_confidence, detection_nms_threshold, learning_momentum, rpn_class_loss, rpn_bbox_loss, mrcnn_class_loss, mrcnn_bbox_loss, mrcnn_mask_loss 
+class NpEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, np.integer):
+            return int(obj)
+        if isinstance(obj, np.floating):
+            return float(obj)
+        if isinstance(obj, np.ndarray):
+            return obj.tolist()
+        return super(NpEncoder, self).default(obj)
+
 
 def mutate_hyperparameters(hyperparameters):
   mutation_probability = 0.05
@@ -238,7 +248,7 @@ def calculate_fitness(indv_num, hyperparameters, generation):
     val_dict = DatasetCatalog.get("ga_damage_val")#load_damage_dicts(r"/cluster/home/helensem/Master/data/set1", "val")#get_json_dict(r"/cluster/home/helensem/Master/data/set1","val")
     cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
     #cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.7
-    string = json.dumps(hyperparameters)
+    string = json.dumps(hyperparameters, cls=NpEncoder)
     with open(f"/cluster/work/helensem/Master/output/run_ga_adv/gen_{generation}/{indv_num}/hyperparameters.txt", "w") as f: 
        f.write(string)
     corr_iou, bg_iou, mean_iou = evaluate_model(cfg, val_dict, True) 
