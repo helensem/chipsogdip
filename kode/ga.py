@@ -216,7 +216,7 @@ def calculate_fitness(indv, hyperparameters, generation):
 
     epochs = int(hyperparameters["epochs"])
     rpn_batch_size = int(hyperparameters["rpn_batch_size"])
-    roi_batch_size = int(hyperparameters["roi_batch_size"])
+    roi_batch_size = 512# int(hyperparameters["roi_batch_size"])
     rpn_nms_thresh = float(hyperparameters["rpn_nms_threshold"])
     learning_rate = float(hyperparameters["learning_rate"])
     pre_nms_limit = int(hyperparameters["pre_nms_limit"])
