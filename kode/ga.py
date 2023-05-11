@@ -200,11 +200,11 @@ def ga_train(indv, generation, epochs, rpn_batch_size, roi_batch_size, rpn_nms_t
     os.makedirs(cfg.OUTPUT_DIR, exist_ok=True)
     
     #TRAIN
-    cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml") #! MUST MATCH WITH CURRENT MODEL 
+    # cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml") #! MUST MATCH WITH CURRENT MODEL 
 
-    trainer = DefaultTrainer(cfg)
-    trainer.resume_or_load(resume=False)
-    trainer.train()
+    # trainer = DefaultTrainer(cfg)
+    # trainer.resume_or_load(resume=False)
+    # trainer.train()
     return cfg
 
 
@@ -238,12 +238,13 @@ def calculate_fitness(indv, hyperparameters, generation):
     val_dict = DatasetCatalog.get("ga_damage_val")#load_damage_dicts(r"/cluster/home/helensem/Master/data/set1", "val")#get_json_dict(r"/cluster/home/helensem/Master/data/set1","val")
     cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
     #cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.7
-    with open(f"/cluster/work/helensem/Master/output/run_ga4/gen_{generation}/{indv}/hyperparameters.txt", "w") as f: 
-       f.write(str(hyperparameters))
+    string = json.dumps(hyperparameters)
+    with open(f"/cluster/work/helensem/Master/output/run_ga/gen_{generation}/{indv}/hyperparameters.txt", "w") as f: 
+       f.write(string)
     corr_iou, bg_iou, mean_iou = evaluate_model(cfg, val_dict, True) 
-    score = 1 - corr_iou
+    #score = 1 - corr_iou
 
-    return score
+    return corr_iou#score
 
 
 
@@ -295,14 +296,14 @@ def plot_hyperparameters(list_of_indvs, key):
     plt.plot(x, values, color = "b", marker = "o")
     plt.xlabel("Generations")
     plt.ylabel(key)
-    plt.savefig(f"/cluster/work/helensem/Master/output/run_ga4/{key}.svg", format = "svg")
+    plt.savefig(f"/cluster/work/helensem/Master/output/run_ga/{key}.svg", format = "svg")
 
 
 
 
 if __name__ == "__main__":
     mutation_rate = 0.2
-    generations = 20
+    generations = 15
     #hyperparameters = {}
     hyperparameters = generate_hyperparameters()
     population_size = 10
@@ -315,56 +316,59 @@ if __name__ == "__main__":
         DatasetCatalog.register("ga_damage_" + d, lambda d=d: get_json_dict(path, d))
         MetadataCatalog.get("ga_damage_" + d).set(thing_classes=["damage"])
     
-    #best_indvs, ious = evaluate_indvs(generations, population_size)
-    # print(best_indvs)
-    # print(ious)
-    # x = np.arange(1,generations+1)
-    # plt.plot(x, ious, color = "b", marker = "o")
-    # plt.xlabel("Generations")
-    # plt.ylabel("IoU")
-    # plt.savefig(f"/cluster/work/helensem/Master/output/run_ga4/ious")
+    best_indvs, ious = evaluate_indvs(generations, population_size)
+    print(best_indvs)
+    print(ious)
+    x = np.arange(1,generations+1)
+    plt.plot(x, ious, color = "b", marker = "o")
+    plt.xlabel("Generations")
+    plt.ylabel("IoU")
+    plt.savefig(f"/cluster/work/helensem/Master/output/run_ga/ious")
     # best_indvs = [15, 9, 0, 2, 10, 9, 1, 7, 1, 10, 11, 6, 18, 1, 12]
 
     # for key in hyperparameters.keys(): 
     #     plot_hyperparameters(best_indvs, key)
 
 
-    fittest_per_gen = []
-    for generation in range(generations):
+    # fittest_per_gen = []
+    # for generation in range(generations):
         
-        # evaluate the fitness of each individual in the population
-        fitness_scores = [calculate_fitness(idx, individual, generation) for idx, individual in enumerate(population)]
+    #     # evaluate the fitness of each individual in the population
+    #     fitness_scores = [calculate_fitness(idx, individual, generation) for idx, individual in enumerate(population)]
         
-        # select the fittest individuals to breed the next generation
-        sorted_population = [x for _, x in sorted(zip(fitness_scores, population))]
-        fittest_individuals = sorted_population[:int(population_size/2)]
-        fittest_per_gen.append(sorted_population[0])
-        # create the next generation by breeding the fittest individuals
-        new_population = []
-        while len(new_population) < population_size:
-            # randomly select two parents from the fittest individuals
-            parent1, parent2 = random.sample(fittest_individuals, k=2)
+    #     # select the fittest individuals to breed the next generation
+    #     sorted_population = [x for _, x in sorted(zip(fitness_scores, population))]
+    #     fittest_individuals = sorted_population[:int(population_size/2)]
+    #     fittest_per_gen.append(sorted_population[0])
+    #     print("fittest per generation: ", fittest_per_gen)
+    #     # create the next generation by breeding the fittest individuals
+    #     new_population = []
+    #     while len(new_population) < population_size:
+    #         # randomly select two parents from the fittest individuals
+    #         parent1, parent2 = random.sample(fittest_individuals, k=2)
             
-            # create a new individual by randomly selecting hyperparameters from the parents
-            new_individual = {}
-            for key in hyperparameters.keys():
-                if random.random() < mutation_rate:
-                    # randomly mutate the hyperparameter with a small random value
-                    new_individual[key] = mutate(key)
-                else:
-                    # randomly select the hyperparameter from one of the parents
-                    new_individual[key] = random.choice([parent1[key], parent2[key]])
-            new_population.append(new_individual)
+    #         # create a new individual by randomly selecting hyperparameters from the parents
+    #         new_individual = {}
+    #         for key in hyperparameters.keys():
+    #             if random.random() < mutation_rate:
+    #                 # randomly mutate the hyperparameter with a small random value
+    #                 new_individual[key] = mutate(key)
+    #             else:
+    #                 # randomly select the hyperparameter from one of the parents
+    #                 new_individual[key] = random.choice([parent1[key], parent2[key]])
+    #         new_population.append(new_individual)
         
-        # update the population with the new generation
-        population = new_population
+    #     # update the population with the new generation
+    #     population = new_population
 
-    # select the fittest individual from the final population
-    fitness_scores = [calculate_fitness(idx, individual, generations) for idx, individual in enumerate(population)]
-    sorted_population = [x for _, x in sorted(zip(fitness_scores, population))]
-    fittest_individual = sorted_population[0]
-    txt_file = r"/cluster/work/helensem/Master/output/run_ga/fittest_ind.txt"
-    with open(txt_file, "w") as f:
-        f.write(str(fittest_individual))
-    print("Best individual is: ", fittest_individual)
+    # # select the fittest individual from the final population
+    # fitness_scores = [calculate_fitness(idx, individual, generations) for idx, individual in enumerate(population)]
+    # sorted_population = [x for _, x in sorted(zip(fitness_scores, population))]
+    # fittest_individual = sorted_population[0]
+    # txt_file = r"/cluster/work/helensem/Master/output/run_ga/fittest_ind.txt"
+    # with open(txt_file, "w") as f:
+    #     f.write(str(fittest_individual))
+    # print("Best individual is: ", fittest_individual)
+    # print(fittest_per_gen)
+
         
