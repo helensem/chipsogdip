@@ -200,19 +200,19 @@ def ga_train(indv, generation, epochs, rpn_batch_size, roi_batch_size, rpn_nms_t
     os.makedirs(cfg.OUTPUT_DIR, exist_ok=True)
     
     #TRAIN
-    # cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml") #! MUST MATCH WITH CURRENT MODEL 
+    cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml") #! MUST MATCH WITH CURRENT MODEL 
 
-    # trainer = DefaultTrainer(cfg)
-    # trainer.resume_or_load(resume=False)
-    # trainer.train()
+    trainer = DefaultTrainer(cfg)
+    trainer.resume_or_load(resume=False)
+    trainer.train()
     return cfg
 
 
-def calculate_fitness(indv, hyperparameters, generation):
+def calculate_fitness(indv_num, hyperparameters, generation):
     
     #dataset = r"/cluster/home/helensem/Master/data/set1"
     #* Set hyperparameters
-    print(" generation: ", generation, "indv: ", indv, "\n", hyperparameters)
+    print(" generation: ", generation, "indv: ", indv_num, "\n", hyperparameters)
 
     epochs = int(hyperparameters["epochs"])
     rpn_batch_size = int(hyperparameters["rpn_batch_size"])
@@ -230,7 +230,7 @@ def calculate_fitness(indv, hyperparameters, generation):
     img_max_size = int(hyperparameters["img_max_size"])
     roi_iou_thresh = float(hyperparameters["roi_iou_threshold"])
 
-    cfg = ga_train(indv, generation, epochs, rpn_batch_size, roi_batch_size, rpn_nms_thresh, learning_rate, pre_nms_limit, post_nms_train, post_nms_val, roi_pos_ratio, momentum, weight_decay, det_thresh, roi_iou_thresh, img_min_size, img_max_size)
+    cfg = ga_train(indv_num, generation, epochs, rpn_batch_size, roi_batch_size, rpn_nms_thresh, learning_rate, pre_nms_limit, post_nms_train, post_nms_val, roi_pos_ratio, momentum, weight_decay, det_thresh, roi_iou_thresh, img_min_size, img_max_size)
 
     #TRAIN
 
@@ -239,7 +239,7 @@ def calculate_fitness(indv, hyperparameters, generation):
     cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
     #cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.7
     string = json.dumps(hyperparameters)
-    with open(f"/cluster/work/helensem/Master/output/run_ga_adv/gen_{generation}/{indv}/hyperparameters.txt", "w") as f: 
+    with open(f"/cluster/work/helensem/Master/output/run_ga_adv/gen_{generation}/{indv_num}/hyperparameters.txt", "w") as f: 
        f.write(string)
     corr_iou, bg_iou, mean_iou = evaluate_model(cfg, val_dict, True) 
 

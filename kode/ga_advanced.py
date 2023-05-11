@@ -44,6 +44,8 @@ def genetic_algorithm(population_size, num_generations, mutation_probability, st
     #population_size = 10
     #num_generations = 20
     #mutation_probability = 0.1
+    best_individual = None
+    best_fitness = None
     best_per_gen = []
 
     # Initialize the population
@@ -52,14 +54,18 @@ def genetic_algorithm(population_size, num_generations, mutation_probability, st
     for generation in range(num_generations):
         # Evaluate the fitness of each individual in the population
         fitness_scores = []
-        for individual in population:
-            fitness = calculate_fitness(individual)
+        for idx, individual in enumerate(population):
+            fitness = calculate_fitness(idx, individual, generation+1)
             fitness_scores.append((individual, fitness))
 
         # Sort the population based on fitness scores in descending order
         fitness_scores.sort(key=lambda x: x[1], reverse=True)
-        best_individual, best_fitness = fitness_scores[0]
-        best_per_gen.append((best_individual, best_fitness))
+        current_best_individual, current_best_fitness = fitness_scores[0]
+        best_per_gen.append((current_best_individual, current_best_fitness))
+        if current_best_fitness >= stop_fitness_score:
+            best_fitness = current_best_fitness
+            best_individual = current_best_individual
+            break
         # Select the top individuals for reproduction (elitism)
         elite_population = [individual for individual, _ in fitness_scores[:int(0.4 * population_size)]]
 
@@ -87,15 +93,13 @@ def genetic_algorithm(population_size, num_generations, mutation_probability, st
             next_generation.append(child)
 
         # Replace the current population with the next generation
-        if best_fitness >= stop_fitness_score:
-            break
 
         population = next_generation
 
     # Evaluate the fitness of the final population
     fitness_scores = []
     for individual in population:
-        fitness = calculate_fitness(individual)
+        fitness = calculate_fitness(population_size, individual, num_generations)
         fitness_scores.append((individual, fitness))
 
     # Sort the final population based on fitness scores in descending order
@@ -124,12 +128,13 @@ if __name__ == "__main__":
     print("Best IoU reached: ", best_fitness)
  
     ious = []
-    gens = np.arange(1,generations+1)
+    gens = np.arange(0,generations+1)
     for gen, indv in enumerate(best_per_gen): 
       print(indv[0])
+      print(indv[1])
       ious.append(indv[1])
 
-    plt.plot(x, ious, color = "b", marker = "o")
+    plt.plot(gens, ious[:-1], color = "b", marker = "o")
     plt.xlabel("Generations")
     plt.ylabel("IoU")
     plt.savefig(f"/cluster/work/helensem/Master/output/run_ga_adv/ious")
