@@ -144,7 +144,7 @@ def generate_hyperparameters():
     init_values["pre_nms_limit"] = np.linspace(4000,8000,dtype=int)
     init_values["post_nms_rois_training"] = np.linspace(1000,3000,dtype=int)
     init_values["post_nms_rois_inference"] = np.linspace(600,2000,dtype=int)
-    #init_values["roi_batch_size"] = np.array([64, 128, 256, 512, 1024])#np.linspace(150,500,dtype=int)
+    init_values["roi_batch_size"] = np.array([64, 128, 256, 512, 1024])#np.linspace(150,500,dtype=int)
     init_values["roi_positive_ratio"] = np.linspace(0.2, 0.5)
     init_values["detection_min_confidence"] = np.linspace(0.3,0.9)
     init_values["learning_momentum"] = np.linspace(0.75,0.95)
@@ -172,7 +172,7 @@ def ga_train(indv, generation, epochs, rpn_batch_size, roi_batch_size, rpn_nms_t
     #cfg.SOLVER.GAMMA = 0.5
     cfg.SOLVER.MAX_ITER = 100*epochs #30*200 #1631 img* 30 epochs
     cfg.MODEL.ROI_HEADS.NUM_CLASSES = 1 
-    cfg.OUTPUT_DIR = f"/cluster/work/helensem/Master/output/run_ga/gen_{generation}/{indv}" #! MUST MATCH WITH CURRENT MODEL 
+    cfg.OUTPUT_DIR = f"/cluster/work/helensem/Master/output/run_ga_adv/gen_{generation}/{indv}" #! MUST MATCH WITH CURRENT MODEL 
     
     cfg.MODEL.RPN.BATCH_SIZE_PER_IMAGE = rpn_batch_size
     cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = roi_batch_size
@@ -239,10 +239,9 @@ def calculate_fitness(indv, hyperparameters, generation):
     cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
     #cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.7
     string = json.dumps(hyperparameters)
-    with open(f"/cluster/work/helensem/Master/output/run_ga/gen_{generation}/{indv}/hyperparameters.txt", "w") as f: 
+    with open(f"/cluster/work/helensem/Master/output/run_ga_adv/gen_{generation}/{indv}/hyperparameters.txt", "w") as f: 
        f.write(string)
     corr_iou, bg_iou, mean_iou = evaluate_model(cfg, val_dict, True) 
-    #score = 1 - corr_iou
 
     return corr_iou#score
 
@@ -278,10 +277,10 @@ def evaluate_indvs(num_gen, num_indv):
 def plot_hyperparameters(list_of_indvs, key):
     x = np.arange(1,len(list_of_indvs)+1)
     values = []
-    for gen, indv in enumerate(list_of_indvs):
-        path = f"/cluster/work/helensem/Master/output/run_ga/gen_{gen}/{indv}/hyperparameters.txt"
-        with open(path, "r") as f: 
-            data = f.read()
+    for indv in list_of_indvs:
+        #path = f"/cluster/work/helensem/Master/output/run_ga/gen_{gen}/{indv}/hyperparameters.txt"
+        # with open(path, "r") as f: 
+        #     data = f.read()
         # data = data.split(",")
         # if len(data) == 20:
         #     del data[5:8]
@@ -289,14 +288,14 @@ def plot_hyperparameters(list_of_indvs, key):
         #     del data[5]
         # data = ",".join(data)
         # data = data.replace("\'", "\"")
-        hyperparameters = json.loads(data)
-        point = hyperparameters[key]
+        #hyperparameters = json.loads(data)
+        point = indv[key]
         values.append(point) 
     plt.clf()
     plt.plot(x, values, color = "b", marker = "o")
     plt.xlabel("Generations")
     plt.ylabel(key)
-    plt.savefig(f"/cluster/work/helensem/Master/output/run_ga/{key}.svg", format = "svg")
+    plt.savefig(f"/cluster/work/helensem/Master/output/run_ga_adv/{key}.svg", format = "svg")
 
 
 
@@ -340,7 +339,7 @@ if __name__ == "__main__":
     #     fitness_scores = [calculate_fitness(idx, individual, generation) for idx, individual in enumerate(population)]
         
     #     # select the fittest individuals to breed the next generation
-    #     sorted_population = [x for _, x in sorted(zip(fitness_scores, population))]
+    #     sorted_population = [x for _, x in sorted(zip(fitness_scores, population), reverse=True)]
     #     fittest_individuals = sorted_population[:int(population_size/2)]
     #     fittest_per_gen.append(sorted_population[0])
     #     print("fittest per generation: ", fittest_per_gen)
@@ -366,7 +365,7 @@ if __name__ == "__main__":
 
     # # select the fittest individual from the final population
     # fitness_scores = [calculate_fitness(idx, individual, generations) for idx, individual in enumerate(population)]
-    # sorted_population = [x for _, x in sorted(zip(fitness_scores, population))]
+    # sorted_population = [x for _, x in sorted(zip(fitness_scores, population), reverse=True)]
     # fittest_individual = sorted_population[0]
     # txt_file = r"/cluster/work/helensem/Master/output/run_ga/fittest_ind.txt"
     # with open(txt_file, "w") as f:
