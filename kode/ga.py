@@ -144,7 +144,7 @@ def generate_hyperparameters():
     init_values["pre_nms_limit"] = np.linspace(4000,8000,dtype=int)
     init_values["post_nms_rois_training"] = np.linspace(1000,3000,dtype=int)
     init_values["post_nms_rois_inference"] = np.linspace(600,2000,dtype=int)
-    init_values["roi_batch_size"] = np.array([64, 128, 256, 512, 1024])#np.linspace(150,500,dtype=int)
+    #init_values["roi_batch_size"] = np.array([64, 128, 256, 512, 1024])#np.linspace(150,500,dtype=int)
     init_values["roi_positive_ratio"] = np.linspace(0.2, 0.5)
     init_values["detection_min_confidence"] = np.linspace(0.3,0.9)
     init_values["learning_momentum"] = np.linspace(0.75,0.95)
@@ -216,7 +216,7 @@ def calculate_fitness(indv, hyperparameters, generation):
 
     epochs = int(hyperparameters["epochs"])
     rpn_batch_size = int(hyperparameters["rpn_batch_size"])
-    roi_batch_size = 512# int(hyperparameters["roi_batch_size"])
+    roi_batch_size = int(hyperparameters["roi_batch_size"])
     rpn_nms_thresh = float(hyperparameters["rpn_nms_threshold"])
     learning_rate = float(hyperparameters["learning_rate"])
     pre_nms_limit = int(hyperparameters["pre_nms_limit"])
@@ -255,17 +255,17 @@ def evaluate_indvs(num_gen, num_indv):
         best_iou = 0.0
         best_per_gen = 0 
         for indv in range(num_indv):
-            path = f"/cluster/work/helensem/Master/output/run_ga4/gen_{gen}/{indv}"
+            path = f"/cluster/work/helensem/Master/output/run_ga/gen_{gen}/{indv}"
             with open(os.path.join(path,"hyperparameters.txt"), "r") as f: 
                 data = f.read()
-            data = data.split(",")
-            if len(data) == 20:
-                del data[5:8]
-            else:
-                del data[5]
-            data = ",".join(data)
-            data = data.replace("\'", "\"")
-            print(data)
+            # data = data.split(",")
+            # if len(data) == 20:
+            #     del data[5:8]
+            # else:
+            #     del data[5]
+            # data = ",".join(data)
+            # data = data.replace("\'", "\"")
+            # print(data)
             hyperparameters = json.loads(data)
             mean_iou = calculate_fitness(indv, hyperparameters, gen)#evaluate_model(cfg, val_dict)
             if mean_iou > best_iou: 
@@ -279,16 +279,16 @@ def plot_hyperparameters(list_of_indvs, key):
     x = np.arange(1,len(list_of_indvs)+1)
     values = []
     for gen, indv in enumerate(list_of_indvs):
-        path = f"/cluster/work/helensem/Master/output/run_ga4/gen_{gen}/{indv}/hyperparameters.txt"
+        path = f"/cluster/work/helensem/Master/output/run_ga/gen_{gen}/{indv}/hyperparameters.txt"
         with open(path, "r") as f: 
             data = f.read()
-        data = data.split(",")
-        if len(data) == 20:
-            del data[5:8]
-        else:
-            del data[5]
-        data = ",".join(data)
-        data = data.replace("\'", "\"")
+        # data = data.split(",")
+        # if len(data) == 20:
+        #     del data[5:8]
+        # else:
+        #     del data[5]
+        # data = ",".join(data)
+        # data = data.replace("\'", "\"")
         hyperparameters = json.loads(data)
         point = hyperparameters[key]
         values.append(point) 
@@ -316,20 +316,23 @@ if __name__ == "__main__":
         DatasetCatalog.register("ga_damage_" + d, lambda d=d: get_json_dict(path, d))
         MetadataCatalog.get("ga_damage_" + d).set(thing_classes=["damage"])
     
-    best_indvs, ious = evaluate_indvs(generations, population_size)
-    print(best_indvs)
-    print(ious)
-    x = np.arange(1,generations+1)
-    plt.plot(x, ious, color = "b", marker = "o")
-    plt.xlabel("Generations")
-    plt.ylabel("IoU")
-    plt.savefig(f"/cluster/work/helensem/Master/output/run_ga/ious")
+    # best_indvs, ious = evaluate_indvs(generations, population_size)
+    # print(best_indvs)
+    # print(ious)
+    # x = np.arange(1,generations+1)
+    # plt.plot(x, ious, color = "b", marker = "o")
+    # plt.xlabel("Generations")
+    # plt.ylabel("IoU")
+    # plt.savefig(f"/cluster/work/helensem/Master/output/run_ga/ious")
+    best_indvs = [2, 9, 9, 2, 8, 0, 7, 9, 2, 4, 0, 2, 7, 3, 3]
     # best_indvs = [15, 9, 0, 2, 10, 9, 1, 7, 1, 10, 11, 6, 18, 1, 12]
 
-    # for key in hyperparameters.keys(): 
-    #     plot_hyperparameters(best_indvs, key)
+    for key in hyperparameters.keys(): 
+        plot_hyperparameters(best_indvs, key)
 
-
+    #[2, 9, 9, 2, 8, 0, 7, 9, 2, 4, 0, 2, 7, 3, 3]
+#[0.57311934, 0.584835, 0.56750065, 0.5816272, 0.5715605, 0.57222766, 0.57425714, 0.5807295, 0.5800988, 0.5975712, 0.59818673, 0.5800525, 0.5750274, 0.5944383, 0.58665615]
+    #
     # fittest_per_gen = []
     # for generation in range(generations):
         
