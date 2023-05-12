@@ -76,7 +76,7 @@ def config():
     # cfg.MODEL.ROI_HEADS.POSITIVE_FRACTION = 0.33
     # cfg.SOLVER.MOMENTUM = 0.925
     # #cfg.SOLVER.WEIGHT_DECAY = 9.990238960067115e-05
-    cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.9#012575271123081#0.6155672540933761
+    cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.8#012575271123081#0.6155672540933761
     # #cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.8012575271123081
     # #cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.6
 
@@ -95,7 +95,7 @@ def config():
 #experiment.log_parameters(hyper_params)
 
 if __name__ == "__main__":
-    mode = "train"
+    mode = "evaluate"
     for d in ["train", "val"]:
         DatasetCatalog.register("damage_" + d, lambda d=d: load_damage_dicts(r"/cluster/home/helensem/Master/damage_data",d, segment_sky=False))
         MetadataCatalog.get("damage_" + d).set(thing_classes=["red corrosion"])
