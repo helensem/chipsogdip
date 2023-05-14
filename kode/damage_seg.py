@@ -79,20 +79,20 @@ def train_model(cfg, backbone):
     trainer.train()
 
 
-def predict(cfg, damage_metadata):
+def predict(cfg, damage_metadata, segment_sky = False):
     cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
     predictor = DefaultPredictor(cfg)
     output_dir = os.path.join(cfg.OUTPUT_DIR, "images")
     os.makedirs(output_dir, exist_ok=True)
     val_dict = load_damage_dicts(r"/cluster/home/helensem/Master/damage_data", "val")
     for d in val_dict:
-        apply_inference(predictor, damage_metadata, output_dir, d, segment_sky=False)
+        apply_inference(predictor, damage_metadata, output_dir, d, segment_sky)
 
 
-def evaluate(cfg):
+def evaluate(cfg, segment_sky = False):
     val_dict = load_damage_dicts(r"/cluster/home/helensem/Master/damage_data", "val")
     cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
-    evaluate_model(cfg, val_dict, write_to_file=True, segment_sky=False)
+    evaluate_model(cfg, val_dict, True, segment_sky)
 
 
 def inference(cfg):
@@ -115,12 +115,14 @@ if __name__ == "__main__":
                         help="Output directory")
     parser.add_argument("--mode", type=str, default="train", choices=["train", "predict", "evaluate", "inference"],
                         help="Execution mode")
+    parser.add_argument("--segment_sky", default=False, action="store_true", help="Segment sky")
 
     args = parser.parse_args()
 
     mode = args.mode
     backbone_model = args.backbone
     output_dir = args.output_dir
+    segment_sky = args.segment_sky
 
     cfg = config(backbone_model, output_dir)
     os.makedirs(cfg.OUTPUT_DIR, exist_ok=True)
@@ -128,9 +130,9 @@ if __name__ == "__main__":
     if mode == "train":
         train_model(cfg, backbone_model)
     elif mode == "predict":
-        predict(cfg, damage_metadata)
+        predict(cfg, damage_metadata, segment_sky)
     elif mode == "evaluate":
-        evaluate(cfg)
+        evaluate(cfg, segment_sky)
     elif mode == "inference":
         inference(cfg)
     else:
