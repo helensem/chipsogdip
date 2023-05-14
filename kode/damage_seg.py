@@ -115,7 +115,7 @@ if __name__ == "__main__":
                         help="Output directory")
     parser.add_argument("--mode", type=str, default="train", choices=["train", "predict", "evaluate", "inference"],
                         help="Execution mode")
-    parser.add_argument("--segment_sky", default=False, action="store_true", help="Segment sky")
+    parser.add_argument("--segment_sky", action="store_true", help="Segment sky")
 
     args = parser.parse_args()
 
