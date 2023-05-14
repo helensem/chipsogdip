@@ -10,7 +10,7 @@ ImageFile.LOAD_TRUNCATED_IMAGES = True
 import shutil
 import sys
 sys.path.append(r"/cluster/home/helensem/Master/chipsogdip/kode")
-from yolo_training import remove_sky
+from skyseg import remove_sky
 
 
 ##### Creating training images for GA ######### 
