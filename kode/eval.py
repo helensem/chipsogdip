@@ -2,13 +2,13 @@ import numpy as np
 import cv2
 from detectron2.utils.visualizer import Visualizer, ColorMode
 from detectron2.engine import DefaultPredictor
-import os 
-import sys 
+import sys, os, json 
 from matplotlib import pyplot as plt 
+import pandas as pd
 
 sys.path.append("cluster/home/helensem/Master/chipsogdip/kode")
 from dataset import load_mask
-from yolo_training import remove_sky
+from skyseg import remove_sky
 
 
 local_class_colors = [(0, 0, 0), (0, 0, 255)]
@@ -47,7 +47,7 @@ def apply_inference(predictor, metadata, output_path, data, segment_sky = False)
 
 
    
-def evaluate_model(cfg, val_dict, write_to_file = False, plot=False, segment_sky=False):
+def evaluate_model(cfg, val_dict, write_to_file = False, segment_sky=False):
     predictor = DefaultPredictor(cfg)
     #image_ids = dataset_val.image_ids
     iou_corr_list = []
@@ -79,8 +79,10 @@ def evaluate_model(cfg, val_dict, write_to_file = False, plot=False, segment_sky
         iou_bg_list.append(iou_bg)
     if len(iou_corr_list) == 0: 
         return 0,0,0 
+    
     mean_corr_iou = np.mean(iou_corr_list)
     mean_bg_iou = np.mean(iou_bg_list)
+
     print("Total mean values ")
     print("Corrosion IoU =", mean_corr_iou)
     print("BG IoU=", mean_bg_iou)
@@ -93,14 +95,74 @@ def evaluate_model(cfg, val_dict, write_to_file = False, plot=False, segment_sky
             file_name = "output.txt"
         with open(os.path.join(cfg.OUTPUT_DIR, file_name), "w") as f: 
             f.write(iou_string)
-    if plot: 
-        x = np.arange(1, len(iou_corr_list)+1)
-        corr_iou = np.sort(iou_corr_list)
-        plt.bar(x, corr_iou)
-        plt.axhline(y=np.mean(iou_corr_list), color="g")
-        plt.savefig(os.path.join(cfg.OUTPUT_DIR, "corrosion_iou.svg"), format="svg") 
     return mean_corr_iou, mean_bg_iou, (mean_corr_iou + mean_bg_iou) / 2
 
+
+def evaluate_model_better(cfg, val_dict, write_to_file=False, file_format='json', segment_sky=False):
+    predictor = DefaultPredictor(cfg)
+    iou_corr_list = []
+    iou_bg_list = []
+    iou_results = []
+
+    for d in val_dict:
+        image = cv2.imread(d["file_name"])
+        image_dir = os.path.dirname(d["file_name"])
+
+        if segment_sky:
+            image = remove_sky(image)
+
+        mask_gt = load_mask(os.path.join(image_dir, "masks"))
+        mask_gt = combine_masks_to_one(mask_gt)
+
+        outputs = predictor(image)
+        predicted_masks = outputs['instances'].to("cpu").pred_masks.numpy()
+        predicted_masks = np.transpose(predicted_masks, (1, 2, 0))
+        
+        if predicted_masks.shape[-1] == 0:
+            continue
+        
+        mask_pred = combine_masks_to_one(predicted_masks)
+        
+        iou_corr = compute_overlaps_masks(mask_gt, mask_pred)[0][0]
+        iou_bg = compute_overlaps_masks(mask_gt, mask_pred, BG=True)[0][0]
+        
+        print(d["image_id"], "IoU =", (iou_corr, iou_bg))
+        
+        iou_corr_list.append(iou_corr)
+        iou_bg_list.append(iou_bg)
+        iou_results.append((d["image_id"], iou_corr, iou_bg))
+
+    if len(iou_corr_list) == 0:
+        return 0, 0, 0
+    
+    mean_corr_iou = np.mean(iou_corr_list)
+    mean_bg_iou = np.mean(iou_bg_list)
+    
+    print("Total mean values")
+    print("Corrosion IoU =", mean_corr_iou)
+    print("BG IoU =", mean_bg_iou)
+    print("Mean IoU =", (mean_corr_iou + mean_bg_iou) / 2)
+
+    if write_to_file:
+        if segment_sky:
+            file_name = "output_seg"
+        else:
+            file_name = "output"
+
+        if file_format == 'json':
+            result_dict = {
+                "mean_corr_iou": mean_corr_iou,
+                "mean_bg_iou": mean_bg_iou,
+                "mean_iou": (mean_corr_iou + mean_bg_iou) / 2,
+                "results": iou_results
+            }
+            with open(os.path.join(cfg.OUTPUT_DIR, file_name + ".json"), "w") as f:
+                json.dump(result_dict, f)
+        elif file_format == 'csv':
+            df = pd.DataFrame(iou_results, columns=["image_id", "iou_corr", "iou_bg"])
+            df.to_csv(os.path.join(cfg.OUTPUT_DIR, file_name + ".csv"), index=False)
+
+    return mean_corr_iou, mean_bg_iou, (mean_corr_iou + mean_bg_iou) / 2
 
 def evaluate_over_iterations(cfg, val_dict, output_dir, plot=False, segment_sky=False):
     models = next(os.walk(output_dir))[2]

@@ -43,8 +43,38 @@ class CustomTrainer(DefaultTrainer):
 def config(backbone_model, output_dir):
     cfg = get_cfg()
     cfg.merge_from_file(model_zoo.get_config_file(backbone_model))
-    # Customize the config parameters
-    # ...
+    cfg.DATALOADER.NUM_WORKERS = 2
+    cfg.DATASETS.TRAIN = ("damage_train",)
+    cfg.DATASETS.TEST = ()
+    #cfg.TEST.EVAL_PERIOD = 1
+    cfg.SOLVER.IMS_PER_BATCH = 1
+    cfg.SOLVER.BASE_LR = 0.0005#9062383073017816
+    cfg.SOLVER.GAMMA = 0.5
+    #cfg.SOLVER.MAX_ITER = 48930 #1631 img* 30 epochs
+    cfg.SOLVER.STEPS = [15000, 30000] #Reduce lr by half per 10th epoch  
+    cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE =  256
+    cfg.MODEL.ROI_HEADS.NUM_CLASSES = 1 
+
+    ### FROM TUNING
+    cfg.SOLVER.MAX_ITER = 1500*22 #30*200 #1631 img* 30 epochs
+    # cfg.MODEL.RPN.BATCH_SIZE_PER_IMAGE = 256
+    # cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 128
+
+    # cfg.MODEL.RPN.PRE_NMS_TOPK_TRAIN = 2757
+    # cfg.MODEL.RPN.NMS_THRESH =  0.800
+    # #cfg.MODEL.RPN.POST_NMS_TOPK_TRAIN = 1533
+    # #cfg.MODEL.RPN.POST_NMS_TOPK_TEST = 1370
+    
+    # cfg.MODEL.ROI_HEADS.POSITIVE_FRACTION = 0.33
+    # cfg.SOLVER.MOMENTUM = 0.925
+    # #cfg.SOLVER.WEIGHT_DECAY = 9.990238960067115e-05
+    cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.8#012575271123081#0.6155672540933761
+    # #cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.8012575271123081
+    # #cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.6
+
+    # cfg.INPUT.MIN_SIZE_TRAIN = (836,)
+    # cfg.INPUT.MAX_SIZE_TRAIN = 1077
+    # #cfg.MODEL.ROI_HEADS.IOU_THRESHOLDS = [0.3133287563236277]
     cfg.OUTPUT_DIR = output_dir
     return cfg
 
@@ -57,6 +87,7 @@ def train_model(cfg, backbone):
 
 
 def predict(cfg, damage_metadata):
+    cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
     predictor = DefaultPredictor(cfg)
     output_dir = os.path.join(cfg.OUTPUT_DIR, "images")
     os.makedirs(output_dir, exist_ok=True)
@@ -68,11 +99,12 @@ def predict(cfg, damage_metadata):
 def evaluate(cfg):
     val_dict = load_damage_dicts(r"/cluster/home/helensem/Master/damage_data", "val")
     cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
-    evaluate_model(cfg, val_dict, write_to_file=True, plot=False, segment_sky=False)
+    evaluate_model(cfg, val_dict, write_to_file=True, segment_sky=False)
 
 
 def inference(cfg):
     val_dict = load_damage_dicts(r"/cluster/home/helensem/Master/damage_data", "val")
+    cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
     evaluate_over_iterations(cfg, val_dict, cfg.OUTPUT_DIR, plot=True)
 
 

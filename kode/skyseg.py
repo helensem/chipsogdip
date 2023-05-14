@@ -28,23 +28,10 @@ def remove_sky(image):
         # rescale masks to original image
         masks = scale_image(masks.shape[:2], masks, result.masks.orig_shape)
         masks = np.moveaxis(masks, -1, 0) # masks, (N, H, W)
-        #cv2.imwrite(r"/cluster/home/helensem/Master/output/sky/test.jpg", (result.masks.masks[0].cpu().numpy()*255).astype("uint8"))
-        #print(masks)
-
         for mask in masks:
             mask = (mask*255).astype("uint8")
-            #print(mask.shape)
-            #print(image.shape)
-            #print(mask)
-            #binary_mask = cv2.threshold(mask, 0.5, 1, cv2.THRESH_BINARY)[1]
-            #print(binary_mask)
-            # Convert the binary mask to the same datatype as the image
-            #mask = mask.astype(np.uint8)
             mask = cv2.bitwise_not(mask)
             image = cv2.bitwise_and(image, image, mask=mask)
-
-            #destination = os.path.join(r"/cluster/home/helensem/Master/output/sky", id)
-            #cv2.imwrite(destination, image)
     return image    
 
 

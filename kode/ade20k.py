@@ -1,17 +1,10 @@
 """Prepare ADE20K dataset"""
 import os
 import shutil
-#import argparse
-#import zipfile
-#from gluoncv.utils import download, makedirs
-#from gluoncv.data import ADE20KSegmentation
 import numpy as np 
 import sys 
 import cv2
 sys.path.append("/Users/HeleneSemb/Documents/chipsogdip/kode")
-#from dataset import *
-
-#_TARGET_DIR = os.path.expanduser('~/.mxnet/datasets/ade')
 
 def find_contours(sub_mask):
     """Generates a tuple of points where a contour was found from a binary mask 
@@ -48,7 +41,7 @@ def load_sky_yolo(root, subset,destination):
         #print(mask)
         #print(mask.dtype)
         string = ""
-        for label in [3, 5, 10, 22]:
+        for label in [3]:
             mask = cv2.imread(mask_path, cv2.IMREAD_GRAYSCALE)
             height, width = mask.shape
             mask = np.where(mask==label, 255,0) #3 for sky
@@ -64,13 +57,6 @@ def load_sky_yolo(root, subset,destination):
                     continue
                 if label == 3: 
                     string += "0 "
-                elif label == 5: 
-                    string += "1 "
-                elif label == 10:
-                    string += "2 "
-                elif label == 22: 
-                    string += "3 "
-            #print(mask.shape)
                 for i in range(1,len(contour_list),2): 
                     string += str(round(contour_list[i-1]/width,6)) #x coordinate
                     string += " "

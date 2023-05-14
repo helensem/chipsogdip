@@ -100,7 +100,7 @@ def create_annotation_format(contour):
 
 def load_damage_dicts(dataset_dir, subset, write_to_file=False, segment_sky = False): #? Possibly write this to a JSON-file? 
     """
-    Loads the images from a dataset with a dictionary of the annotations, to be loaded in detectron 
+    Loads the images from a dataset with a dictionary of the annotations in COCO-format  
     """ 
     dataset_dicts = []
 
@@ -116,9 +116,8 @@ def load_damage_dicts(dataset_dir, subset, write_to_file=False, segment_sky = Fa
         file_name = file_names[0]
         
         image_path = os.path.join(image_dir, file_name)
-        #print(image_path)
         height, width = cv2.imread(image_path).shape[:2]
-        if segment_sky: 
+        if segment_sky: # For training with backround removed images
             im = cv2.imread(image_path)
             im = remove_sky(im)
             image_form = os.path.splitext(file_name)[1]
@@ -141,8 +140,6 @@ def load_damage_dicts(dataset_dir, subset, write_to_file=False, segment_sky = Fa
                 if not(255 in mask):
                     #pr#int("mask is empty: ", mask_path)
                     continue
-                #if len(mask.shape) > 2: #* Some issues with certain train images 
-                #    mask = mask[:,:,0]
                 contours = find_contours(mask)
                 for contour in contours:
                     if len(contour) < 3:
