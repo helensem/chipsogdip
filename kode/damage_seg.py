@@ -1,30 +1,23 @@
 import argparse
-import os
-import detectron2 
-
-from detectron2.utils.logger import setup_logger
-setup_logger()
-
 import numpy as np 
-import os,json,cv2,random, sys 
-#import skimage
+import os, sys 
 sys.path.append(r"/cluster/home/helensem/Master/chipsogdip/kode")
 from dataset import * 
 from eval import * 
 from LossEvalHook import LossEvalHook 
-from augmentation import custom_mapper
 
 from detectron2 import model_zoo
 from detectron2.engine import DefaultPredictor
 from detectron2.config import get_cfg
-from detectron2.utils.visualizer import Visualizer
 from detectron2.data import MetadataCatalog, DatasetCatalog
 from detectron2.evaluation import COCOEvaluator, inference_on_dataset 
-from detectron2.data import build_detection_test_loader, build_detection_train_loader
+from detectron2.data import build_detection_train_loader
 
 from detectron2.data import transforms as T
 from detectron2.data.dataset_mapper import DatasetMapper
 from detectron2.engine import DefaultTrainer
+from detectron2.utils.logger import setup_logger
+setup_logger()
 
 
 class CustomTrainer(DefaultTrainer):

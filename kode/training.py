@@ -10,7 +10,6 @@ sys.path.append(r"/cluster/home/helensem/Master/chipsogdip/kode")
 from dataset import * 
 from eval import * 
 from LossEvalHook import LossEvalHook 
-from augmentation import custom_mapper
 
 from detectron2 import model_zoo
 from detectron2.engine import DefaultPredictor
