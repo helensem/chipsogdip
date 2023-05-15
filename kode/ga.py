@@ -220,8 +220,6 @@ def ga_train(indv, generation, epochs, rpn_batch_size, roi_batch_size, rpn_nms_t
 
 def calculate_fitness(indv_num, hyperparameters, generation):
     
-    #dataset = r"/cluster/home/helensem/Master/data/set1"
-    #* Set hyperparameters
     print(" generation: ", generation, "indv: ", indv_num, "\n", hyperparameters)
 
     epochs = int(hyperparameters["epochs"])
@@ -287,7 +285,7 @@ def evaluate_indvs(num_gen, num_indv):
 def plot_hyperparameters(list_of_indvs, key):
     x = np.arange(1,len(list_of_indvs)+1)
     values = []
-    for indv in list_of_indvs:
+    for indv, iou in list_of_indvs:
         #path = f"/cluster/work/helensem/Master/output/run_ga/gen_{gen}/{indv}/hyperparameters.txt"
         # with open(path, "r") as f: 
         #     data = f.read()
