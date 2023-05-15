@@ -182,7 +182,7 @@ def ga_train(indv, generation, epochs, rpn_batch_size, roi_batch_size, rpn_nms_t
     #cfg.SOLVER.GAMMA = 0.5
     cfg.SOLVER.MAX_ITER = 100*epochs #30*200 #1631 img* 30 epochs
     cfg.MODEL.ROI_HEADS.NUM_CLASSES = 1 
-    cfg.OUTPUT_DIR = f"/cluster/work/helensem/Master/output/run_ga_adv/gen_{generation}/{indv}" #! MUST MATCH WITH CURRENT MODEL 
+    cfg.OUTPUT_DIR = f"/cluster/work/helensem/Master/output/run_ga_dc/gen_{generation}/{indv}" #! MUST MATCH WITH CURRENT MODEL 
     
     cfg.MODEL.RPN.BATCH_SIZE_PER_IMAGE = rpn_batch_size
     cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = roi_batch_size
@@ -210,7 +210,7 @@ def ga_train(indv, generation, epochs, rpn_batch_size, roi_batch_size, rpn_nms_t
     os.makedirs(cfg.OUTPUT_DIR, exist_ok=True)
     
     #TRAIN
-    cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml") #! MUST MATCH WITH CURRENT MODEL 
+    cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("COCO-InstanceSegmentation/mask_rcnn_R_50_DC5_3x.yaml") #! MUST MATCH WITH CURRENT MODEL 
 
     trainer = DefaultTrainer(cfg)
     trainer.resume_or_load(resume=False)
@@ -247,7 +247,7 @@ def calculate_fitness(indv_num, hyperparameters, generation):
     cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
     #cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.7
     string = json.dumps(hyperparameters, cls=NpEncoder)
-    with open(f"/cluster/work/helensem/Master/output/run_ga_adv/gen_{generation}/{indv_num}/hyperparameters.txt", "w") as f: 
+    with open(f"/cluster/work/helensem/Master/output/run_ga_dc/gen_{generation}/{indv_num}/hyperparameters.txt", "w") as f: 
        f.write(string)
     corr_iou, bg_iou, mean_iou = evaluate_model(cfg, val_dict, True) 
 
@@ -303,7 +303,7 @@ def plot_hyperparameters(list_of_indvs, key):
     plt.plot(x, values, color = "b", marker = "o")
     plt.xlabel("Generations")
     plt.ylabel(key)
-    plt.savefig(f"/cluster/work/helensem/Master/output/run_ga_adv/{key}.svg", format = "svg")
+    plt.savefig(f"/cluster/work/helensem/Master/output/run_ga_dc/{key}.svg", format = "svg")
 
 
 

@@ -124,35 +124,11 @@ if __name__ == "__main__":
     mutation_rate = 0.1
     stop_fitness_score = 0.64
     hyper = generate_hyperparameters()
-    #best_indv, best_fitness, best_per_gen = genetic_algorithm(population_size, generations, mutation_rate, stop_fitness_score)
+    best_indv, best_fitness, best_per_gen = genetic_algorithm(population_size, generations, mutation_rate, stop_fitness_score)
 
-    #print("Best hyperparameters are: ", best_indv)
-    #print("Best IoU reached: ", best_fitness)
-    best_per_gen = [({'rpn_nms_threshold': 1.0, 'rpn_batch_size': 512, 'pre_nms_limit': 4734, 'post_nms_rois_training': 1244, 'post_nms_rois_inference': 1914, 'roi_batch_size': 1024, 'roi_positive_ratio': 0.37755102040816324, 'detection_min_confidence': 0.5326530612244897, 'learning_momentum': 0.9173469387755102, 'weight_decay': 0.00010591836734693877, 'epochs': 28, 'learning_rate': 0.0008714285714285715, 'img_min_size': 928, 'img_max_size': 1138, 'roi_iou_threshold': 0.3326530612244898}, 0.591462), ({'rpn_nms_threshold': 0.6428571428571428, 'rpn_batch_size': 256, 'pre_nms_limit': 4244, 'post_nms_rois_training': 2918, 'post_nms_rois_inference': 657, 'roi_batch_size': 128, 'roi_positive_ratio': 0.41428571428571426, 'detection_min_confidence': 0.7040816326530612, 'learning_momentum': 0.95, 'weight_decay': 0.00011714285714285714, 'epochs': 28, 'learning_rate': 0.0002653061224489796, 'img_min_size': 989, 'img_max_size': 975, 'roi_iou_threshold': 0.3571428571428571},0.60091615),
-    ({'rpn_nms_threshold': 0.6428571428571428, 'rpn_batch_size': 1024, 'pre_nms_limit': 6857, 'post_nms_rois_training': 2918, 'post_nms_rois_inference': 657, 'roi_batch_size': 1024, 'roi_positive_ratio': 0.41428571428571426, 'detection_min_confidence': 0.7040816326530612, 'learning_momentum': 0.8642857142857143, 'weight_decay': 0.0001216326530612245, 'epochs': 37, 'learning_rate': 0.0007061224489795919, 'img_min_size': 989, 'img_max_size': 975, 'roi_iou_threshold': 0.3571428571428571},
-    0.59844404),
-    ({'rpn_nms_threshold': 0.6428571428571428, 'rpn_batch_size': 1024, 'pre_nms_limit': 4244, 'post_nms_rois_training': 2918, 'post_nms_rois_inference': 657, 'roi_batch_size': 1024, 'roi_positive_ratio': 0.41428571428571426, 'detection_min_confidence': 0.7040816326530612, 'learning_momentum': 0.95, 'weight_decay': 0.00011714285714285714, 'epochs': 37, 'learning_rate': 0.0002653061224489796, 'img_min_size': 989, 'img_max_size': 975, 'roi_iou_threshold': 0.3571428571428571},
-    0.6010027),
-    ({'rpn_nms_threshold': 0.6428571428571428, 'rpn_batch_size': 1024, 'pre_nms_limit': 4979, 'post_nms_rois_training': 2918, 'post_nms_rois_inference': 885, 'roi_batch_size': 1024, 'roi_positive_ratio': 0.49387755102040815, 'detection_min_confidence': 0.42244897959183675, 'learning_momentum': 0.9132653061224489, 'weight_decay': 0.0001216326530612245, 'epochs': 37, 'learning_rate': 0.0002653061224489796, 'img_min_size': 989, 'img_max_size': 975, 'roi_iou_threshold': 0.34897959183673466},
-    0.60297),
-    ({'rpn_nms_threshold': 0.6428571428571428, 'rpn_batch_size': 1024, 'pre_nms_limit': 6857, 'post_nms_rois_training': 2918, 'post_nms_rois_inference': 657, 'roi_batch_size': 128, 'roi_positive_ratio': 0.41428571428571426, 'detection_min_confidence': 0.7653061224489797, 'learning_momentum': 0.8642857142857143, 'weight_decay': 0.0001216326530612245, 'epochs': 29, 'learning_rate': 0.0007061224489795919, 'img_min_size': 989, 'img_max_size': 1148, 'roi_iou_threshold': 0.3571428571428571},
-    0.6030673),
-    ({'rpn_nms_threshold': 0.6428571428571428, 'rpn_batch_size': 1024, 'pre_nms_limit': 6857, 'post_nms_rois_training': 2224, 'post_nms_rois_inference': 885, 'roi_batch_size': 128, 'roi_positive_ratio': 0.49387755102040815, 'detection_min_confidence': 0.7653061224489797, 'learning_momentum': 0.95, 'weight_decay': 0.0001216326530612245, 'epochs': 29, 'learning_rate': 0.0007061224489795919, 'img_min_size': 989, 'img_max_size': 1148, 'roi_iou_threshold': 0.3571428571428571},
-    0.6128894),
-    ({'rpn_nms_threshold': 0.6428571428571428, 'rpn_batch_size': 1024, 'pre_nms_limit': 6857, 'post_nms_rois_training': 2224, 'post_nms_rois_inference': 885, 'roi_batch_size': 128, 'roi_positive_ratio': 0.49387755102040815, 'detection_min_confidence': 0.7653061224489797, 'learning_momentum': 0.95, 'weight_decay': 0.0001216326530612245, 'epochs': 29, 'learning_rate': 0.0007061224489795919, 'img_min_size': 989, 'img_max_size': 1148, 'roi_iou_threshold': 0.3571428571428571},
-    0.6315419),
-    ({'rpn_nms_threshold': 0.6428571428571428, 'rpn_batch_size': 1024, 'pre_nms_limit': 6857, 'post_nms_rois_training': 2918, 'post_nms_rois_inference': 657, 'roi_batch_size': 128, 'roi_positive_ratio': 0.41428571428571426, 'detection_min_confidence': 0.7653061224489797, 'learning_momentum': 0.8642857142857143, 'weight_decay': 0.0001216326530612245, 'epochs': 29, 'learning_rate': 0.0007061224489795919, 'img_min_size': 989, 'img_max_size': 1148, 'roi_iou_threshold': 0.3571428571428571},
-    0.5997933),
-    ({'rpn_nms_threshold': 0.6428571428571428, 'rpn_batch_size': 1024, 'pre_nms_limit': 6857, 'post_nms_rois_training': 2918, 'post_nms_rois_inference': 657, 'roi_batch_size': 128, 'roi_positive_ratio': 0.41428571428571426, 'detection_min_confidence': 0.7653061224489797, 'learning_momentum': 0.8642857142857143, 'weight_decay': 0.0001216326530612245, 'epochs': 29, 'learning_rate': 0.0007061224489795919, 'img_min_size': 989, 'img_max_size': 1148, 'roi_iou_threshold': 0.3571428571428571},
-    0.6059205),
-    ({'rpn_nms_threshold': 0.6428571428571428, 'rpn_batch_size': 1024, 'pre_nms_limit': 4326, 'post_nms_rois_training': 2224, 'post_nms_rois_inference': 657, 'roi_batch_size': 128, 'roi_positive_ratio': 0.40816326530612246, 'detection_min_confidence': 0.42244897959183675, 'learning_momentum': 0.9132653061224489, 'weight_decay': 0.0001216326530612245, 'epochs': 37, 'learning_rate': 0.0007061224489795919, 'img_min_size': 989, 'img_max_size': 1148, 'roi_iou_threshold': 0.34897959183673466},
-    0.6129323),
-    ({'rpn_nms_threshold': 0.6530612244897959, 'rpn_batch_size': 1024, 'pre_nms_limit': 6857, 'post_nms_rois_training': 2224, 'post_nms_rois_inference': 657, 'roi_batch_size': 128, 'roi_positive_ratio': 0.40816326530612246, 'detection_min_confidence': 0.7653061224489797, 'learning_momentum': 0.8642857142857143, 'weight_decay': 0.0001216326530612245, 'epochs': 29, 'learning_rate': 0.0007061224489795919, 'img_min_size': 989, 'img_max_size': 1148, 'roi_iou_threshold': 0.3571428571428571},
-    0.6022657),
-    ({'rpn_nms_threshold': 0.6530612244897959, 'rpn_batch_size': 1024, 'pre_nms_limit': 4326, 'post_nms_rois_training': 2224, 'post_nms_rois_inference': 657, 'roi_batch_size': 128, 'roi_positive_ratio': 0.49387755102040815, 'detection_min_confidence': 0.42244897959183675, 'learning_momentum': 0.8642857142857143, 'weight_decay': 0.0001216326530612245, 'epochs': 29, 'learning_rate': 0.0007061224489795919, 'img_min_size': 989, 'img_max_size': 1148, 'roi_iou_threshold': 0.3571428571428571},
-    0.60449046), ({'rpn_nms_threshold': 0.6530612244897959, 'rpn_batch_size': 1024, 'pre_nms_limit': 6857, 'post_nms_rois_training': 2918, 'post_nms_rois_inference': 657, 'roi_batch_size': 128, 'roi_positive_ratio': 0.49387755102040815, 'detection_min_confidence': 0.7653061224489797, 'learning_momentum': 0.9132653061224489, 'weight_decay': 0.0001216326530612245, 'epochs': 29, 'learning_rate': 0.0007061224489795919, 'img_min_size': 989, 'img_max_size': 1148, 'roi_iou_threshold': 0.3571428571428571},
-    0.6054971), ({'rpn_nms_threshold': 0.6530612244897959, 'rpn_batch_size': 1024, 'pre_nms_limit': 6857, 'post_nms_rois_training': 2224, 'post_nms_rois_inference': 657, 'roi_batch_size': 128, 'roi_positive_ratio': 0.49387755102040815, 'detection_min_confidence': 0.42244897959183675, 'learning_momentum': 0.8642857142857143, 'weight_decay': 0.0001216326530612245, 'epochs': 29, 'learning_rate': 0.0007061224489795919, 'img_min_size': 989, 'img_max_size': 1148, 'roi_iou_threshold': 0.3571428571428571},
-    0.6123835)]
+    print("Best hyperparameters are: ", best_indv)
+    print("Best IoU reached: ", best_fitness)
+
 
     ious = []
     gens = np.arange(0,generations)
@@ -161,10 +137,10 @@ if __name__ == "__main__":
       #print(indv[1])
       ious.append(indv[1])
 
-    plt.plot(gens, ious, color = "b", marker = "o")
+    plt.plot(gens, ious[-1], color = "b", marker = "o")
     plt.xlabel("Generations")
     plt.ylabel("IoU")
-    plt.savefig(f"/cluster/work/helensem/Master/output/run_ga_adv/ious")
+    plt.savefig(f"/cluster/work/helensem/Master/output/run_ga_dc/ious.svg", format="svg")
     for key in hyper.keys():
         plot_hyperparameters(best_per_gen, key)
 
