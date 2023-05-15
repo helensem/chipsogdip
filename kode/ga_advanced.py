@@ -161,7 +161,7 @@ if __name__ == "__main__":
       #print(indv[1])
       ious.append(indv[1])
 
-    plt.plot(gens, ious[:-1], color = "b", marker = "o")
+    plt.plot(gens, ious, color = "b", marker = "o")
     plt.xlabel("Generations")
     plt.ylabel("IoU")
     plt.savefig(f"/cluster/work/helensem/Master/output/run_ga_adv/ious")
