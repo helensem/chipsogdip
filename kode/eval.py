@@ -176,7 +176,7 @@ def evaluate_over_iterations(cfg, val_dict, output_dir, plot=False, segment_sky=
             model_name = os.path.splitext(model)[0]
             model_number = model_name[6:]
             if model_number == "final": 
-                model_number = 39600
+                model_number = cfg.SOLVER.MAX_ITER 
             else: 
                 model_number = int(model_number)+1
             mean_corr, mean_bg, mean_iou = evaluate_model(cfg, val_dict, False, segment_sky)
