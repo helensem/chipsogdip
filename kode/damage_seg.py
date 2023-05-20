@@ -23,10 +23,10 @@ setup_logger()
 class CustomTrainer(DefaultTrainer):
     @classmethod
     def build_train_loader(cls, cfg):
-        mapper = DatasetMapper(cfg, is_train=True, augmentations=[T.Resize((800, 800)), 
-                                                                  T.RandomBrightness(0.8, 1.8), 
-                                                                  T.RandomSaturation(0.8, 1.4),
-                                                                  T.RandomContrast(0.6, 1.3),
+        mapper = DatasetMapper(cfg, is_train=True, augmentations=[#T.Resize((800, 800)), 
+                                                                  #T.RandomBrightness(0.8, 1.8), 
+                                                                  #T.RandomSaturation(0.8, 1.4),
+                                                                  #T.RandomContrast(0.6, 1.3),
                                                                   T.RandomFlip(prob=0.5, horizontal=True, vertical=False),
                                                                 T.RandomFlip(prob=0.5, horizontal=False, vertical=True),])
         return build_detection_train_loader(cfg, mapper=mapper)
