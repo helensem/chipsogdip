@@ -23,17 +23,16 @@ setup_logger()
 class CustomTrainer(DefaultTrainer):
     @classmethod
     def build_train_loader(cls, cfg):
-        mapper = DatasetMapper(cfg, is_train=True, augmentations=[#T.Resize((800, 800)), 
-                                                                  #T.RandomBrightness(0.8, 1.8), 
-                                                                  #T.RandomSaturation(0.8, 1.4),
-                                                                  #T.RandomContrast(0.6, 1.3),
-                                                                  T.RandomFlip(prob=0.5, horizontal=True, vertical=False),
-                                                                T.RandomFlip(prob=0.5, horizontal=False, vertical=True),])
+        mapper = DatasetMapper(cfg, is_train=True, augmentations=[T.RandomFlip(prob=0.5, horizontal=True, vertical=False),T.RandomFlip(prob=0.5, horizontal=False, vertical=True),])
         return build_detection_train_loader(cfg, mapper=mapper)
     
     # def build_train_loader(cls, cfg):
     #     return build_detection_train_loader(cfg, mapper=custom_mapper)
 
+#T.Resize((800, 800)), 
+#T.RandomBrightness(0.8, 1.8), 
+# #T.RandomSaturation(0.8, 1.4),
+#T.RandomContrast(0.6, 1.3),
 
 
 def config(backbone_model, output_dir):
@@ -47,7 +46,7 @@ def config(backbone_model, output_dir):
     cfg.SOLVER.BASE_LR = 0.00070612#0.0005
     #cfg.SOLVER.GAMMA = 0.5
     cfg.SOLVER.STEPS = []#[6250, 12500] #Reduce lr by half per 10th epoch  15000, 30000
-    cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE =  256
+    #cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE =  256
     cfg.MODEL.ROI_HEADS.NUM_CLASSES = 1 
 
     ### FROM TUNING
@@ -75,7 +74,7 @@ def config(backbone_model, output_dir):
 
 def train_model(cfg, backbone):
     cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url(backbone)
-    trainer = CustomTrainer(cfg)
+    trainer = DefaultTrainer(cfg)
     trainer.resume_or_load(resume=False)
     trainer.train()
     inference(cfg)
@@ -92,7 +91,7 @@ def predict(cfg, damage_metadata, segment_sky = False):
 
 
 def evaluate(cfg, segment_sky = False):
-    val_dict = DatasetCatalog.get("damage_val")#load_damage_dicts(r"/cluster/home/helensem/Master/damage_data", "val")
+    val_dict = DatasetCatalog.get("damage_train")#load_damage_dicts(r"/cluster/home/helensem/Master/damage_data", "val")
     cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
     evaluate_model(cfg, val_dict, True, segment_sky)
 
