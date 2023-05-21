@@ -162,6 +162,7 @@ def load_damage_dicts(dataset_dir, subset, write_to_file=False, segment_sky = Fa
 
 def load_mask(mask_dir):
     mask = []
+    print(mask_dir)
     for f in next(os.walk(mask_dir))[2]:
         if f.endswith('.png') and ('corrosion' or 'grov_merking' in f):
             mask_path = os.path.join(mask_dir, f)
