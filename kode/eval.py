@@ -217,22 +217,28 @@ def plot_metrics(path_to_metrics, output, metric):
     total_fp_per_epoch = []
     total_fn_per_epoch = []
     y = [[i['mask_rcnn/false_negative'] for i in json_data],[i['mask_rcnn/false_positive'] for i in json_data]]
-    for i in range(0,len(x_mean)):
-      mean_fp = np.mean(y[0][i*40:((i+1)*40)])
-      mean_fn = np.mean(y[1][i*40:((i+1)*40)])
-      total_fp_per_epoch.append(mean_fp)
-      total_fn_per_epoch.append(mean_fn)
-    plt.plot(x_mean,total_fn_per_epoch, label = "False negative", marker="o", color="g")
-    plt.plot(x_mean,total_fp_per_epoch, label = "False positive", marker="o", color="b")
-    plt.xlabel('Step')
+    fn_parts = np.array_split(y[0], epochs)
+    fp_parts = np.array_split(y[1], epochs)
+    steps = 1500*x_mean
+    steps=steps[0:epochs]
+    # Calculate the mean of each part and store in a new array
+    total_fp_per_epoch = np.array([part.mean() for part in fp_parts])
+    total_fn_per_epoch = np.array([part.mean() for part in fn_parts])
+    plt.plot(steps,total_fn_per_epoch, label = "False negative", marker="o", color="g")
+    plt.plot(steps,total_fp_per_epoch, label = "False positive", marker="o", color="b")
+    plt.xlabel('Epoch')
     plt.ylabel('Ratio')
     plt.legend()
     plt.grid()
     plt.savefig(os.path.join(output, metric + ".svg"), format = "svg")
     return
   y =  [i[metric] for i in json_data]
-  plt.plot(x,y)
-  plt.xlabel('Step')
+  parts = np.array_split(y[0], epochs)
+  y_mean = np.array([part.mean() for part in fp_parts])
+  plt.plot(x,y, color="g")
+  plt.plot(steps, y_mean, color="b", marker="o")
+  plt.plot
+  plt.xlabel('Epoch')
   plt.ylabel(metric)
   plt.savefig(os.path.join(output, metric + ".svg"), format = "svg")
 
