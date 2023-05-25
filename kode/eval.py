@@ -207,6 +207,7 @@ def plot_metrics(path_to_metrics, output, metric):
   with open(path_to_metrics, 'r') as handle:
       json_data = [json.loads(line) for line in handle]
   x = [i['iteration'] for i in json_data]
+  plt.clf()
   if metric == 'fp_fn': 
     y = [[i['mask_rcnn/false_negative'] for i in json_data],[i['mask_rcnn/false_positive'] for i in json_data]]
     plt.plot(x,y[0], label = "False negative")
