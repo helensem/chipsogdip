@@ -206,14 +206,15 @@ def evaluate_over_iterations(cfg, val_dict, output_dir, plot=False, segment_sky=
 def plot_metrics(path_to_metrics, output, metric): 
   with open(path_to_metrics, 'r') as handle:
       json_data = [json.loads(line) for line in handle]
-  print(json_data)
   x = [i['iteration'] for i in json_data]
   if metric == 'fp_fn': 
     y = [[i['mask_rcnn/false_negative'] for i in json_data],[i['mask_rcnn/false_positive'] for i in json_data]]
-    plt.plot(x,y[0], legend = "False negative")
-    plt.plot(x,y[1], legend = "False positive")
+    plt.plot(x,y[0], label = "False negative")
+    plt.plot(x,y[1], label = "False positive")
     plt.xlabel('Step')
     plt.ylabel('Ratio')
+    plt.legend()
+    plt.grid()
     plt.savefig(os.path.join(output, metric + ".svg"), format = "svg")
     return
   y =  [i[metric] for i in json_data]
