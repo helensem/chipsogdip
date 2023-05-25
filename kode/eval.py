@@ -208,10 +208,21 @@ def plot_metrics(path_to_metrics, output, metric):
       json_data = [json.loads(line) for line in handle]
   x = [i['iteration'] for i in json_data]
   plt.clf()
+
+  iterations = json_data[-1]['iteration']
+  epochs = int(iterations/1500)
+  x_mean = np.arange(1,epochs+1)
   if metric == 'fp_fn': 
+    total_fp_per_epoch = []
+    total_fn_per_epoch = []
     y = [[i['mask_rcnn/false_negative'] for i in json_data],[i['mask_rcnn/false_positive'] for i in json_data]]
-    plt.plot(x,y[0], label = "False negative")
-    plt.plot(x,y[1], label = "False positive")
+    for i in range(0,len(epochs)):
+      mean_fp = np.mean(y[0][i*40:((i+1)*40)])
+      mean_fn = np.mean(y[1][i*40:((i+1)*40)])
+      total_fp_per_epoch.append(mean_fp)
+      total_fn_per_epoch.append(mean_fn)
+    plt.plot(x_mean,total_fn_per_epoch, label = "False negative")
+    plt.plot(x_mean,total_fp_per_epoch, label = "False positive")
     plt.xlabel('Step')
     plt.ylabel('Ratio')
     plt.legend()
