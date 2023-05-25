@@ -216,7 +216,7 @@ def plot_metrics(path_to_metrics, output, metric):
     total_fp_per_epoch = []
     total_fn_per_epoch = []
     y = [[i['mask_rcnn/false_negative'] for i in json_data],[i['mask_rcnn/false_positive'] for i in json_data]]
-    for i in range(0,epochs):
+    for i in range(0,len(x_mean)):
       mean_fp = np.mean(y[0][i*40:((i+1)*40)])
       mean_fn = np.mean(y[1][i*40:((i+1)*40)])
       total_fp_per_epoch.append(mean_fp)
