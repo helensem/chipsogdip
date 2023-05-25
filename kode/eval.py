@@ -212,6 +212,7 @@ def plot_metrics(path_to_metrics, output, metric):
   iterations = json_data[-1]['iteration']
   epochs = int(iterations/1500)
   x_mean = np.arange(1,epochs+1)
+  print(x_mean)
   if metric == 'fp_fn': 
     total_fp_per_epoch = []
     total_fn_per_epoch = []
@@ -221,8 +222,8 @@ def plot_metrics(path_to_metrics, output, metric):
       mean_fn = np.mean(y[1][i*40:((i+1)*40)])
       total_fp_per_epoch.append(mean_fp)
       total_fn_per_epoch.append(mean_fn)
-    plt.plot(x_mean,total_fn_per_epoch, label = "False negative")
-    plt.plot(x_mean,total_fp_per_epoch, label = "False positive")
+    plt.plot(x_mean,total_fn_per_epoch, label = "False negative", marker="o", color="g")
+    plt.plot(x_mean,total_fp_per_epoch, label = "False positive", marker="o", color="b")
     plt.xlabel('Step')
     plt.ylabel('Ratio')
     plt.legend()
