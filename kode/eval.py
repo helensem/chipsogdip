@@ -213,14 +213,15 @@ def plot_metrics(path_to_metrics, output, metric):
   epochs = int(iterations/1500)
   x_mean = np.arange(1,epochs+1)
   print(x_mean)
+  steps = 1500*x_mean
+  steps=steps[0:epochs]
   if metric == 'fp_fn': 
     total_fp_per_epoch = []
     total_fn_per_epoch = []
     y = [[i['mask_rcnn/false_negative'] for i in json_data],[i['mask_rcnn/false_positive'] for i in json_data]]
     fn_parts = np.array_split(y[0], epochs)
     fp_parts = np.array_split(y[1], epochs)
-    steps = 1500*x_mean
-    steps=steps[0:epochs]
+
     # Calculate the mean of each part and store in a new array
     total_fp_per_epoch = np.array([part.mean() for part in fp_parts])
     total_fn_per_epoch = np.array([part.mean() for part in fn_parts])
