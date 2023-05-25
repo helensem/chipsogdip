@@ -234,7 +234,7 @@ def plot_metrics(path_to_metrics, output, metric):
     return
   y =  [i[metric] for i in json_data]
   parts = np.array_split(y, epochs)
-  y_mean = np.array([part.mean() for psrt in fp_parts])
+  y_mean = np.array([part.mean() for part in parts])
   plt.plot(x,y, color="g")
   plt.plot(steps, y_mean, color="b", marker="o")
   plt.plot
