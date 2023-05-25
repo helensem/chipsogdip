@@ -233,8 +233,8 @@ def plot_metrics(path_to_metrics, output, metric):
     plt.savefig(os.path.join(output, metric + ".svg"), format = "svg")
     return
   y =  [i[metric] for i in json_data]
-  parts = np.array_split(y[0], epochs)
-  y_mean = np.array([part.mean() for part in fp_parts])
+  parts = np.array_split(y, epochs)
+  y_mean = np.array([part.mean() for psrt in fp_parts])
   plt.plot(x,y, color="g")
   plt.plot(steps, y_mean, color="b", marker="o")
   plt.plot
