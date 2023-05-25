@@ -92,7 +92,7 @@ def evaluate_model(cfg, val_dict, write_to_file = False, segment_sky=False):
         if segment_sky: 
             file_name = "output_seg.txt" 
         else: 
-            file_name = "output.txt"
+            file_name = "output_train.txt"
         with open(os.path.join(cfg.OUTPUT_DIR, file_name), "w") as f: 
             f.write(iou_string)
     return mean_corr_iou, mean_bg_iou, (mean_corr_iou + mean_bg_iou) / 2
@@ -201,6 +201,26 @@ def evaluate_over_iterations(cfg, val_dict, output_dir, plot=False, segment_sky=
         plt.grid()
         plt.legend()
         plt.savefig(os.path.join(output_dir, "iou_per_model.svg"), format="svg")
+
+
+def plot_metrics(path_to_metrics, output, metric): 
+  with open(path_to_metrics, 'r') as handle:
+      json_data = [json.loads(line) for line in handle]
+  print(json_data)
+  x = [i['iteration'] for i in json_data]
+  if metric == 'fp_fn': 
+    y = [[i['mask_rcnn/false_negative'] for i in json_data],[i['mask_rcnn/false_positive'] for i in json_data]]
+    plt.plot(x,y[0], legend = "False negative")
+    plt.plot(x,y[1], legend = "False positive")
+    plt.xlabel('Step')
+    plt.ylabel('Ratio')
+    plt.savefig(os.path.join(output, metric + ".svg"), format = "svg")
+    return
+  y =  [i[metric] for i in json_data]
+  plt.plot(x,y)
+  plt.xlabel('Step')
+  plt.ylabel(metric)
+  plt.savefig(os.path.join(output, metric + ".svg"), format = "svg")
 
 
 def ious_from_file(path): 

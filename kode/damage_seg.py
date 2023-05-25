@@ -91,7 +91,7 @@ def predict(cfg, damage_metadata, segment_sky = False):
 
 
 def evaluate(cfg, segment_sky = False):
-    val_dict = DatasetCatalog.get("damage_train")#load_damage_dicts(r"/cluster/home/helensem/Master/damage_data", "val")
+    val_dict = DatasetCatalog.get("damage_val")#load_damage_dicts(r"/cluster/home/helensem/Master/damage_data", "val")
     cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
     evaluate_model(cfg, val_dict, True, segment_sky)
 
@@ -101,6 +101,11 @@ def inference(cfg):
     cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
     evaluate_over_iterations(cfg, val_dict, cfg.OUTPUT_DIR, plot=True, segment_sky=False)
 
+def plot_train(cfg): 
+    metrics = ['loss_box_reg', 'loss_cls', 'loss_mask', "fp_fn", 'total_loss']
+    path_to_metrics = os.path.join(cfg.OUTPUT_DIR, "metrics.json")
+    for m in metrics: 
+        plot_metrics(path_to_metrics, cfg.OUTPUT_DIR, m)
 
 if __name__ == "__main__":
     for d in ["train", "val"]:
@@ -114,7 +119,7 @@ if __name__ == "__main__":
                         help="Backbone model to use")
     parser.add_argument("--output_dir", type=str, default="/cluster/work/helensem/Master/output/reduced_data/resnext",
                         help="Output directory")
-    parser.add_argument("--mode", type=str, default="train", choices=["train", "predict", "evaluate", "inference"],
+    parser.add_argument("--mode", type=str, default="train", choices=["train", "predict", "evaluate", "inference", "plot"],
                         help="Execution mode")
     parser.add_argument("--segment_sky", action="store_true", help="Segment sky")
 
@@ -136,5 +141,7 @@ if __name__ == "__main__":
         evaluate(cfg, segment_sky)
     elif mode == "inference":
         inference(cfg)
+    elif mode == "plot": 
+        plot_train(cfg)
     else:
         print("Invalid mode chosen")
