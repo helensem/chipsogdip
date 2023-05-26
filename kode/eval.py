@@ -213,7 +213,7 @@ def plot_metrics(path_to_metrics, output, metric):
   epochs = int(2*iterations/1500)
   x_mean = np.arange(1,epochs+1)
   print(x_mean)
-  steps = 1500*x_mean
+  steps = 750*x_mean
   steps=steps[0:epochs]
   if metric == 'fp_fn': 
     total_fp_per_epoch = []
