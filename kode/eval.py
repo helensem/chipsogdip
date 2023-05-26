@@ -227,7 +227,7 @@ def plot_metrics(path_to_metrics, output, metric):
     total_fn_per_epoch = np.array([part.mean() for part in fn_parts])
     plt.plot(steps,total_fn_per_epoch, label = "False negative", marker="o", color="g")
     plt.plot(steps,total_fp_per_epoch, label = "False positive", marker="o", color="b")
-    plt.xlabel('Epoch')
+    plt.xlabel('Step')
     plt.ylabel('Ratio')
     plt.legend()
     plt.grid()
@@ -238,8 +238,8 @@ def plot_metrics(path_to_metrics, output, metric):
   y_mean = np.array([part.mean() for part in parts])
   plt.plot(x,y, color="g")
   plt.plot(steps, y_mean, color="b", marker="o")
-  plt.plot
-  plt.xlabel('Epoch')
+  plt.grid()
+  plt.xlabel('Step')
   plt.ylabel(metric)
   plt.savefig(os.path.join(output, metric + ".svg"), format = "svg")
 

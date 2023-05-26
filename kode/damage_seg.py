@@ -101,9 +101,11 @@ def inference(cfg):
     cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
     evaluate_over_iterations(cfg, val_dict, cfg.OUTPUT_DIR, plot=True, segment_sky=False)
 
-def plot_train(cfg): 
+def plot(cfg): 
     metrics = ['loss_box_reg', 'loss_cls', 'loss_mask', "fp_fn", 'total_loss']
     path_to_metrics = os.path.join(cfg.OUTPUT_DIR, "metrics.json")
+    output_dir = os.path.join(cfg.OUTPUT_DIR, "plots")
+    os.makedirs(output_dir, exist_ok=True)
     for m in metrics: 
         plot_metrics(path_to_metrics, cfg.OUTPUT_DIR, m)
 
@@ -142,6 +144,6 @@ if __name__ == "__main__":
     elif mode == "inference":
         inference(cfg)
     elif mode == "plot": 
-        plot_train(cfg)
+        plot(cfg)
     else:
         print("Invalid mode chosen")
