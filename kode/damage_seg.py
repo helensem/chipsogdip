@@ -102,12 +102,13 @@ def inference(cfg):
     evaluate_over_iterations(cfg, val_dict, cfg.OUTPUT_DIR, plot=True, segment_sky=False)
 
 def plot(cfg): 
+    print("plotting for: ", cfg.OUTPUT_DIR)
     metrics = ['loss_box_reg', 'loss_cls', 'loss_mask', "fp_fn", 'total_loss']
     path_to_metrics = os.path.join(cfg.OUTPUT_DIR, "metrics.json")
     output_dir = os.path.join(cfg.OUTPUT_DIR, "plots")
     os.makedirs(output_dir, exist_ok=True)
     for m in metrics: 
-        plot_metrics(path_to_metrics, cfg.OUTPUT_DIR, m)
+        plot_metrics(path_to_metrics, output_dir, m)
 
 if __name__ == "__main__":
     for d in ["train", "val"]:
