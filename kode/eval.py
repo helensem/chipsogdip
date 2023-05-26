@@ -210,7 +210,7 @@ def plot_metrics(path_to_metrics, output, metric):
   plt.clf()
 
   iterations = json_data[-1]['iteration']
-  epochs = int(iterations/1500)
+  epochs = int(2*iterations/1500)
   x_mean = np.arange(1,epochs+1)
   print(x_mean)
   steps = 1500*x_mean
