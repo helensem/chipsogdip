@@ -170,6 +170,7 @@ def evaluate_over_iterations(cfg, val_dict, output_dir, plot=False, segment_sky=
     corr_ious = []
     bg_ious = []
     model_names = []
+    write_to_file = False
     for model in models:
         if model.endswith(".pth"):
             cfg.MODEL.WEIGHTS = os.path.join(output_dir, model)
@@ -177,9 +178,11 @@ def evaluate_over_iterations(cfg, val_dict, output_dir, plot=False, segment_sky=
             model_number = model_name[6:]
             if model_number == "final": 
                 model_number = cfg.SOLVER.MAX_ITER 
+                write_to_file = True
+
             else: 
                 model_number = int(model_number)+1
-            mean_corr, mean_bg, mean_iou = evaluate_model(cfg, val_dict, True, segment_sky)
+            mean_corr, mean_bg, mean_iou = evaluate_model(cfg, val_dict, write_to_file, segment_sky)
             corr_ious.append(mean_corr)
             mean_ious.append(mean_iou)
             bg_ious.append(mean_bg)

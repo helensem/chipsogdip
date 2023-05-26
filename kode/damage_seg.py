@@ -111,12 +111,6 @@ def plot(cfg):
         plot_metrics(path_to_metrics, output_dir, m)
 
 if __name__ == "__main__":
-    for d in ["train", "val"]:
-        DatasetCatalog.register("damage_" + d, lambda d=d: load_damage_dicts(r"/cluster/home/helensem/Master/damage_data",d, segment_sky=False))
-        MetadataCatalog.get("damage_" + d).set(thing_classes=["red corrosion"])
-
-    damage_metadata = MetadataCatalog.get("damage_train")
-
     parser = argparse.ArgumentParser(description="Custom Trainer Script")
     parser.add_argument("--backbone", type=str, default="COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml",
                         help="Backbone model to use")
@@ -132,6 +126,11 @@ if __name__ == "__main__":
     backbone_model = args.backbone
     output_dir = args.output_dir
     segment_sky = args.segment_sky
+    for d in ["train", "val"]:
+        DatasetCatalog.register("damage_" + d, lambda d=d: load_damage_dicts(r"/cluster/home/helensem/Master/damage_data",d, segment_sky))
+        MetadataCatalog.get("damage_" + d).set(thing_classes=["red corrosion"])
+
+    damage_metadata = MetadataCatalog.get("damage_train")
 
     cfg = config(backbone_model, output_dir)
     os.makedirs(cfg.OUTPUT_DIR, exist_ok=True)
