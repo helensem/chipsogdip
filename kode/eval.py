@@ -98,7 +98,7 @@ def evaluate_model(cfg, val_dict, write_to_file = False, segment_sky=False):
     return mean_corr_iou, mean_bg_iou, (mean_corr_iou + mean_bg_iou) / 2
 
 
-def evalaute_thresholds(cfg, val_dict):
+def evaluate_thresholds(cfg, val_dict):
     thresholds = [0.6, 0.7, 0.75, 0.8, 0.85, 0.9] 
     mean_ious = []
     corr_ious = []
@@ -111,9 +111,8 @@ def evalaute_thresholds(cfg, val_dict):
         corr_ious.append(mean_corr)
         mean_ious.append(mean_iou)
         bg_ious.append(mean_bg)
-        print("threshold: ", threshold, "corr IoU: ", mean_corr, "bg IoU: ", mean_bg, "mean IoU: ", mean_iou)
     #, bg_ious, corr_ious, mean_ious = (list(t) for t in zip(*sorted(zip(model_names, bg_ious, corr_ious, mean_ious))))
-
+    print(corr_ious)
     plt.plot(thresholds, mean_ious, color = 'r'
             ,label = "Mean", marker="o")
     plt.plot(thresholds, corr_ious, label="Corrosion", color = "c", marker="o")
