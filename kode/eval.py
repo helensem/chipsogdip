@@ -98,6 +98,39 @@ def evaluate_model(cfg, val_dict, write_to_file = False, segment_sky=False):
     return mean_corr_iou, mean_bg_iou, (mean_corr_iou + mean_bg_iou) / 2
 
 
+def evalaute_thresholds(cfg, val_dict):
+    thresholds = [0.6, 0.7, 0.75, 0.8, 0.85, 0.9] 
+    mean_ious = []
+    corr_ious = []
+    bg_ious = []
+    for threshold in thresholds: 
+        cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = threshold
+        cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
+
+        mean_corr, mean_bg, mean_iou = evaluate_model(cfg, val_dict)
+        corr_ious.append(mean_corr)
+        mean_ious.append(mean_iou)
+        bg_ious.append(mean_bg)
+        print("threshold: ", threshold, "corr IoU: ", mean_corr, "bg IoU: ", mean_bg, "mean IoU: ", mean_iou)
+    #, bg_ious, corr_ious, mean_ious = (list(t) for t in zip(*sorted(zip(model_names, bg_ious, corr_ious, mean_ious))))
+
+    plt.plot(thresholds, mean_ious, color = 'r'
+            ,label = "Mean", marker="o")
+    plt.plot(thresholds, corr_ious, label="Corrosion", color = "c", marker="o")
+    plt.plot(thresholds, bg_ious, label="Background", color="m", marker="o")
+    #plt.plot(data["epoch"], data["val/cls_loss"] , color = 'b',label = "val")
+    
+    plt.xticks(rotation = 25)
+    plt.xlabel('Confidence threshold')
+    plt.ylabel('IoU')
+    #plt.title('Total loss', fontsize = 20)
+    plt.grid()
+    plt.legend()
+    plt.savefig(os.path.join(cfg.OUTPUT_DIR, "iou_per_threshold.svg"), format="svg")
+
+
+
+
 def evaluate_model_better(cfg, val_dict, write_to_file=False, file_format='json', segment_sky=False):
     predictor = DefaultPredictor(cfg)
     iou_corr_list = []
