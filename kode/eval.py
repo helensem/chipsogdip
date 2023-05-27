@@ -171,13 +171,15 @@ def evaluate_over_iterations(cfg, val_dict, output_dir, plot=False, segment_sky=
     bg_ious = []
     model_names = []
     write_to_file = False
+    path_to_metrics = os.path.join(output_dir, "metrics.json")
+    iterations = get_iteration(path_to_metrics)
     for model in models:
         if model.endswith(".pth"):
             cfg.MODEL.WEIGHTS = os.path.join(output_dir, model)
             model_name = os.path.splitext(model)[0]
             model_number = model_name[6:]
             if model_number == "final": 
-                model_number = cfg.SOLVER.MAX_ITER 
+                model_number = iterations
                 write_to_file = True
 
             else: 
@@ -206,12 +208,13 @@ def evaluate_over_iterations(cfg, val_dict, output_dir, plot=False, segment_sky=
         plt.savefig(os.path.join(output_dir, "iou_per_model.svg"), format="svg")
 
 
+
+
 def plot_metrics(path_to_metrics, output, metric): 
   with open(path_to_metrics, 'r') as handle:
       json_data = [json.loads(line) for line in handle]
   x = [i['iteration'] for i in json_data]
   plt.clf()
-
   iterations = json_data[-1]['iteration']
   epochs = int(2*iterations/1500)
   x_mean = np.arange(1,epochs+1)
@@ -311,6 +314,11 @@ def compute_overlaps_masks(masks1, masks2, BG=False):
     overlaps = intersections / union
 
     return overlaps
+
+def get_iteration(path_to_metrics):
+    with open(path_to_metrics, 'r') as handle:
+      json_data = [json.loads(line) for line in handle]
+    return json_data[-1]['iteration']  
 
 
 if __name__ == "__main__":
