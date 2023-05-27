@@ -42,7 +42,7 @@ def config(backbone_model, output_dir):
     cfg.DATASETS.TRAIN = ("damage_train",)
     cfg.DATASETS.TEST = ()
     #cfg.TEST.EVAL_PERIOD = 1
-    # cfg.SOLVER.IMS_PER_BATCH = 2
+    cfg.SOLVER.IMS_PER_BATCH = 2
     # cfg.SOLVER.BASE_LR = 0.00070612#0.0005
     #cfg.SOLVER.GAMMA = 0.5
     # cfg.SOLVER.STEPS = []#[6250, 12500] #Reduce lr by half per 10th epoch  15000, 30000

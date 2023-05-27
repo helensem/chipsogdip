@@ -98,7 +98,7 @@ def create_annotation_format(contour):
     }
 
 
-def load_damage_dicts(dataset_dir, subset, write_to_file=False, segment_sky = False): #? Possibly write this to a JSON-file? 
+def load_damage_dicts(dataset_dir, subset, write_to_file=False): #? Possibly write this to a JSON-file? 
     """
     Loads the images from a dataset with a dictionary of the annotations in COCO-format  
     """ 
@@ -117,12 +117,6 @@ def load_damage_dicts(dataset_dir, subset, write_to_file=False, segment_sky = Fa
         
         image_path = os.path.join(image_dir, file_name)
         height, width = cv2.imread(image_path).shape[:2]
-        if segment_sky: # For training with backround removed images
-            im = cv2.imread(image_path)
-            im = remove_sky(im)
-            image_form = os.path.splitext(file_name)[1]
-            image_path = os.path.join(r"/cluster/home/helensem/Master/Labeled_pictures_segmentated",subset, image_id+image_form)
-            cv2.imwrite(image_path, im)
         record = create_image_annotation(image_path, width, height, image_id)
         #idx +=1
         mask_dir = os.path.join(image_dir, 'masks')
