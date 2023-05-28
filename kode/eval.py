@@ -113,6 +113,7 @@ def evaluate_thresholds(cfg, val_dict):
         bg_ious.append(mean_bg)
     #, bg_ious, corr_ious, mean_ious = (list(t) for t in zip(*sorted(zip(model_names, bg_ious, corr_ious, mean_ious))))
     print(corr_ious)
+    plt.clf()
     plt.plot(thresholds, mean_ious, color = 'r'
             ,label = "Mean", marker="o")
     plt.plot(thresholds, corr_ious, label="Corrosion", color = "c", marker="o")

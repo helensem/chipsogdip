@@ -99,7 +99,7 @@ def evaluate(cfg, segment_sky = False):
 def inference(cfg):
     val_dict = DatasetCatalog.get("damage_val")#load_damage_dicts(r"/cluster/home/helensem/Master/damage_data", "val")
     cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
-    evaluate_over_iterations(cfg, val_dict, cfg.OUTPUT_DIR, plot=True, segment_sky=False)
+    #evaluate_over_iterations(cfg, val_dict, cfg.OUTPUT_DIR, plot=True, segment_sky=False)
     evaluate_thresholds(cfg, val_dict)
 
 def plot(cfg): 
