@@ -162,6 +162,8 @@ def load_mask(mask_dir):
         if f.endswith('.png') and ('corrosion' or 'grov_merking' in f):
             mask_path = os.path.join(mask_dir, f)
             m = cv2.imread(mask_path, cv2.IMREAD_GRAYSCALE)
+            if m is None: 
+                continue
             m = m.astype(bool)
             mask.append(m)
     mask = np.stack(mask, axis=-1)
