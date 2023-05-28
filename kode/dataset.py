@@ -234,15 +234,14 @@ if __name__ == "__main__":
  #   root = r"/cluster/home/helensem/Master/Labeled_pictures"
   #  destination = r"/cluster/home/helensem/Master/damage_data"
 
-   # for d in ['train', 'val']:
-    #    load_damage_yolo(root, d, destination)
-    values = histogram_percent(r"/cluster/home/helensem/Master/damage_data", "train")
-    plt.hist(values, bins=20)  # density=False would make counts
-    print(np.mean(values))
-    plt.ylabel('No. images')
-    plt.xlabel('% of damaged pixels')
+    for d in ['train', 'val']:
+        values = histogram_percent(r"/cluster/home/helensem/Master/damage_data", d)
+        plt.hist(values, bins=20)  # density=False would make counts
+        print(np.mean(values))
+        plt.ylabel('No. images')
+        plt.xlabel('% of damaged pixels')
 
-    plt.savefig(r"/cluster/home/helensem/Master/damage_count_train.svg", format="svg")
+        plt.savefig(f"/cluster/home/helensem/Master/damage_count_{d}.svg", format="svg")
 
 
     #print(load_damage_dicts(r"/cluster/home/helensem/Master/data", "train"))
