@@ -204,7 +204,7 @@ def load_pictures(dataset_dir, subset): #? Possibly write this to a JSON-file?
 def histogram_percent(path, subset):
     dict = load_damage_dicts(path, subset)
     damagehisto = np.zeros((len(dict)))
-    for d in dict:
+    for id,d in enumerate(dict):
         damagecount = 0
         image_dir = os.path.dirname(d["file_name"])
         mask_gt= load_mask(os.path.join(image_dir, "masks"))
