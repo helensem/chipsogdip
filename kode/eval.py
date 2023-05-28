@@ -7,7 +7,7 @@ from matplotlib import pyplot as plt
 import pandas as pd
 
 sys.path.append("cluster/home/helensem/Master/chipsogdip/kode")
-from dataset import load_mask
+from dataset import load_mask, combine_masks_to_one
 from skyseg import remove_sky
 
 
@@ -310,14 +310,6 @@ def compare_ious(dict1, dict2):
         else: 
             iou_2.append(key)
     return iou_1, iou_2
-
-
-def combine_masks_to_one(masks):
-    combined_mask = masks[:, :, 0]
-    for i in range(masks.shape[-1]):
-        combined_mask += masks[:, :, i]
-    return np.expand_dims(combined_mask, 2)
-
 
 
 def compute_overlaps_masks(masks1, masks2, BG=False):

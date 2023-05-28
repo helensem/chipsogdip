@@ -1,6 +1,7 @@
 
 import numpy as np 
 import os,json,cv2,random 
+from matplotlib import pyplot as plt
 #import skimage
 
 
@@ -166,6 +167,13 @@ def load_mask(mask_dir):
     mask = np.stack(mask, axis=-1)
     return mask.astype(bool)
 
+def combine_masks_to_one(masks):
+    combined_mask = masks[:, :, 0]
+    for i in range(masks.shape[-1]):
+        combined_mask += masks[:, :, i]
+    return np.expand_dims(combined_mask, 2)
+
+
 
 
 def load_pictures(dataset_dir, subset): #? Possibly write this to a JSON-file? 
@@ -192,29 +200,27 @@ def load_pictures(dataset_dir, subset): #? Possibly write this to a JSON-file?
         destination_path = os.path.join(destination, id )
         shutil.copy(image_path, destination_path)
 
-def add_masks_to_sky_data(path_to_images, path_to_labels, new_dir):
-    os.makedirs(new_dir, exist_ok=True)
 
-    images = next(os.walk(path_to_images))[2]
+def histogram_percent(path, subset):
+    dict = load_damage_dicts(path, subset)
+    damagehisto = np.zeros((len(dict)))
+    for d in dict:
+        damagecount = 0
+        image_dir = os.path.dirname(d["file_name"])
+        mask_gt= load_mask(os.path.join(image_dir, "masks"))
+        mask_gt = combine_masks_to_one(mask_gt)
+        for i in range(mask_gt.shape[0]):
+            for j in range(mask_gt.shape[1]):
+                if mask_gt[i][j]:
+                   damagecount+=1
+        pixelcount = mask_gt.shape[0]*mask_gt.shape[1]
+        percent = damagecount*100//pixelcount
+        print("damagecount:", damagecount, " number of pixels: ", pixelcount, " percent: ", percent)
+        damagehisto[id] = percent
+        if percent == 100:
+           print("image ",d["image_id"], "\n", mask_gt)
 
-    for image in images: 
-        image_id = os.path.splitext(image)[0]
-        image_dir = os.path.join(path_to_labels, image_id)
-        print(image_dir)
-        mask_dir = os.path.join(image_dir, next(os.walk(image_dir))[1][0])
-        print(mask_dir)
-        new_image_dir = os.path.join(new_dir, image_id)
-        os.makedirs(new_image_dir, exist_ok=True)
-        source = os.path.join(path_to_images, image)
-        destination = os.path.join(new_image_dir, image)
-        print("source: ", source)
-        print("destination: ", destination)
-        shutil.copy(source, destination)
-        new_mask_dir = os.path.join(new_image_dir, "masks")
-        shutil.copytree(mask_dir, new_mask_dir)
-
-
-
+    return damagehisto
 
 
 
@@ -228,8 +234,14 @@ if __name__ == "__main__":
 
    # for d in ['train', 'val']:
     #    load_damage_yolo(root, d, destination)
+    values = histogram_percent(r"/cluster/home/helensem/Master/damage_data", "train")
+    plt.hist(values, bins=20)  # density=False would make counts
+    print(np.mean(values))
+    plt.ylabel('No. images')
+    plt.xlabel('% of damaged pixels')
 
-    ga_train_sets()
+    plt.savefig(r"/cluster/home/helensem/Master/damage_count_train.svg", format="svg")
+
 
     #print(load_damage_dicts(r"/cluster/home/helensem/Master/data", "train"))
     #train_dict = load_damage_dicts(r"/cluster/home/helensem/Master/Labeled_pictures", "train")
@@ -321,3 +333,4 @@ def get_json_dict(path, subset="train"):
     with open(file_path, "r") as f:
         data = json.load(f)
     return data
+
