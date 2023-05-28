@@ -83,7 +83,7 @@ def train_model(cfg, backbone):
 def predict(cfg, damage_metadata, segment_sky = False):
     cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
     predictor = DefaultPredictor(cfg)
-    output_dir = os.path.join(cfg.OUTPUT_DIR, "images")
+    output_dir = os.path.join(r"/cluster/home/helensem/blue_bridge", "images")
     os.makedirs(output_dir, exist_ok=True)
     val_dict =  val_dict = load_damage_dicts(r"/cluster/home/helensem/blue_bridge", "val")#load_damage_dicts(r"/cluster/home/helensem/Master/damage_data", "val")
     for d in val_dict:
