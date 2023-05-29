@@ -236,9 +236,10 @@ if __name__ == "__main__":
  #   root = r"/cluster/home/helensem/Master/Labeled_pictures"
   #  destination = r"/cluster/home/helensem/Master/damage_data"
 
-    for d in ['train', 'val']:
+    for d in ['val']:
         values = histogram_percent(r"/cluster/home/helensem/Master/damage_data", d)
-        plt.hist(values, bins=20)  # density=False would make counts
+        plt.clf()
+        plt.hist(values, bins=20, color="g")  # density=False would make counts
         print(np.mean(values))
         plt.ylabel('No. images')
         plt.xlabel('% of damaged pixels')
