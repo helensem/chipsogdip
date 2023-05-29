@@ -166,6 +166,8 @@ def load_mask(mask_dir):
                 continue
             m = m.astype(bool)
             mask.append(m)
+    if mask ==[]:
+        return mask 
     mask = np.stack(mask, axis=-1)
     return mask.astype(bool)
 
