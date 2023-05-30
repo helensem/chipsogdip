@@ -348,15 +348,15 @@ def get_iteration(path_to_metrics):
 
 
 if __name__ == "__main__":
-    path_1 = r"/cluster/work/helensem/Master/output/reduced_data/resnet101/output.txt"
-    path_2 = r"/cluster/work/helensem/Master/output/reduced_data/resnet101-DC5/output.txt"
+    path_1 = r"/cluster/work/helensem/Master/output/reduced_data/resnet101-DC5/output.txt"
+    path_2 = r"/cluster/work/helensem/Master/output/run_ha/resnet101-DC/output.txt"
 
     results_normal = ious_from_file(path_1)
     results_reduced = ious_from_file(path_2)
 
     iou_normal, iou_reduced =compare_ious(results_normal, results_reduced)
     print(len(iou_normal), len(iou_reduced))
-    print("images where the normal is better: ", iou_normal, "\n", "Images where reduced data is better: ", iou_reduced)
+    print("images where the normal is better: ", iou_normal, "\n", "Images where HA is better: ", iou_reduced)
 
 
 # def overlay_prediction_single_maskrcnn(pr=None, inp=None,
