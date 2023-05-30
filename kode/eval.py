@@ -288,7 +288,7 @@ def ious_from_file(path):
         data = f.read()
 
     data = data.split("\n")
-    del data [-4:]
+    del data [-5:]
     results = {}
     for d in data: 
         d = d.replace(" IoU = ", ":")
