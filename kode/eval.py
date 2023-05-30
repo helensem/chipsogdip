@@ -291,6 +291,7 @@ def ious_from_file(path):
     del data [-4:]
     results = {}
     for d in data: 
+        print(d)
         d = d.replace(" IoU = ", ":")
         d = d.split(":")
         tup = d[1].replace("(", "")
