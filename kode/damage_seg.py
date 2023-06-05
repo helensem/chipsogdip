@@ -44,13 +44,13 @@ def config(backbone_model, output_dir):
     #cfg.TEST.EVAL_PERIOD = 1
     cfg.SOLVER.IMS_PER_BATCH = 2
     cfg.SOLVER.BASE_LR = 0.0005
-    #cfg.SOLVER.GAMMA = 0.5
-    # cfg.SOLVER.STEPS = []#[6250, 12500] #Reduce lr by half per 10th epoch  15000, 30000
+    cfg.SOLVER.GAMMA = 0.5
+    cfg.SOLVER.STEPS = [15000, 30000]#[6250, 12500] #Reduce lr by half per 10th epoch  15000, 30000
     cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE =  256
     cfg.MODEL.ROI_HEADS.NUM_CLASSES = 1 
 
     ### FROM TUNING
-    cfg.SOLVER.MAX_ITER = int(0.5*1500*20) #30*200 #1631 img* 30 epochs
+    cfg.SOLVER.MAX_ITER = int(0.5*1500*50) #30*200 #1631 img* 30 epochs
     # cfg.MODEL.RPN.BATCH_SIZE_PER_IMAGE = 1024
     # cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 128
 
@@ -100,7 +100,7 @@ def inference(cfg):
     val_dict = DatasetCatalog.get("damage_val")#load_damage_dicts(r"/cluster/home/helensem/Master/damage_data", "val")
     cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
     evaluate_over_iterations(cfg, val_dict, cfg.OUTPUT_DIR, plot=True, segment_sky=False)
-    evaluate_thresholds(cfg, val_dict)
+    #evaluate_thresholds(cfg, val_dict)
 
 def plot(cfg): 
     print("plotting for: ", cfg.OUTPUT_DIR)
