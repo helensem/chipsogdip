@@ -23,7 +23,12 @@ setup_logger()
 class CustomTrainer(DefaultTrainer):
     @classmethod
     def build_train_loader(cls, cfg):
-        mapper = DatasetMapper(cfg, is_train=True, augmentations=[T.RandomFlip(prob=0.5, horizontal=True, vertical=False),T.RandomFlip(prob=0.5, horizontal=False, vertical=True),])
+        mapper = DatasetMapper(cfg, is_train=True, augmentations=[T.RandomFlip(prob=0.5, horizontal=True, vertical=False),
+                                                                  T.RandomFlip(prob=0.5, horizontal=False, vertical=True),
+                                                                  T.RandomBrightness(0.8, 1.8), 
+                                                                  T.RandomSaturation(0.8, 1.4),
+                                                                  T.RandomContrast(0.6, 1.3),
+                                                                    ])
         return build_detection_train_loader(cfg, mapper=mapper)
     
     # def build_train_loader(cls, cfg):
@@ -62,7 +67,7 @@ def config(backbone_model, output_dir):
     # cfg.MODEL.ROI_HEADS.POSITIVE_FRACTION = 0.4938
     # cfg.SOLVER.MOMENTUM = 0.95
     # cfg.SOLVER.WEIGHT_DECAY = 0.00012163
-    cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.65
+    cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.5
     # cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.7653
     # {'rpn_nms_threshold': 0.6428571428571428, 'rpn_batch_size': 1024, 'pre_nms_limit': 6857, 'post_nms_rois_training': 2224, 'post_nms_rois_inference': 885, 'roi_batch_size': 128, 'roi_positive_ratio': 0.49387755102040815, 'detection_min_confidence': 0.7653061224489797, 'learning_momentum': 0.95, 'weight_decay': 0.0001216326530612245, 'epochs': 29, 'learning_rate': 0.0007061224489795919, 'img_min_size': 989, 'img_max_size': 1148, 'roi_iou_threshold': 0.3571428571428571}
     # cfg.INPUT.MIN_SIZE_TRAIN = (989,)
@@ -83,9 +88,9 @@ def train_model(cfg, backbone):
 def predict(cfg, damage_metadata, segment_sky = False):
     cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
     predictor = DefaultPredictor(cfg)
-    output_dir = os.path.join(cfg.OUTPUT_DIR, "images_seg")
+    output_dir = os.path.join(r"/cluster/home/helensem/Master", "images_test")
     os.makedirs(output_dir, exist_ok=True)
-    val_dict =  val_dict = load_damage_dicts(r"/cluster/home/helensem/Master/damage_data", "val")#load_damage_dicts(r"/cluster/home/helensem/Master/damage_data", "val")
+    val_dict =  load_damage_dicts(r"/cluster/home/helensem/Master/blue_bridge", "val")#load_damage_dicts(r"/cluster/home/helensem/Master/damage_data", "val")
     for d in val_dict:
         apply_inference(predictor, damage_metadata, output_dir, d, segment_sky)
 
