@@ -67,7 +67,7 @@ def config(backbone_model, output_dir):
     # cfg.MODEL.ROI_HEADS.POSITIVE_FRACTION = 0.4938
     # cfg.SOLVER.MOMENTUM = 0.95
     # cfg.SOLVER.WEIGHT_DECAY = 0.00012163
-    cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.5
+    cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.9
     # cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.7653
     # {'rpn_nms_threshold': 0.6428571428571428, 'rpn_batch_size': 1024, 'pre_nms_limit': 6857, 'post_nms_rois_training': 2224, 'post_nms_rois_inference': 885, 'roi_batch_size': 128, 'roi_positive_ratio': 0.49387755102040815, 'detection_min_confidence': 0.7653061224489797, 'learning_momentum': 0.95, 'weight_decay': 0.0001216326530612245, 'epochs': 29, 'learning_rate': 0.0007061224489795919, 'img_min_size': 989, 'img_max_size': 1148, 'roi_iou_threshold': 0.3571428571428571}
     # cfg.INPUT.MIN_SIZE_TRAIN = (989,)
