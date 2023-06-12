@@ -134,7 +134,7 @@ if __name__ == "__main__":
     segment_sky = args.segment_sky
     for d in ["train", "val"]:
         DatasetCatalog.register("damage_" + d, lambda d=d: load_damage_dicts(r"/cluster/home/helensem/Master/damage_data",d))
-        MetadataCatalog.get("damage_" + d).set(thing_classes=["red corrosion"])
+        MetadataCatalog.get("damage_" + d).set(thing_classes=["damage"])
 
     damage_metadata = MetadataCatalog.get("damage_train")
 
